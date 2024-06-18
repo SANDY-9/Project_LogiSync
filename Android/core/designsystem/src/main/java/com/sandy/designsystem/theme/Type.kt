@@ -1,4 +1,4 @@
-package com.sandy.logisync.ui.theme
+package com.sandy.designsystem.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

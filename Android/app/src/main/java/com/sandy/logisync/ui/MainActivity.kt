@@ -1,4 +1,4 @@
-package com.sandy.logisync
+package com.sandy.logisync.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.sandy.logisync.ui.theme.LogiSyncTheme
+import com.sandy.designsystem.theme.LogiSyncTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

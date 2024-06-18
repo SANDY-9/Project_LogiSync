@@ -25,8 +25,18 @@ android {
             )
         }
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
     buildFeatures {
         compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -42,6 +52,8 @@ kapt {
 }
 
 dependencies {
+
+    implementation(project(":core:designsystem"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)

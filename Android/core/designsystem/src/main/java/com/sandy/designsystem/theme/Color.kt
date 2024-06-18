@@ -1,4 +1,4 @@
-package com.sandy.logisync.ui.theme
+package com.sandy.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 

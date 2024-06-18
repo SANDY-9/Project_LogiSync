@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "LogiSync"
 include(":app")
 include(":feature:login")
+include(":core:designsystem")
