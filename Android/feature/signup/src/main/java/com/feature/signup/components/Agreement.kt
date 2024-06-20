@@ -1,20 +1,19 @@
 package com.feature.signup.components
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
+// 회원가입 약관 동의
 @Composable
-fun Signup(
+fun Agreement(
     modifier: Modifier = Modifier
 ) {
-    Box(modifier) {
-    }
+
 }
 
-@Preview(name = "Signup")
+@Preview(name = "Agreement")
 @Composable
-private fun PreviewSignup() {
-    Signup()
+private fun PreviewAgreement() {
+    Agreement()
 }

@@ -5,14 +5,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
+// 가입
 @Composable
-fun SignupAllow(
+fun Joining(
     modifier: Modifier = Modifier
 ) {
+    Box(modifier) {
+    }
 }
 
-@Preview(name = "SignupAllow")
+@Preview(name = "Joining")
 @Composable
-private fun PreviewSignupAllow() {
-    SignupAllow()
+private fun PreviewJoining() {
+    Joining()
 }
