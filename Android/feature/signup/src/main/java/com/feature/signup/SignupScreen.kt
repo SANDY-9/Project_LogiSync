@@ -26,6 +26,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.feature.signup.components.Agreement
 import com.feature.signup.components.Check
 
 @Composable
@@ -69,17 +71,26 @@ fun SignupScreen(
             }
         }
 
-        Check()
+        var step by remember {
+            mutableIntStateOf(0)
+        }
+        when(step) {
+            0 -> Check()
+            else -> Agreement()
+        }
 
         Spacer(modifier = modifier.weight(1f))
 
         Button(
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier
+                .fillMaxWidth()
                 .padding(16.dp),
-            onClick = { /*TODO*/ }
+            onClick = {
+                step ++
+            }
         ) {
             Text(
-                text = stringResource(id = R.string.signup_next_step)
+                text = stringResource(id = R.string.signup_next_step1)
             )
         }
     }
