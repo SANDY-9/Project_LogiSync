@@ -2,6 +2,7 @@
 <resources>
     <string name="login_title_id">아이디</string>
     <string name="login_title_pwd">비밀번호</string>
+    <string name="login_title_login">로그인</string>
     <string name="login_title_signup">회원가입</string>
     <string name="login_title_bio">생체인증로그인</string>
     <string name="login_desc_bio">지문을 입력해주세요.</string>
