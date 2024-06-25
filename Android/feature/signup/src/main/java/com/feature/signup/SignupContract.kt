@@ -4,7 +4,7 @@ package com.feature.signup
  * UI State that represents SignupScreen
  **/
 data class SignupState(
-    val step: Int
+    val step: Int = 0
 )
 
 /**

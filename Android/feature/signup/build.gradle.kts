@@ -47,6 +47,7 @@ android {
 dependencies {
 
     implementation(project(":core:designsystem"))
+    implementation(project(":core:navigation"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)
@@ -61,5 +62,5 @@ dependencies {
     // Compose
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))
-    
+
 }

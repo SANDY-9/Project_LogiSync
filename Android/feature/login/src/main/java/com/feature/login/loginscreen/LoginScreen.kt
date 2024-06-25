@@ -1,5 +1,6 @@
 package com.feature.login.loginscreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.core.navigation.Route
 import com.feature.login.R
 import com.sandy.designsystem.theme.LogiSyncTheme
 
@@ -82,7 +84,8 @@ fun LoginScreen(
 
         TextButton(
             onClick = {
-            /*TODO*/
+                Log.e("확인", "LoginScreen: 실행")
+                navController.navigate(route = Route.Signup.route)
             }
         ) {
             Text(text = stringResource(id = R.string.login_title_signup))

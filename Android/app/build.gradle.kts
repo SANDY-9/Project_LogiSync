@@ -57,8 +57,11 @@ kapt {
 
 dependencies {
 
-    implementation(project(":core:designsystem"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:designsystem"))
+
+    implementation(project(":feature:login"))
+    implementation(project(":feature:signup"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)
