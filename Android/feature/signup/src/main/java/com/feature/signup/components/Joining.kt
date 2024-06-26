@@ -50,7 +50,7 @@ fun Joining(
                 style = MaterialTheme.typography.headlineSmall
             )
 
-            Spacer(modifier = modifier.height(8.dp))
+            Spacer(modifier = modifier.height(12.dp))
 
             IdInput(
                 isIdError = false,
@@ -58,16 +58,14 @@ fun Joining(
                 modifier = Modifier,
             )
 
-            Spacer(modifier = modifier.height(30.dp))
+            Spacer(modifier = modifier.height(32.dp))
 
             Text(
                 text = stringResource(id = R.string.signup_join_pwd),
                 style = MaterialTheme.typography.headlineSmall
             )
 
-            Spacer(
-                modifier = modifier.height(8.dp)
-            )
+            Spacer(modifier = modifier.height(12.dp))
 
             PwdInput(
                 isPwdError = false,
@@ -106,8 +104,8 @@ private fun IdInput(
             modifier = modifier.weight(1f),
             value = id,
             onValueChange = { id = it },
-            label = {
-                Text(text = stringResource(id = R.string.signup_join_id))
+            placeholder = {
+                Text(text = stringResource(id = R.string.signup_join_id_placeholder))
             },
             isError = isIdError,
             supportingText = {
@@ -138,8 +136,8 @@ private fun PwdInput(
         modifier = modifier.fillMaxWidth(),
         value = pwd,
         onValueChange = { pwd = it },
-        label = {
-            Text(text = stringResource(id = R.string.signup_join_pwd))
+        placeholder = {
+            Text(text = stringResource(id = R.string.signup_join_pwd_placeholder))
         },
         isError = isPwdError,
         supportingText = {

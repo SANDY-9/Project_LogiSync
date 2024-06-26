@@ -27,13 +27,14 @@
 
     <string name="signup_join_title">회원가입</string>
     <string name="signup_join_id">아이디</string>
-    <string name="signup_join_id_placeholder">아이디 입력</string>
+    <string name="signup_join_id_placeholder">아이디를 입력해주세요.</string>
     <string name="signup_join_id_desc">4~12글자, 영어와 숫자 조합만 가능</string>
     <string name="signup_join_id_check">중복확인</string>
     <string name="signup_join_id_error">아이디 양식에 맞지 않습니다.</string>
     <string name="signup_join_id_check_ok">사용 가능한 아이디입니다.</string>
     <string name="signup_join_id_check_fail">이미 사용 중인 아이디입니다.</string>
     <string name="signup_join_pwd">비밀번호</string>
+    <string name="signup_join_pwd_placeholder">비밀번호를 입력해주세요.</string>
     <string name="signup_join_pwd_desc">8글자 이상, 영문, 숫자, 특수문자를 모두 사용</string>
     <string name="signup_join_pwd_ok">사용 가능한 비밀번호 입니다.</string>
     <string name="signup_join_pwd_check">비밀번호 확인</string>
