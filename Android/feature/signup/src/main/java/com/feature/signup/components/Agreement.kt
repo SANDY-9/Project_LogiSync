@@ -3,6 +3,8 @@ package com.feature.signup.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -10,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,64 +32,81 @@ import com.feature.signup.R
 // 회원가입 약관 동의
 @Composable
 fun Agreement(
-    modifier: Modifier = Modifier
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
     Column(
         modifier = modifier
+            .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(scrollState)
     ) {
+        Column(
+            modifier = modifier
+                .weight(1f)
+                .verticalScroll(scrollState)
+        ) {
 
-        Text(
-            text = stringResource(id = R.string.signup_agree_title),
-            style = MaterialTheme.typography.headlineSmall
-        )
+            Text(
+                text = stringResource(id = R.string.signup_agree_title),
+                style = MaterialTheme.typography.headlineSmall
+            )
 
-        Spacer(modifier = modifier.height(16.dp))
+            Spacer(modifier = modifier.height(16.dp))
 
-        var allCheck by remember { mutableStateOf(false) }
-        var serviceCheck by remember { mutableStateOf(false) }
-        var personalCheck by remember { mutableStateOf(false) }
+            var allCheck by remember { mutableStateOf(false) }
+            var serviceCheck by remember { mutableStateOf(false) }
+            var personalCheck by remember { mutableStateOf(false) }
 
-        AgreeCheckBox(
-            checkState = allCheck,
-            onCheckChange = {
-                allCheck = it
-                serviceCheck = it
-                personalCheck = it
-            },
-            title = stringResource(id = R.string.signup_agree_all)
-        )
+            AgreeCheckBox(
+                checkState = allCheck,
+                onCheckChange = {
+                    allCheck = it
+                    serviceCheck = it
+                    personalCheck = it
+                },
+                title = stringResource(id = R.string.signup_agree_all)
+            )
 
-        var serviceContent by remember { mutableStateOf(false) }
-        AgreeExpandableCheckBox(
-            checkState = serviceCheck,
-            onCheckChange = {
-                serviceCheck = it
-            },
-            title = stringResource(id = R.string.signup_agree_service),
-            expand = serviceContent,
-            onExpanded = {
-                serviceContent = !serviceContent
-            },
-            content = stringResource(id = R.string.signup_agree_content),
-        )
+            var serviceContent by remember { mutableStateOf(false) }
+            AgreeExpandableCheckBox(
+                checkState = serviceCheck,
+                onCheckChange = {
+                    serviceCheck = it
+                },
+                title = stringResource(id = R.string.signup_agree_service),
+                expand = serviceContent,
+                onExpanded = {
+                    serviceContent = !serviceContent
+                },
+                content = stringResource(id = R.string.signup_agree_content),
+            )
 
-        var personalContent by remember { mutableStateOf(false) }
-        AgreeExpandableCheckBox(
-            checkState = personalCheck,
-            onCheckChange = {
-                personalCheck = it
-            },
-            title = stringResource(id = R.string.signup_agree_personal),
-            expand = personalContent,
-            onExpanded = {
-                personalContent = !personalContent
-            },
-            content = stringResource(id = R.string.signup_agree_content),
-        )
+            var personalContent by remember { mutableStateOf(false) }
+            AgreeExpandableCheckBox(
+                checkState = personalCheck,
+                onCheckChange = {
+                    personalCheck = it
+                },
+                title = stringResource(id = R.string.signup_agree_personal),
+                expand = personalContent,
+                onExpanded = {
+                    personalContent = !personalContent
+                },
+                content = stringResource(id = R.string.signup_agree_content),
+            )
+        }
 
+        Button(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            onClick = onClick
+        ) {
+            Text(
+                text = stringResource(id = R.string.signup_next_step2)
+            )
+        }
     }
 }
 

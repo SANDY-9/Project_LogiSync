@@ -2,7 +2,7 @@
 <resources>
     <string name="signup_next_step1">가입확인</string>
     <string name="signup_next_step2">다음</string>
-    <string name="signup_next_step3">회원가입</string>
+    <string name="signup_next_step3">완료</string>
 
     <string name="signup_check_title">가입 확인을 위해 \n이름과 전화번호를 입력해 주세요.</string>
     <string name="signup_check_name_placeholder">이름을 입력해 주세요.</string>
@@ -10,7 +10,7 @@
     <string name="signup_check_tel_placeholder">전화번호를 입력해 주세요.</string>
     <string name="signup_check_tel_label">전화번호</string>
 
-    <string name="signup_agree_title">필수 이용약관에 \n동의해주세요.</string>
+    <string name="signup_agree_title">필수 이용약관에 동의해주세요.</string>
     <string name="signup_agree_all">전체동의</string>
     <string name="signup_agree_service">[필수] 서비스 이용약관</string>
     <string name="signup_agree_personal">[필수] 개인정보 이용약관</string>
@@ -25,14 +25,19 @@
         출판사들은 서체나 디자인을 보일 때는 프레젠테이션 자체에 초점을 맞추기 위해 로렘 입숨을 사용한다.
     </string>
 
+    <string name="signup_join_title">회원가입</string>
     <string name="signup_join_id">아이디</string>
-    <string name="signup_join_id_check">OK</string>
+    <string name="signup_join_id_placeholder">아이디 입력</string>
+    <string name="signup_join_id_desc">4~12글자, 영어와 숫자 조합만 가능</string>
+    <string name="signup_join_id_check">중복확인</string>
     <string name="signup_join_id_error">아이디 양식에 맞지 않습니다.</string>
     <string name="signup_join_id_check_ok">사용 가능한 아이디입니다.</string>
     <string name="signup_join_id_check_fail">이미 사용 중인 아이디입니다.</string>
     <string name="signup_join_pwd">비밀번호</string>
-    <string name="signup_join_pwd_error">비밀번호 양식에 맞지 않습니다.</string>
+    <string name="signup_join_pwd_desc">8글자 이상, 영문, 숫자, 특수문자를 모두 사용</string>
+    <string name="signup_join_pwd_ok">사용 가능한 비밀번호 입니다.</string>
     <string name="signup_join_pwd_check">비밀번호 확인</string>
+    <string name="signup_join_pwd_check_ok">비밀번호가 일치합니다.</string>
     <string name="signup_join_pwd_check_error">비밀번호가 일치하지 않습니다.</string>
 
 </resources>
