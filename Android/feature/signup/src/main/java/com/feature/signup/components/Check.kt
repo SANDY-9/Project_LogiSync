@@ -7,7 +7,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Call
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -49,6 +53,12 @@ fun Check(
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Person,
+                        contentDescription = null
+                    )
+                },
                 label = {
                     Text(text = stringResource(id = R.string.signup_check_name_label))
                 },
@@ -58,10 +68,18 @@ fun Check(
                 singleLine = true,
             )
 
+            Spacer(modifier = modifier.height(12.dp))
+
             var tel by remember { mutableStateOf("") }
             OutlinedTextField(
                 value = tel,
                 onValueChange = { tel = it },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Call,
+                        contentDescription = null
+                    )
+                },
                 label = {
                     Text(text = stringResource(id = R.string.signup_check_tel_label))
                 },
