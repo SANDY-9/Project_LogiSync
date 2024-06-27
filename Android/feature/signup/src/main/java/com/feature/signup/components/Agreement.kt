@@ -1,5 +1,6 @@
 package com.feature.signup.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,10 +20,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,7 +31,12 @@ import com.feature.signup.model.AgreementState
 @Composable
 internal fun Agreement(
     agreement: AgreementState,
-    onCheck: () -> Unit,
+    onAllCheckChange: (Boolean) -> Unit,
+    onServiceCheckChange: (Boolean) -> Unit,
+    onPersonalCheckChange: (Boolean) -> Unit,
+    onServiceExpand: () -> Unit,
+    onPersonalExpand: () -> Unit,
+    onAgreementCheck: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
@@ -56,45 +58,27 @@ internal fun Agreement(
 
             Spacer(modifier = modifier.height(16.dp))
 
-            var allCheck by remember { mutableStateOf(false) }
-            var serviceCheck by remember { mutableStateOf(false) }
-            var personalCheck by remember { mutableStateOf(false) }
-
             AgreeCheckBox(
-                checkState = allCheck,
-                onCheckChange = {
-                    allCheck = it
-                    serviceCheck = it
-                    personalCheck = it
-                },
+                checkState = agreement.isAllChecked,
+                onCheckChange = onAllCheckChange,
                 title = stringResource(id = R.string.signup_agree_all)
             )
 
-            var serviceContent by remember { mutableStateOf(false) }
             AgreeExpandableCheckBox(
-                checkState = serviceCheck,
-                onCheckChange = {
-                    serviceCheck = it
-                },
+                checkState = agreement.isServiceChecked,
+                onCheckChange = onServiceCheckChange,
                 title = stringResource(id = R.string.signup_agree_service),
-                expand = serviceContent,
-                onExpanded = {
-                    serviceContent = !serviceContent
-                },
+                expand = agreement.isServiceExpand,
+                onExpand = onServiceExpand,
                 content = stringResource(id = R.string.signup_agree_content),
             )
 
-            var personalContent by remember { mutableStateOf(false) }
             AgreeExpandableCheckBox(
-                checkState = personalCheck,
-                onCheckChange = {
-                    personalCheck = it
-                },
+                checkState = agreement.isPersonalChecked,
+                onCheckChange = onPersonalCheckChange,
                 title = stringResource(id = R.string.signup_agree_personal),
-                expand = personalContent,
-                onExpanded = {
-                    personalContent = !personalContent
-                },
+                expand = agreement.isPersonalExpand,
+                onExpand = onPersonalExpand,
                 content = stringResource(id = R.string.signup_agree_content),
             )
         }
@@ -103,7 +87,7 @@ internal fun Agreement(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            onClick = onCheck
+            onClick = onAgreementCheck
         ) {
             Text(
                 text = stringResource(id = R.string.signup_next_step2)
@@ -145,19 +129,20 @@ private fun AgreeExpandableCheckBox(
     onCheckChange: (Boolean) -> Unit,
     title: String,
     expand: Boolean,
-    onExpanded: () -> Unit,
+    onExpand: () -> Unit,
     content: String,
     modifier: Modifier = Modifier,
 ) {
-    Column {
+    Column(
+        modifier = modifier.animateContentSize()
+    ) {
         AgreeCheckBox(
-            modifier = modifier,
             checkState = checkState,
             onCheckChange = onCheckChange,
             title = title
         ) {
             IconButton(
-                onClick = onExpanded
+                onClick = onExpand
             ) {
                 Icon(
                     imageVector = if (expand) arrowUp else arrowRight,
@@ -170,15 +155,3 @@ private fun AgreeExpandableCheckBox(
         }
     }
 }
-
-/*
-@Preview(
-    name = "Agreement",
-    widthDp = 360,
-    heightDp = 750,
-)
-@Composable
-private fun PreviewAgreement() {
-    Agreement()
-}
-*/

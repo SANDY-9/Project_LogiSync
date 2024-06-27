@@ -8,11 +8,11 @@ internal sealed interface SignupUiEvent {
     data object CheckSignup : SignupUiEvent
 
     // Agreement
-    data class CheckAll(val check: Boolean) : SignupUiEvent
-    data class CheckService(val check: Boolean) : SignupUiEvent
-    data class CheckPersonal(val check: Boolean) : SignupUiEvent
-    data class ExpandService(val expand: Boolean) : SignupUiEvent
-    data class ExpandPersonal(val expand: Boolean) : SignupUiEvent
+    data class ChangeAllChecked(val check: Boolean) : SignupUiEvent
+    data class ChangeServiceChecked(val check: Boolean) : SignupUiEvent
+    data class ChangePersonalChecked(val check: Boolean) : SignupUiEvent
+    data object ChangeServiceExpanded : SignupUiEvent
+    data object ChangePersonalExpanded : SignupUiEvent
     data object CheckAgreement : SignupUiEvent
 
     // Joining

@@ -112,7 +112,24 @@ private fun SignupPhaseContent(
 
             SignupStep.AGREEMENT -> Agreement(
                 agreement = agreementState,
-                onCheck = { event(SignupUiEvent.CheckAgreement) }
+                onAllCheckChange = { checked ->
+                    event(SignupUiEvent.ChangeAllChecked(checked))
+                },
+                onServiceCheckChange = { checked ->
+                    event(SignupUiEvent.ChangeServiceChecked(checked))
+                },
+                onPersonalCheckChange = { checked ->
+                    event(SignupUiEvent.ChangePersonalChecked(checked))
+                },
+                onServiceExpand = {
+                    event(SignupUiEvent.ChangeServiceExpanded)
+                },
+                onPersonalExpand = {
+                    event(SignupUiEvent.ChangePersonalExpanded)
+                },
+                onAgreementCheck = {
+                    event(SignupUiEvent.CheckAgreement)
+                },
             )
 
             SignupStep.JOINING -> Joining(
