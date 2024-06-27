@@ -99,7 +99,15 @@ private fun SignupPhaseContent(
         when (phase) {
             SignupStep.CHECK -> Check(
                 check = checkState,
-                onCheck = { event(SignupUiEvent.CheckSignup) }
+                onNameInput = { input ->
+                    event(SignupUiEvent.InputName(input))
+                },
+                onTelInput = { input ->
+                    event(SignupUiEvent.InputTel(input))
+                },
+                onSignupCheck = {
+                    event(SignupUiEvent.CheckSignup)
+                },
             )
 
             SignupStep.AGREEMENT -> Agreement(

@@ -16,10 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -32,7 +28,9 @@ import com.feature.signup.model.CheckState
 @Composable
 internal fun Check(
     check: CheckState,
-    onCheck: () -> Unit,
+    onNameInput: (String) -> Unit,
+    onTelInput: (String) -> Unit,
+    onSignupCheck: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -51,10 +49,9 @@ internal fun Check(
 
             Spacer(modifier = modifier.height(16.dp))
 
-            var name by remember { mutableStateOf("") }
             OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
+                value = check.name,
+                onValueChange = onNameInput,
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Rounded.Person,
@@ -72,10 +69,9 @@ internal fun Check(
 
             Spacer(modifier = modifier.height(12.dp))
 
-            var tel by remember { mutableStateOf("") }
             OutlinedTextField(
-                value = tel,
-                onValueChange = { tel = it },
+                value = check.tel,
+                onValueChange = onTelInput,
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Rounded.Call,
@@ -83,10 +79,14 @@ internal fun Check(
                     )
                 },
                 label = {
-                    Text(text = stringResource(id = R.string.signup_check_tel_label))
+                    Text(
+                        text = stringResource(id = R.string.signup_check_tel_label)
+                    )
                 },
                 placeholder = {
-                    Text(text = stringResource(id = R.string.signup_check_tel_placeholder))
+                    Text(
+                        text = stringResource(id = R.string.signup_check_tel_placeholder)
+                    )
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
@@ -100,7 +100,7 @@ internal fun Check(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            onClick = onCheck
+            onClick = onSignupCheck
         ) {
             Text(
                 text = stringResource(id = R.string.signup_next_step1)
