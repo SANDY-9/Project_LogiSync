@@ -19,18 +19,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.feature.signup.R
+import com.feature.signup.model.JoiningState
 
 // 가입
 @Composable
-fun Joining(
-    onClick: () -> Unit,
+internal fun Joining(
+    joining: JoiningState,
+    onComplete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
@@ -79,7 +80,7 @@ fun Joining(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            onClick = onClick
+            onClick = onComplete
         ) {
             Text(
                 text = stringResource(id = R.string.signup_next_step3)
@@ -159,10 +160,4 @@ private fun PwdInput(
         isError = isPwdCheckError,
         singleLine = true,
     )
-}
-
-@Composable
-@Preview
-fun Preview() {
-    Joining(onClick = { /*TODO*/ })
 }

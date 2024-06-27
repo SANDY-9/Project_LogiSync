@@ -26,11 +26,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.feature.signup.R
+import com.feature.signup.model.CheckState
 
 // 회원가입 여부 확인
 @Composable
-fun Check(
-    onClick: () -> Unit,
+internal fun Check(
+    check: CheckState,
+    onCheck: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -98,7 +100,7 @@ fun Check(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            onClick = onClick
+            onClick = onCheck
         ) {
             Text(
                 text = stringResource(id = R.string.signup_next_step1)

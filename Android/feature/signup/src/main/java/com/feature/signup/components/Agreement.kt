@@ -28,11 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.feature.signup.R
+import com.feature.signup.model.AgreementState
 
 // 회원가입 약관 동의
 @Composable
-fun Agreement(
-    onClick: () -> Unit,
+internal fun Agreement(
+    agreement: AgreementState,
+    onCheck: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
@@ -101,7 +103,7 @@ fun Agreement(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            onClick = onClick
+            onClick = onCheck
         ) {
             Text(
                 text = stringResource(id = R.string.signup_next_step2)

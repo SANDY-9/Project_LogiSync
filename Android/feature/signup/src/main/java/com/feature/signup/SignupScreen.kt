@@ -1,6 +1,5 @@
 package com.feature.signup
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,75 +10,107 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.feature.signup.components.Agreement
 import com.feature.signup.components.Check
 import com.feature.signup.components.Joining
+import com.feature.signup.model.AgreementState
+import com.feature.signup.model.CheckState
+import com.feature.signup.model.JoiningState
+import com.feature.signup.model.SignupStep
+import com.feature.signup.model.SignupUiEvent
 
 @Composable
 fun SignupScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
+    viewModel: SignupViewModel = hiltViewModel(),
 ) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-    ) {
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(56.dp),
-        ) {
-            IconButton(
-                modifier = modifier
-                    .padding(start = 4.dp)
-                    .align(Alignment.CenterStart),
-                onClick = {
-                    navController.navigateUp()
-                },
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                    contentDescription = null,
-                )
-            }
-        }
 
-        var step by remember {
-            mutableIntStateOf(0)
-        }
-        Box(
+    val state by viewModel.stateFlow.collectAsStateWithLifecycle()
+
+    Column(
+        modifier = modifier.fillMaxSize()
+    ) {
+
+        SignupTopAppBar(
+            onNavigate = { navController.navigateUp() }
+        )
+
+        SignupPhaseContent(
+            phase = state.phase,
+            checkState = state.check,
+            agreementState = state.agreement,
+            joiningState = state.joining,
+            event = viewModel::onEvent,
             modifier = modifier
                 .fillMaxSize()
-                .weight(1f)
+                .weight(1f),
+        )
+
+    }
+}
+
+@Composable
+private fun SignupTopAppBar(
+    onNavigate: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp)
+    ) {
+        IconButton(
+            modifier = modifier
+                .padding(start = 4.dp)
+                .align(Alignment.CenterStart),
+            onClick = onNavigate
         ) {
-            when (step) {
-                0 -> Check(
-                    onClick = {
-                        step++
-                    }
-                )
+            Icon(
+                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                contentDescription = null
+            )
+        }
+    }
+}
 
-                1 -> Agreement(
-                    onClick = {
-                        step++
-                    }
-                )
+@Composable
+private fun SignupPhaseContent(
+    phase: SignupStep,
+    checkState: CheckState,
+    agreementState: AgreementState,
+    joiningState: JoiningState,
+    event: (SignupUiEvent) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+    ) {
+        when (phase) {
+            SignupStep.CHECK -> Check(
+                check = checkState,
+                onCheck = { event(SignupUiEvent.CheckSignup) }
+            )
 
-                else -> Joining(
-                    onClick = { /*TODO*/ }
-                )
-            }
+            SignupStep.AGREEMENT -> Agreement(
+                agreement = agreementState,
+                onCheck = { event(SignupUiEvent.CheckAgreement) }
+            )
+
+            SignupStep.JOINING -> Joining(
+                joining = joiningState,
+                onComplete = { event(SignupUiEvent.CompleteSignup) }
+            )
         }
     }
 }

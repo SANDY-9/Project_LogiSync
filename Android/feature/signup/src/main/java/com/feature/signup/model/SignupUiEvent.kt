@@ -1,6 +1,6 @@
 package com.feature.signup.model
 
-sealed interface SignupUiEvent {
+internal sealed interface SignupUiEvent {
 
     // Check
     data class InputName(val input: String) : SignupUiEvent
