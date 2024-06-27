@@ -27,19 +27,79 @@ class SignupViewModel @Inject constructor(
             // update input
             is SignupUiEvent.InputName -> updateInputName(event.input)
             is SignupUiEvent.InputTel -> updateInputTel(event.input)
+            is SignupUiEvent.InputId -> updateInputId(event.input)
+            is SignupUiEvent.InputPwd -> updateInputPwd(event.input)
+            is SignupUiEvent.InputPwdCheck -> updateInputPwdCheck(event.input)
 
-            // check change
+            // change
             is SignupUiEvent.ChangeAllChecked -> updateAllCheck(event.check)
             is SignupUiEvent.ChangeServiceChecked -> updateServiceCheck(event.check)
             is SignupUiEvent.ChangePersonalChecked -> updatePersonalCheck(event.check)
             is SignupUiEvent.ChangeServiceExpanded -> updateServiceExpand()
             is SignupUiEvent.ChangePersonalExpanded -> updatePersonalExpand()
 
+            // check
+            is SignupUiEvent.CheckId -> requestCheckId()
+
             // navigate
             is SignupUiEvent.CheckSignup -> checkSignup()
             is SignupUiEvent.CheckAgreement -> checkAgreement()
-            is SignupUiEvent.CompleteSignup -> requestSignup()
-            else -> {}
+            is SignupUiEvent.RequestSignup -> requestSignup()
+        }
+    }
+
+    private fun updateInputName(input: String) {
+        _stateFlow.update {
+            val check = it.check
+            it.copy(
+                check = check.copy(
+                    name = input
+                )
+            )
+        }
+    }
+
+    private fun updateInputTel(input: String) {
+        _stateFlow.update {
+            val check = it.check
+            it.copy(
+                check = check.copy(
+                    tel = input
+                )
+            )
+        }
+    }
+
+    private fun updateInputId(input: String) {
+        _stateFlow.update {
+            val joining = it.joining
+            it.copy(
+                joining = joining.copy(
+                    id = input
+                )
+            )
+        }
+    }
+
+    private fun updateInputPwd(input: String) {
+        _stateFlow.update {
+            val joining = it.joining
+            it.copy(
+                joining = joining.copy(
+                    pwd = input
+                )
+            )
+        }
+    }
+
+    private fun updateInputPwdCheck(input: String) {
+        _stateFlow.update {
+            val joining = it.joining
+            it.copy(
+                joining = joining.copy(
+                    pwdCheck = input
+                )
+            )
         }
     }
 
@@ -102,34 +162,15 @@ class SignupViewModel @Inject constructor(
         }
     }
 
-    private fun updateInputName(input: String) {
-        _stateFlow.update {
-            val check = it.check
-            it.copy(
-                check = check.copy(
-                    name = input
-                )
-            )
-        }
-    }
-
-    private fun updateInputTel(input: String) {
-        _stateFlow.update {
-            val check = it.check
-            it.copy(
-                check = check.copy(
-                    tel = input
-                )
-            )
-        }
-    }
-
     private fun checkSignup() {
         updatePhase(SignupStep.AGREEMENT)
     }
 
     private fun checkAgreement() {
         updatePhase(SignupStep.JOINING)
+    }
+
+    private fun requestCheckId() {
     }
 
     private fun requestSignup() {

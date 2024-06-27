@@ -20,5 +20,5 @@ internal sealed interface SignupUiEvent {
     data object CheckId : SignupUiEvent
     data class InputPwd(val input: String) : SignupUiEvent
     data class InputPwdCheck(val input: String) : SignupUiEvent
-    data object CompleteSignup : SignupUiEvent
+    data object RequestSignup : SignupUiEvent
 }

@@ -15,14 +15,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.feature.signup.R
 import com.feature.signup.model.JoiningState
@@ -31,6 +26,10 @@ import com.feature.signup.model.JoiningState
 @Composable
 internal fun Joining(
     joining: JoiningState,
+    onIdInputChange: (String) -> Unit,
+    onIdCheck: () -> Unit,
+    onPwdInputChange: (String) -> Unit,
+    onPwdCheckInputChange: (String) -> Unit,
     onComplete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -54,8 +53,10 @@ internal fun Joining(
             Spacer(modifier = modifier.height(12.dp))
 
             IdInput(
-                isIdError = false,
-                onCheck = { /*TODO*/ },
+                id = joining.id,
+                onInputChange = onIdInputChange,
+                isIdError = joining.idError,
+                onIdCheckClick = onIdCheck,
                 modifier = Modifier,
             )
 
@@ -69,8 +70,12 @@ internal fun Joining(
             Spacer(modifier = modifier.height(12.dp))
 
             PwdInput(
-                isPwdError = false,
-                isPwdCheckError = false,
+                pwd = joining.pwd,
+                onInputChange = onPwdInputChange,
+                pwdCheck = joining.pwdCheck,
+                onCheckInputChange = onPwdCheckInputChange,
+                isPwdError = joining.pwdError,
+                isPwdCheckError = joining.pwdCheckError,
                 modifier = Modifier,
             )
 
@@ -91,12 +96,12 @@ internal fun Joining(
 
 @Composable
 private fun IdInput(
+    id: String,
+    onInputChange: (String) -> Unit,
     isIdError: Boolean,
-    onCheck: () -> Unit,
+    onIdCheckClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var id by remember { mutableStateOf("") }
-
     Row(
         modifier = modifier,
     ) {
@@ -104,7 +109,7 @@ private fun IdInput(
         OutlinedTextField(
             modifier = modifier.weight(1f),
             value = id,
-            onValueChange = { id = it },
+            onValueChange = onInputChange,
             placeholder = {
                 Text(text = stringResource(id = R.string.signup_join_id_placeholder))
             },
@@ -117,7 +122,7 @@ private fun IdInput(
 
         Button(
             modifier = modifier.fillMaxHeight(),
-            onClick = onCheck
+            onClick = onIdCheckClick,
         ) {
             Text(text = stringResource(id = R.string.signup_join_id_check))
         }
@@ -126,24 +131,27 @@ private fun IdInput(
 
 @Composable
 private fun PwdInput(
+    pwd: String,
+    onInputChange: (String) -> Unit,
+    pwdCheck: String,
+    onCheckInputChange: (String) -> Unit,
     isPwdError: Boolean,
     isPwdCheckError: Boolean,
     modifier: Modifier = Modifier,
 ) {
 
-    var pwd by remember { mutableStateOf("") }
-
     OutlinedTextField(
         modifier = modifier.fillMaxWidth(),
         value = pwd,
-        onValueChange = { pwd = it },
+        onValueChange = onInputChange,
         placeholder = {
             Text(text = stringResource(id = R.string.signup_join_pwd_placeholder))
         },
-        isError = isPwdError,
         supportingText = {
             Text(text = stringResource(id = R.string.signup_join_pwd_desc))
         },
+        isError = isPwdError,
+        visualTransformation = PasswordVisualTransformation(),
         singleLine = true,
     )
 
@@ -151,13 +159,13 @@ private fun PwdInput(
 
     OutlinedTextField(
         modifier = modifier.fillMaxWidth(),
-        value = pwd,
-        onValueChange = { pwd = it },
+        value = pwdCheck,
+        onValueChange = onCheckInputChange,
         label = {
             Text(text = stringResource(id = R.string.signup_join_pwd_check))
         },
-        visualTransformation = PasswordVisualTransformation(),
         isError = isPwdCheckError,
+        visualTransformation = PasswordVisualTransformation(),
         singleLine = true,
     )
 }

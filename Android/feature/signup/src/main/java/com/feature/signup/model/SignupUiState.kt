@@ -24,6 +24,7 @@ internal data class SignupUiState(
         pwdCheck = "",
         idError = false,
         pwdError = false,
+        pwdCheckError = false,
     )
 )
 
@@ -50,6 +51,7 @@ internal data class JoiningState(
     val pwdCheck: String,
     val idError: Boolean,
     val pwdError: Boolean,
+    val pwdCheckError: Boolean,
 )
 
 enum class SignupStep {

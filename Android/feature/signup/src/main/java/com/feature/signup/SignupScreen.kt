@@ -93,9 +93,7 @@ private fun SignupPhaseContent(
     event: (SignupUiEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier = modifier
-    ) {
+    Box(modifier = modifier) {
         when (phase) {
             SignupStep.CHECK -> Check(
                 check = checkState,
@@ -134,7 +132,21 @@ private fun SignupPhaseContent(
 
             SignupStep.JOINING -> Joining(
                 joining = joiningState,
-                onComplete = { event(SignupUiEvent.CompleteSignup) }
+                onIdInputChange = { input ->
+                    event(SignupUiEvent.InputId(input))
+                },
+                onIdCheck = {
+                    event(SignupUiEvent.CheckId)
+                },
+                onPwdInputChange = { input ->
+                    event(SignupUiEvent.InputPwd(input))
+                },
+                onPwdCheckInputChange = { input ->
+                    event(SignupUiEvent.InputPwdCheck(input))
+                },
+                onComplete = {
+                    event(SignupUiEvent.RequestSignup)
+                },
             )
         }
     }
