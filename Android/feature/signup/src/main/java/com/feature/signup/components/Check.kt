@@ -28,8 +28,8 @@ import com.feature.signup.model.CheckState
 @Composable
 internal fun Check(
     check: CheckState,
-    onNameInput: (String) -> Unit,
-    onTelInput: (String) -> Unit,
+    onNameInputChange: (String) -> Unit,
+    onTelInputChange: (String) -> Unit,
     onSignupCheck: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -51,7 +51,7 @@ internal fun Check(
 
             OutlinedTextField(
                 value = check.name,
-                onValueChange = onNameInput,
+                onValueChange = onNameInputChange,
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Rounded.Person,
@@ -71,7 +71,7 @@ internal fun Check(
 
             OutlinedTextField(
                 value = check.tel,
-                onValueChange = onTelInput,
+                onValueChange = onTelInputChange,
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Rounded.Call,

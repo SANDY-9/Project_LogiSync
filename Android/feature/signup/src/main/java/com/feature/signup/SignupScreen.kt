@@ -47,14 +47,14 @@ fun SignupScreen(
         )
 
         SignupPhaseContent(
+            modifier = modifier
+                .fillMaxSize()
+                .weight(1f),
             phase = state.phase,
             checkState = state.check,
             agreementState = state.agreement,
             joiningState = state.joining,
             event = viewModel::onEvent,
-            modifier = modifier
-                .fillMaxSize()
-                .weight(1f),
         )
 
     }
@@ -99,10 +99,10 @@ private fun SignupPhaseContent(
         when (phase) {
             SignupStep.CHECK -> Check(
                 check = checkState,
-                onNameInput = { input ->
+                onNameInputChange = { input ->
                     event(SignupUiEvent.InputName(input))
                 },
-                onTelInput = { input ->
+                onTelInputChange = { input ->
                     event(SignupUiEvent.InputTel(input))
                 },
                 onSignupCheck = {
