@@ -6,6 +6,6 @@ import dagger.hilt.components.SingletonComponent
 
 @InstallIn(SingletonComponent::class)
 @Module
-object DataModule {
+internal abstract class DataModule {
 
 }
