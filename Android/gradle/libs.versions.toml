@@ -1,6 +1,5 @@
 [versions]
 agp = "8.5.0"
-firebaseBom = "33.1.1"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -23,7 +22,9 @@ hiltNavigationCompose = "1.2.0"
 navigationCompose = "2.7.7"
 jetbrainsKotlinJvm = "1.9.0"
 googleGmsGoogleServices = "4.4.2"
-firebaseDatabase = "21.0.0"
+
+# Firebase version
+firebaseBom = "32.3.1"
 
 [libraries]
 
@@ -64,7 +65,8 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltA
 
 # Firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
-firebase-database-ktx = { module = "com.google.firebase:firebase-database-ktx" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database" }
+firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx" }
 
 
 [bundles]
@@ -91,7 +93,7 @@ compose = [
     "androidx-ui-test-junit4",
 ]
 firebase = [
-    "firebase-bom",
+    "firebase-database",
     "firebase-database-ktx",
 ]
 test = [
