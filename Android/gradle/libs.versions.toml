@@ -73,6 +73,9 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-database = { group = "com.google.firebase", name = "firebase-database" }
 firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx" }
 
+# Inject
+inject = "javax.inject:javax.inject:1"
+
 
 [bundles]
 androidx = [
