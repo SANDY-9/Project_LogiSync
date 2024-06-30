@@ -59,9 +59,8 @@ kapt {
 
 dependencies {
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    //mockito
+    testImplementation(libs.bundles.test)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.coroutines.android)
