@@ -52,6 +52,6 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
-    // Firebase auth
-    implementation(libs.firebase.auth)
+    // Firebase RealtimeDatabase
+    implementation(libs.bundles.firebase)
 }
