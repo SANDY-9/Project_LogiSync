@@ -17,7 +17,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import javax.inject.Inject
 
-class UserDataSourceImpl @Inject constructor(
+internal class UserDataSourceImpl @Inject constructor(
     private val ref: DatabaseReference,
 ) : UserDataSource {
 
