@@ -4,7 +4,7 @@ import com.core.model.Account
 import kotlinx.coroutines.flow.Flow
 
 interface SignupRepository {
-    fun checkSignup(name: String, tel: String): Flow<Boolean>
+    fun checkTel(tel: String): Flow<Boolean>
     fun checkId(id: String): Flow<Boolean>
     fun signup(
         id: String,

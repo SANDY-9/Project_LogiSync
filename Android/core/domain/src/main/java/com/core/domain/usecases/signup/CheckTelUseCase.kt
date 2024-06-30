@@ -4,7 +4,7 @@ import com.core.data.repository.user.SignupRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class CheckSignupUseCase @Inject constructor(
+class CheckTelUseCase @Inject constructor(
     private val signupRepository: SignupRepository
 ) {
     operator fun invoke(

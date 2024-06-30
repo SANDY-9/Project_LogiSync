@@ -14,9 +14,9 @@ internal class SignupRepositoryImpl @Inject constructor(
     private val userDataSource: UserDataSource
 ) : SignupRepository {
 
-    override fun checkSignup(name: String, tel: String): Flow<Boolean> {
+    override fun checkTel(tel: String): Flow<Boolean> {
         return flow {
-            userDataSource.checkSignup(tel) { existed ->
+            userDataSource.checkTel(tel) { existed ->
                 runBlocking { emit(existed) }
             }
         }.flowOn(Dispatchers.IO)

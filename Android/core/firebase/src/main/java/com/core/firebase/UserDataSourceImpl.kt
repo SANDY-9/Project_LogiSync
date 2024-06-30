@@ -52,7 +52,7 @@ internal class UserDataSourceImpl @Inject constructor(
         )
     }
 
-    override fun checkSignup(
+    override fun checkTel(
         tel: String,
         onExisted: (Boolean) -> Unit
     ) {

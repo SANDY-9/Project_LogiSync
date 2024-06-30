@@ -13,7 +13,7 @@ interface UserDataSource {
         onSuccess: (Boolean) -> Unit,
     )
 
-    fun checkSignup(
+    fun checkTel(
         tel: String,
         onExisted: (Boolean) -> Unit
     )
