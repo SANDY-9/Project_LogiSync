@@ -1,14 +1,14 @@
-package com.core.module
+package com.core.model
 
 data class Account(
     val id: String,
     val pwd: String,
     val name: String,
     val tel: String,
-    val grade: Grade,
+    val duty: Duty,
 ) {
-    enum class Grade {
-        USER,
+    enum class Duty {
         ADMIN,
+        NORMAL,
     }
 }
