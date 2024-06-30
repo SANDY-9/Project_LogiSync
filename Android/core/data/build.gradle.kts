@@ -41,6 +41,7 @@ kapt {
 dependencies {
 
     implementation(project(":core:firebase"))
+    implementation(project(":core:model"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
