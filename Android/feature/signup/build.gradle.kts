@@ -48,6 +48,9 @@ dependencies {
 
     implementation(project(":core:designsystem"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:model"))
+    implementation(project(":core:firebase"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)

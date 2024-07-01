@@ -15,7 +15,7 @@ interface UserDataSource {
 
     fun checkTel(
         tel: String,
-        onExisted: (Boolean) -> Unit
+        onExisted: (Boolean) -> Unit,
     )
 
     fun checkId(

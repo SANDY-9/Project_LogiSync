@@ -1,7 +1,8 @@
 package com.feature.signup
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.core.firebase.UserDataSource
+import com.core.model.Account
 import com.feature.signup.model.SignupStep
 import com.feature.signup.model.SignupUiEvent
 import com.feature.signup.model.SignupUiState
@@ -14,13 +15,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignupViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    private val userDataSource: UserDataSource,
 ) : ViewModel() {
 
-    private val _stateFlow: MutableStateFlow<SignupUiState> =
-        MutableStateFlow(SignupUiState())
-
+    private val _stateFlow: MutableStateFlow<SignupUiState> = MutableStateFlow(SignupUiState())
     internal val stateFlow: StateFlow<SignupUiState> = _stateFlow.asStateFlow()
+
+    private val state get() = stateFlow.value
 
     internal fun onEvent(event: SignupUiEvent) {
         when (event) {
@@ -39,11 +40,11 @@ class SignupViewModel @Inject constructor(
             is SignupUiEvent.ChangePersonalExpanded -> updatePersonalExpand()
 
             // check
-            is SignupUiEvent.CheckId -> requestCheckId()
-
-            // navigate
+            is SignupUiEvent.CheckId -> checkId()
             is SignupUiEvent.CheckSignup -> checkSignup()
             is SignupUiEvent.CheckAgreement -> checkAgreement()
+
+            // navigate
             is SignupUiEvent.RequestSignup -> requestSignup()
         }
     }
@@ -163,17 +164,31 @@ class SignupViewModel @Inject constructor(
     }
 
     private fun checkSignup() {
-        updatePhase(SignupStep.AGREEMENT)
+        userDataSource.checkTel(state.check.tel) { existed ->
+            if (!existed) updatePhase(SignupStep.AGREEMENT)
+        }
     }
 
     private fun checkAgreement() {
         updatePhase(SignupStep.JOINING)
     }
 
-    private fun requestCheckId() {
+    private fun checkId() {
+        userDataSource.checkId(state.joining.id) { existed ->
+
+        }
     }
 
     private fun requestSignup() {
+        userDataSource.signup(
+            id = state.joining.id,
+            pwd = state.joining.pwd,
+            name = state.check.name,
+            tel = state.check.tel,
+            duty = Account.Duty.NORMAL.name
+        ) {
+
+        }
     }
 
     private fun updatePhase(nextPhase: SignupStep) {
