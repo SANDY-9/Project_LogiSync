@@ -1,6 +1,6 @@
 package com.core.firebase
 
-import com.core.firebase.model.UserDTO
+import com.core.model.Account
 
 interface UserDataSource {
 
@@ -25,6 +25,7 @@ interface UserDataSource {
 
     fun login(
         id: String,
-        onLogin: (UserDTO) -> Unit,
+        pwd: String,
+        onLogin: (Account) -> Unit,
     )
 }

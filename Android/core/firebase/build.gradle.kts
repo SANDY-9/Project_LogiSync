@@ -58,6 +58,8 @@ kapt {
 
 dependencies {
 
+    implementation(project(":core:model"))
+
     //mockito
     testImplementation(libs.bundles.test)
 
