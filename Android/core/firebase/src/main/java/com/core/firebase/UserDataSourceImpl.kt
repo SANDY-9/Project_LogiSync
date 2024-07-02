@@ -2,8 +2,6 @@ package com.core.firebase
 
 import com.core.firebase.common.Constants.ADMIN
 import com.core.firebase.common.Constants.DUTY
-import com.core.firebase.common.Constants.NAME
-import com.core.firebase.common.Constants.PASSWORD
 import com.core.firebase.common.Constants.TEL
 import com.core.firebase.common.Constants.USERS
 import com.core.firebase.mappers.toAccount
@@ -32,27 +30,29 @@ internal class UserDataSourceImpl @Inject constructor(
         duty: String,
         onSuccess: (Boolean) -> Unit,
     ) {
-        val id = ref.child(id)
-        id.child(PASSWORD).setValue(pwd)
-        id.child(NAME).setValue(name)
-        id.child(TEL).setValue(tel)
-        id.child(DUTY).setValue(duty)
-
-        ref.addValueEventListener(
-            object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    // 최초 가입의 경우
-                    if (snapshot.children.count() == 1) {
-                        id.child(DUTY).setValue(ADMIN)
-                    }
-                    onSuccess(true)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    throw NetworkError(NETWORK_ERROR_MESSAGE)
-                }
-            }
+        val user = ref.child(USERS)
+        val account = AccountDTO(
+            pwd = pwd,
+            name = name,
+            tel = tel,
+            duty = duty
         )
+        user.child(id).setValue(account)
+
+        val signupListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                // 최초 가입의 경우
+                if (snapshot.children.count() == 1) {
+                    user.child(id).child(DUTY).setValue(ADMIN)
+                }
+                onSuccess(true)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                throw NetworkError(NETWORK_ERROR_MESSAGE)
+            }
+        }
+        user.addListenerForSingleValueEvent(signupListener)
     }
 
     override fun checkTel(
