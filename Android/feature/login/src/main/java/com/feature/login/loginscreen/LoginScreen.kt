@@ -3,77 +3,102 @@ package com.feature.login.loginscreen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.core.navigation.Route
 import com.feature.login.R
-import com.sandy.designsystem.common.BasicTextButton
-import com.sandy.designsystem.common.IDTextField
-import com.sandy.designsystem.common.PWTextField
 import com.sandy.designsystem.theme.LogiSyncTheme
 
 @Composable
 fun LoginScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    //viewModel: LoginViewModel = hiltViewModel(),
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
+
+    val state by viewModel.stateFlow.collectAsStateWithLifecycle()
+
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
     ) {
-        Spacer(modifier = modifier.weight(1f))
+
         Text(
             modifier = modifier,
             text = "LogiSync",
             style = MaterialTheme.typography.headlineLarge,
         )
-        Spacer(modifier = modifier.weight(1f))
-        IDTextField(
-            modifier = modifier.fillMaxWidth(),
-            placeHolder = stringResource(id = R.string.login_title_id),
-            onValueChange = {},
+
+        Spacer(modifier = modifier.height(32.dp))
+
+        OutlinedTextField(
+            value = state.id,
+            onValueChange = { viewModel.inputId(it) },
+            label = {
+                Text(text = stringResource(id = R.string.login_title_id))
+            },
+            singleLine = true,
         )
-        PWTextField(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            placeHolder = stringResource(id = R.string.login_title_pwd),
-            onValueChange = {},
+
+        OutlinedTextField(
+            value = state.pwd,
+            onValueChange = { viewModel.inputPwd(it) },
+            label = {
+                Text(text = stringResource(id = R.string.login_title_pwd))
+            },
+            visualTransformation = PasswordVisualTransformation(),
+            singleLine = true,
         )
-        BasicTextButton(
-            title = stringResource(id = R.string.login_title_signup),
-            onClick = { }
-        )
-        BasicTextButton(
-            title = stringResource(id = R.string.login_title_bio),
-            onClick = { }
-        )
-        Spacer(modifier = modifier.weight(1f))
+
+        Spacer(modifier = modifier.height(32.dp))
+
+        Button(
+            onClick = { viewModel.requestLogin() }
+        ) {
+            Text(text = stringResource(id = R.string.login_title_login))
+        }
+        Button(
+            onClick = { viewModel.requestBioLogin() }
+        ) {
+            Text(text = stringResource(id = R.string.login_title_bio))
+        }
+
+        TextButton(
+            onClick = {
+                navController.navigate(route = Route.Signup.route)
+            }
+        ) {
+            Text(text = stringResource(id = R.string.login_title_signup))
+        }
+
     }
 }
 
-@Composable
 @Preview(
     name = "LoginScreen",
     showBackground = true,
 )
+@Composable
 private fun LoginScreenPreview() {
     LogiSyncTheme {
-        LoginScreen(
-            rememberNavController()
-        )
+        LoginScreen(navController = rememberNavController())
     }
 }

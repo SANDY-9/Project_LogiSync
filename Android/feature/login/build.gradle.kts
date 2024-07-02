@@ -54,6 +54,9 @@ kapt {
 dependencies {
 
     implementation(project(":core:designsystem"))
+    implementation(project(":core:navigation"))
+    implementation(project(":core:firebase"))
+    implementation(project(":core:model"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)

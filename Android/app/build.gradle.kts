@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -57,8 +58,11 @@ kapt {
 
 dependencies {
 
-    implementation(project(":feature:login"))
+    implementation(project(":core:navigation"))
     implementation(project(":core:designsystem"))
+
+    implementation(project(":feature:login"))
+    implementation(project(":feature:signup"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)

@@ -2,9 +2,6 @@
 agp = "8.5.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
-junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.0"
 kotlinxCoroutinesAndroid = "1.8.1"
 lifecycleRuntimeKtx = "2.8.2"
 appcompat = "1.7.0"
@@ -21,11 +18,23 @@ viewModelCompose = "2.8.2"
 hiltNavigationCompose = "1.2.0"
 navigationCompose = "2.7.7"
 jetbrainsKotlinJvm = "1.9.0"
+googleGmsGoogleServices = "4.4.1"
+
+# Firebase version
+firebaseBom = "32.3.1"
+
+# Test
+junit = "4.13.2"
+junitVersion = "1.1.5"
+espressoCore = "3.5.0"
+mockitoCore = "5.5.0"
 
 [libraries]
 
+# Test
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
@@ -59,6 +68,15 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 
+# Firebase
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database" }
+firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx" }
+
+# Inject
+inject = "javax.inject:javax.inject:1"
+
+
 [bundles]
 androidx = [
     "androidx-core-ktx",
@@ -82,8 +100,15 @@ compose = [
     "androidx-ui-test-manifest",
     "androidx-ui-test-junit4",
 ]
+firebase = [
+    "firebase-database",
+    "firebase-database-ktx",
+]
 test = [
     "junit",
+    "mockito-core",
+]
+android-test = [
     "androidx-junit",
     "androidx-espresso-core",
 ]
@@ -93,3 +118,4 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
