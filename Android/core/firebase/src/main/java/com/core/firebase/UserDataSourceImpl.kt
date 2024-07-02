@@ -59,18 +59,12 @@ internal class UserDataSourceImpl @Inject constructor(
         tel: String,
         onExisted: (Boolean) -> Unit
     ) {
-        ref.orderByChild(TEL).equalTo(tel).addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val existed = snapshot.exists()
-                    onExisted(existed)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    throw NetworkError(NETWORK_ERROR_MESSAGE)
-                }
-            }
-        )
+        ref.child(USERS).orderByChild(TEL).equalTo(tel).get().addOnSuccessListener { snapshot ->
+            val existed = snapshot.exists()
+            onExisted(existed)
+        }.addOnFailureListener {
+            throw NetworkError(NETWORK_ERROR_MESSAGE)
+        }
     }
 
     override fun checkId(
