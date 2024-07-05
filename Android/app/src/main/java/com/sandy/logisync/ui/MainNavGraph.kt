@@ -20,6 +20,7 @@ fun MainNavGraph(
         navController = navController,
         startDestination = startDestination,
     ) {
+        val onboardRoute = Route.Onboarding.route
         composable(
             route = Route.Login.route,
         ) {
