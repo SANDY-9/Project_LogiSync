@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.core.navigation.Route
 import com.feature.login.loginscreen.LoginScreen
+import com.feature.onboard.OnboardingScreen
 import com.feature.signup.SignupScreen
 
 @Composable
@@ -24,14 +25,21 @@ fun MainNavGraph(
         ) {
             LoginScreen(
                 navController = navController,
-                modifier = modifier
+                modifier = modifier,
             )
         }
         composable(
             route = Route.Signup.route,
         ) {
             SignupScreen(
-                navController = navController
+                navController = navController,
+            )
+        }
+        composable(
+            route = Route.Onboarding.route,
+        ) {
+            OnboardingScreen(
+                navController = navController,
             )
         }
 
