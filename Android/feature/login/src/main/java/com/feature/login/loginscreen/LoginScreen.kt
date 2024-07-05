@@ -1,5 +1,6 @@
 package com.feature.login.loginscreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +12,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.core.model.Account
 import com.core.navigation.Route
 import com.feature.login.R
 import com.sandy.designsystem.theme.LogiSyncTheme
@@ -29,11 +33,19 @@ import com.sandy.designsystem.theme.LogiSyncTheme
 @Composable
 fun LoginScreen(
     navController: NavController,
+    onLogin: (Account) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
 
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
+
+    LaunchedEffect(state.account) {
+        val account = state.account
+        account?.let {
+            onLogin(it)
+        }
+    }
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -99,6 +111,9 @@ fun LoginScreen(
 @Composable
 private fun LoginScreenPreview() {
     LogiSyncTheme {
-        LoginScreen(navController = rememberNavController())
+        LoginScreen(
+            navController = rememberNavController(),
+            {}
+        )
     }
 }

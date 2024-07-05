@@ -25,6 +25,11 @@ fun MainNavGraph(
         ) {
             LoginScreen(
                 navController = navController,
+                onLogin = { account ->
+                    navController.navigate(Route.Onboarding.route) {
+                        popUpTo(Route.Login.route) { inclusive = true }
+                    }
+                },
                 modifier = modifier,
             )
         }

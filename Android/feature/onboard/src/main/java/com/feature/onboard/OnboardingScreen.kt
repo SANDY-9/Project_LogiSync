@@ -14,7 +14,7 @@ fun OnboardingScreen(
     modifier: Modifier = Modifier,
 ) {
     Box(modifier) {
-        "연결되어 있는 스마트 워치를 확인하고 있습니다."
+        Text(text = "연결되어 있는 스마트 워치를 확인하고 있습니다.")
     }
 }
 
