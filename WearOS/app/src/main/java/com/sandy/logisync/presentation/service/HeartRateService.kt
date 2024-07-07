@@ -8,6 +8,8 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.IBinder
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.sandy.logisync.presentation.common.START_HEART_RATE_SENSOR
 import com.sandy.logisync.presentation.common.STOP_HEART_RATE_SENSOR
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,13 +19,13 @@ class HeartRateService : Service(), SensorEventListener {
 
     private var sensorManager: SensorManager? = null
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
+    companion object {
+        private val _heartRate = MutableLiveData<Int>()
+        val heartRate: LiveData<Int> get() = _heartRate
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        Log.e("확인", "onCreate: 확인")
+    override fun onBind(intent: Intent?): IBinder? {
+        return null
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -46,9 +48,13 @@ class HeartRateService : Service(), SensorEventListener {
         )
     }
 
+    // 나중에 accuracy == 3일때로 보정하기, 지금은 테스트를 위해 보정 생략
     override fun onSensorChanged(event: SensorEvent?) {
-        val hr = event?.values?.get(0)
-        Log.e("확인", "onSensorChanged: $hr")
+        val rate = event?.values?.get(0)?.toInt()
+        rate?.let { rate ->
+            //if (rate > 0) _heartRate.postValue(rate)
+            _heartRate.postValue(rate)
+        }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
@@ -56,7 +62,6 @@ class HeartRateService : Service(), SensorEventListener {
     }
 
     override fun onDestroy() {
-        Log.e("확인", "onDestroy: 확인")
         sensorManager?.unregisterListener(this)
         sensorManager = null
         super.onDestroy()

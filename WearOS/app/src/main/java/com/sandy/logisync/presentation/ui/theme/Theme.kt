@@ -1,4 +1,4 @@
-package com.sandy.logisync.presentation.theme
+package com.sandy.logisync.presentation.ui.theme
 
 import androidx.compose.runtime.Composable
 import androidx.wear.compose.material.MaterialTheme
