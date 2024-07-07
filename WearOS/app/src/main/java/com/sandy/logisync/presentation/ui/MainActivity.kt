@@ -37,12 +37,25 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestMultiplePermissions()
     ) {
         val isNotGranted = it.values.contains(false)
+        if (!isNotGranted) {
+            commandHeartRateService(START_HEART_RATE_SENSOR)
+        }
     }
 
     private fun requestPermission() {
         permissionLauncher.launch(PermissionManager.permissions)
     }
 
+    private fun commandHeartRateService(command: String) {
+        val intent = Intent(this, HeartRateService::class.java).apply {
+            action = command
+        }
+        startService(intent)
+    }
+
+    override fun onDestroy() {
+        commandHeartRateService(STOP_HEART_RATE_SENSOR)
+        super.onDestroy()
     }
 }
 
