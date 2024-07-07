@@ -7,38 +7,41 @@
 package com.sandy.logisync.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.wear.compose.material.MaterialTheme
-import androidx.wear.compose.material.Text
-import androidx.wear.compose.material.TimeText
-import com.sandy.logisync.R
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.sandy.logisync.presentation.screens.WatchScreen
 import com.sandy.logisync.presentation.theme.LogisyncWearTheme
+import com.sandy.logisync.utils.PermissionManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
-
         super.onCreate(savedInstanceState)
 
-        setTheme(android.R.style.Theme_DeviceDefault)
+        requestPermission()
 
+        setTheme(android.R.style.Theme_DeviceDefault)
         setContent { WearApp() }
+    }
+
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) {
+        Log.e("확인", "퍼미션 출력: $it")
+    }
+
+    private fun requestPermission() {
+        PermissionManager.checkAndRequestPermissions(
+            context = this,
+            launcher = permissionLauncher,
+        )
     }
 }
 
