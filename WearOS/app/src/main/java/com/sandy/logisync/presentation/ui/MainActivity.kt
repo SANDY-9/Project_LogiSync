@@ -4,17 +4,20 @@
  * changes to the libraries and their usages.
  */
 
-package com.sandy.logisync.presentation
+package com.sandy.logisync.presentation.ui
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.sandy.logisync.presentation.screens.WatchScreen
-import com.sandy.logisync.presentation.theme.LogisyncWearTheme
+import com.sandy.logisync.presentation.common.START_HEART_RATE_SENSOR
+import com.sandy.logisync.presentation.common.STOP_HEART_RATE_SENSOR
+import com.sandy.logisync.presentation.service.HeartRateService
+import com.sandy.logisync.presentation.ui.screens.WatchScreen
+import com.sandy.logisync.presentation.ui.theme.LogisyncWearTheme
 import com.sandy.logisync.utils.PermissionManager
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,7 +27,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
-
         requestPermission()
 
         setTheme(android.R.style.Theme_DeviceDefault)
@@ -34,14 +36,13 @@ class MainActivity : ComponentActivity() {
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) {
-        Log.e("확인", "퍼미션 출력: $it")
+        val isNotGranted = it.values.contains(false)
     }
 
     private fun requestPermission() {
-        PermissionManager.checkAndRequestPermissions(
-            context = this,
-            launcher = permissionLauncher,
-        )
+        permissionLauncher.launch(PermissionManager.permissions)
+    }
+
     }
 }
 
