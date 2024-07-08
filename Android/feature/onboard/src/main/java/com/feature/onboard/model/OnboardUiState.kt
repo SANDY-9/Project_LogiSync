@@ -10,6 +10,6 @@ internal data class OnboardUiState(
     val bluetoothState: BluetoothState = BluetoothState.NONE,
 )
 
-enum class OnboardPhase {
+internal enum class OnboardPhase {
     BLUETOOTH_CONNECT, WATCH_CONNECT, WEAR_APP_INSTALL
 }

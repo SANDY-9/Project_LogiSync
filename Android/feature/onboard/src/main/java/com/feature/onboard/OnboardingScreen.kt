@@ -23,10 +23,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.core.desinsystem.common.NextButton
 import com.feature.onboard.components.BluetoothConnect
+import com.feature.onboard.components.WatchConnect
 import com.feature.onboard.model.OnboardPhase
+import com.feature.onboard.model.OnboardUiEvent
 import com.feature.onboard.model.OnboardUiState
-import com.sandy.designsystem.common.NextButton
 
 @Composable
 fun OnboardingScreen(
@@ -44,6 +46,7 @@ fun OnboardingScreen(
         )
         OnboardingContent(
             state = state,
+            onNext = { viewModel.onEvent(OnboardUiEvent.NavigateToNextPhase) },
             modifier = modifier.weight(1f)
         )
     }
@@ -76,7 +79,8 @@ private fun OnboardingAppBar(
 @Composable
 private fun OnboardingContent(
     state: OnboardUiState,
-    modifier: Modifier,
+    onNext: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.padding(horizontal = 16.dp)
@@ -91,13 +95,13 @@ private fun OnboardingContent(
         )
         when (state.phase) {
             OnboardPhase.BLUETOOTH_CONNECT -> BluetoothConnect(state.bluetoothState)
-            OnboardPhase.WATCH_CONNECT -> {}
+            OnboardPhase.WATCH_CONNECT -> WatchConnect()
             OnboardPhase.WEAR_APP_INSTALL -> {}
         }
     }
     NextButton(
         title = stringResource(id = R.string.onboard_button),
         enabled = state.enabledNextButton,
-        onClick = { /*TODO*/ }
+        onClick = onNext
     )
 }

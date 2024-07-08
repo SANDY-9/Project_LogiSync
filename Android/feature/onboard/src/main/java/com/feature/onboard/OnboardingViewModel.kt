@@ -3,6 +3,8 @@ package com.feature.onboard
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.feature.onboard.model.OnboardPhase
+import com.feature.onboard.model.OnboardUiEvent
 import com.feature.onboard.model.OnboardUiState
 import com.sandy.bluetooth.BluetoothState
 import com.sandy.bluetooth.MyBluetoothManager
@@ -33,5 +35,24 @@ class OnboardingViewModel @Inject constructor(
                 )
             }
         }.launchIn(viewModelScope)
+    }
+
+    internal fun onEvent(event: OnboardUiEvent) {
+        when (event) {
+            is OnboardUiEvent.NavigateToNextPhase -> updatePhase()
+        }
+    }
+
+    private fun updatePhase() {
+        _stateFlow.update {
+            val currentPhase = it.phase
+            val nextPhase = when (currentPhase) {
+                OnboardPhase.BLUETOOTH_CONNECT -> OnboardPhase.WATCH_CONNECT
+                else -> OnboardPhase.WEAR_APP_INSTALL
+            }
+            it.copy(
+                phase = nextPhase
+            )
+        }
     }
 }
