@@ -1,8 +1,8 @@
 package com.feature.onboard
 
+import android.app.Activity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,26 +14,36 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.feature.onboard.components.BluetoothPhase
+import com.feature.onboard.components.BluetoothConnect
+import com.feature.onboard.model.OnboardPhase
+import com.feature.onboard.model.OnboardUiState
 import com.sandy.designsystem.common.NextButton
 
 @Composable
 fun OnboardingScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
+    viewModel: OnboardingViewModel = hiltViewModel()
 ) {
+    val state by viewModel.stateFlow.collectAsStateWithLifecycle()
+    val context = LocalContext.current as? Activity?
     Column(
         modifier = modifier.fillMaxSize()
     ) {
         OnboardingAppBar(
-            onNavigate = { navController.navigateUp() }
+            onNavigate = { context?.finish() }
         )
         OnboardingContent(
+            state = state,
             modifier = modifier.weight(1f)
         )
     }
@@ -65,7 +75,8 @@ private fun OnboardingAppBar(
 
 @Composable
 private fun OnboardingContent(
-    modifier: Modifier
+    state: OnboardUiState,
+    modifier: Modifier,
 ) {
     Column(
         modifier = modifier.padding(horizontal = 16.dp)
@@ -78,11 +89,15 @@ private fun OnboardingContent(
             text = stringResource(id = R.string.onboard_connect_title2),
             style = MaterialTheme.typography.headlineSmall,
         )
-
-        BluetoothPhase()
+        when (state.phase) {
+            OnboardPhase.BLUETOOTH_CONNECT -> BluetoothConnect(state.bluetoothState)
+            OnboardPhase.WATCH_CONNECT -> {}
+            OnboardPhase.WEAR_APP_INSTALL -> {}
+        }
     }
     NextButton(
         title = stringResource(id = R.string.onboard_button),
+        enabled = state.enabledNextButton,
         onClick = { /*TODO*/ }
     )
 }

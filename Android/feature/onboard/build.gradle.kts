@@ -48,7 +48,7 @@ dependencies {
 
     implementation(project(":core:designsystem"))
     implementation(project(":core:navigation"))
-    implementation(project(":core:model"))
+    implementation(project(":core:bluetooth"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)
