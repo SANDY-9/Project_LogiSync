@@ -1,4 +1,4 @@
-package com.sandy.designsystem.theme
+package com.core.desinsystem.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

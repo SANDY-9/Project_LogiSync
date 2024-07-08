@@ -1,4 +1,4 @@
-package com.sandy.designsystem.common
+package com.core.desinsystem.common
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme

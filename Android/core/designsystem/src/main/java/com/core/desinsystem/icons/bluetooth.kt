@@ -1,4 +1,4 @@
-package com.sandy.designsystem.icons
+package com.core.desinsystem.icons
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box

@@ -22,10 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.core.desinsystem.icons.Bluetooth
 import com.feature.onboard.R
 import com.sandy.bluetooth.BluetoothState
 import com.sandy.bluetooth.MyBluetoothManager
-import com.sandy.designsystem.icons.Bluetooth
 
 @Composable
 fun BluetoothConnect(
