@@ -5,7 +5,7 @@
     <string name="onboard_button">다음</string>
 
     <!-- bluetooth -->
-    <string name="onboard_connect_bluetooth_desc">서비스 연동을 위해 Bluetooth를 이용합니다.</string>
+    <string name="onboard_connect_bluetooth_desc">서비스 연동을 위해\nBluetooth를 이용합니다.</string>
     <string name="onboard_connect_bluetooth_success">블루투스가 연결되어 있습니다.</string>
     <string name="onboard_connect_bluetooth_fail">블루투스가 꺼져있습니다.\n블루투스 연결 상태를 확인해주세요.</string>
     <string name="onboard_connect_bluetooth_deny">블루투스 접근 권한이 없습니다.\n권한을 허용 해주세요.</string>
@@ -16,7 +16,7 @@
 
     <!-- watch -->
     <string name="onboard_connect_watch">스마트폰과 갤럭시 워치가\n페어링 되어 있는지 확인합니다.</string>
-    <string name="onboard_connect_watch_success">스마트폰과 갤럭시 워치가 페어링 되어 있습니다.</string>
+    <string name="onboard_connect_watch_success">스마트폰과 갤럭시 워치가 페어링 되어있습니다.</string>
     <string name="onboard_connect_watch_fail">현재 연결할 수 있는 갤럭시 워치가 없습니다.\n스마트폰과 갤럭시 워치를 페어링 해주세요.</string>
 
 </resources>

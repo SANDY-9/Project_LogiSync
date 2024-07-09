@@ -37,15 +37,21 @@ fun BluetoothConnect(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(modifier = modifier.weight(1f))
+
+        Text(
+            text = stringResource(id = R.string.onboard_connect_bluetooth_desc),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge,
+        )
+
         Icon(
             modifier = modifier
-                .padding(bottom = 36.dp)
+                .padding(vertical = 36.dp)
                 .size(100.dp),
             imageVector = Icons.Bluetooth,
             contentDescription = null
         )
 
-        Text(text = stringResource(id = R.string.onboard_connect_bluetooth_desc))
         Spacer(modifier = modifier.height(16.dp))
 
         Text(
