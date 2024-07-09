@@ -3,7 +3,6 @@ package com.feature.onboard
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.feature.onboard.model.OnboardPhase
 import com.feature.onboard.model.OnboardUiEvent
 import com.feature.onboard.model.OnboardUiState
 import com.sandy.bluetooth.BluetoothState
@@ -29,9 +28,14 @@ class OnboardingViewModel @Inject constructor(
         bluetoothManager.getBluetoothStateFlow().onEach { bluetoothState ->
             Log.e("확인", "$bluetoothState: ")
             _stateFlow.update {
+                var isBonedWatch = false
+                if (bluetoothState == BluetoothState.ON) {
+                    isBonedWatch = bluetoothManager.isBondedWatch()
+                }
                 it.copy(
                     bluetoothState = bluetoothState,
                     enabledNextButton = bluetoothState == BluetoothState.ON,
+                    isBondedWatch = isBonedWatch,
                 )
             }
         }.launchIn(viewModelScope)
@@ -45,13 +49,8 @@ class OnboardingViewModel @Inject constructor(
 
     private fun updatePhase() {
         _stateFlow.update {
-            val currentPhase = it.phase
-            val nextPhase = when (currentPhase) {
-                OnboardPhase.BLUETOOTH_CONNECT -> OnboardPhase.WATCH_CONNECT
-                else -> OnboardPhase.WEAR_APP_INSTALL
-            }
             it.copy(
-                phase = nextPhase
+                phase = it.phase.nextPhase()
             )
         }
     }

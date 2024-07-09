@@ -15,8 +15,8 @@
     <string name="onboard_connect_bluetooth_permission">블루투스 접근 권한 허용하기</string>
 
     <!-- watch -->
-    <string name="onboard_connect_watch">스마트폰과 갤럭시 워치를 연동해주세요.</string>
-    <string name="onboard_connect_watch_success">스마트폰과 갤럭시 워치가 연결되어 있습니다.</string>
-    <string name="onboard_connect_watch_fail">현재 연결되어 있는 갤럭시 워치가 없습니다.\n스마트폰과 갤럭시 워치를 연결해주세요.</string>
+    <string name="onboard_connect_watch">스마트폰과 갤럭시 워치가\n페어링 되어 있는지 확인합니다.</string>
+    <string name="onboard_connect_watch_success">스마트폰과 갤럭시 워치가 페어링 되어 있습니다.</string>
+    <string name="onboard_connect_watch_fail">현재 연결할 수 있는 갤럭시 워치가 없습니다.\n스마트폰과 갤럭시 워치를 페어링 해주세요.</string>
 
 </resources>

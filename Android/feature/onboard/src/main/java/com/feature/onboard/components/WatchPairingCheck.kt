@@ -18,20 +18,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.icons.DevicesWearables
 import com.feature.onboard.R
-import com.sandy.bluetooth.BluetoothState
 
 @Composable
-fun WatchConnect(
-    modifier: Modifier = Modifier
+fun WatchPairingCheck(
+    isBondedWatch: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+
         Spacer(modifier = modifier.weight(1f))
+
         Text(
             text = stringResource(id = R.string.onboard_connect_watch),
-            style = MaterialTheme.typography.titleLarge
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge,
         )
 
         Icon(
@@ -41,22 +44,27 @@ fun WatchConnect(
             imageVector = Icons.DevicesWearables,
             contentDescription = null
         )
+        
+        if (isBondedWatch) {
+            Text(
+                text = stringResource(
+                    id = R.string.onboard_connect_watch_success
+                ),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
+        else {
+            Text(
+                modifier = modifier.padding(bottom = 32.dp),
+                text = stringResource(
+                    id = R.string.onboard_connect_watch_fail
+                ),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
 
-        Text(
-            text = stringResource(
-                id = R.string.onboard_connect_watch_success
-            ),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        Text(
-            modifier = modifier.padding(bottom = 32.dp),
-            text = stringResource(
-                id = R.string.onboard_connect_watch_fail
-            ),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyLarge,
-        )
         Spacer(modifier = modifier.height(16.dp))
         Spacer(modifier = modifier.weight(1f))
     }

@@ -1,7 +1,9 @@
 package com.sandy.bluetooth
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
@@ -25,6 +27,15 @@ class MyBluetoothManager @Inject constructor(
             delay(interval)
         }
     }.distinctUntilChanged()
+
+    @SuppressLint("MissingPermission")
+    fun isBondedWatch(): Boolean {
+        val bluetoothAdapter = bluetoothManager.adapter
+        val devices = bluetoothAdapter.bondedDevices.filter {
+            it.type == BluetoothDevice.DEVICE_TYPE_DUAL && it.name.contains("Watch")
+        }
+        return devices.isNotEmpty()
+    }
 
     private fun getBluetoothState(): BluetoothState {
         try {
@@ -58,6 +69,7 @@ class MyBluetoothManager @Inject constructor(
                 Manifest.permission.BLUETOOTH,
                 Manifest.permission.BLUETOOTH_ADMIN,
                 Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.BLUETOOTH_SCAN,
             )
         }
         else {
