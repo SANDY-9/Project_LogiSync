@@ -19,7 +19,7 @@ fun WatchScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = "심박수")
+        Text(text = "선미는 화가 나요")
         Text(
             style = MaterialTheme.typography.display2,
             text = "$heartRate"

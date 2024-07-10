@@ -44,7 +44,11 @@ class LoginViewModel @Inject constructor(
             state.id,
             state.pwd
         ) { account ->
-            Log.e("확인", "requestLogin: $account")
+            _stateFlow.update {
+                it.copy(
+                    account = account
+                )
+            }
         }
     }
 

@@ -18,9 +18,9 @@ import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.sandy.logisync.presentation.common.START_HEART_RATE_SENSOR
 import com.sandy.logisync.presentation.common.STOP_HEART_RATE_SENSOR
-import com.sandy.logisync.presentation.service.HeartRateService
 import com.sandy.logisync.presentation.ui.screens.WatchScreen
 import com.sandy.logisync.presentation.ui.theme.LogisyncWearTheme
+import com.sandy.logisync.service.HeartRateService
 import com.sandy.logisync.utils.PermissionManager
 import dagger.hilt.android.AndroidEntryPoint
 

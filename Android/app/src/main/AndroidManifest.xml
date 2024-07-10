@@ -3,6 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="s" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+    <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="true" />
 
     <application
         android:name=".MyApplication"
@@ -16,6 +27,13 @@
         android:theme="@style/Theme.LogiSync"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+
+        <service
+            android:name="com.sandy.service.MyWearableService"
+            android:enabled="true"
+            android:exported="true" />
+
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
@@ -27,6 +45,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.wearable.BIND_LISTENER"
+            android:value="true" />
+
     </application>
 
 </manifest>

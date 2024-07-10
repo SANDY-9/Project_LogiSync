@@ -11,8 +11,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.core.desinsystem.theme.LogiSyncTheme
 import com.core.navigation.Route
-import com.sandy.designsystem.theme.LogiSyncTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,7 +32,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     MainNavGraph(
                         navController = rememberNavController(),
-                        startDestination = Route.Login.route
+                        //startDestination = Route.Login.route
+                        startDestination = Route.Onboarding.route
                     )
                 }
             }
