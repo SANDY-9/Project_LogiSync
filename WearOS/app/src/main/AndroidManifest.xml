@@ -23,7 +23,7 @@
         android:theme="@android:style/Theme.DeviceDefault">
 
         <service
-            android:name=".presentation.service.HeartRateService"
+            android:name="com.sandy.logisync.service.HeartRateService"
             android:enabled="true"
             android:exported="true" />
 
@@ -49,6 +49,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <meta-data
+            android:name="com.google.android.gms.wearable.BIND_LISTENER"
+            android:value="true" />
+        <service
+            android:name="com.sandy.logisync.service.MyWearableService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/"
+                    android:scheme="wear" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

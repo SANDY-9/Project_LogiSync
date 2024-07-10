@@ -49,6 +49,7 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:navigation"))
     implementation(project(":core:bluetooth"))
+    implementation(project(":service"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)

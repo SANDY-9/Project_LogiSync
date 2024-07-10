@@ -49,4 +49,7 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
+    // Wearable
+    implementation(libs.bundles.wearable)
+
 }

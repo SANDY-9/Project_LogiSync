@@ -24,8 +24,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.core.desinsystem.common.NextButton
+import com.feature.onboard.components.AppConnect
 import com.feature.onboard.components.BluetoothConnect
-import com.feature.onboard.components.WatchConnection
 import com.feature.onboard.components.WatchPairingCheck
 import com.feature.onboard.model.OnboardPhase
 import com.feature.onboard.model.OnboardUiEvent
@@ -47,6 +47,9 @@ fun OnboardingScreen(
         )
         OnboardingContent(
             state = state,
+            onNavigate = {
+                navController
+            },
             onNext = { viewModel.onEvent(OnboardUiEvent.NavigateToNextPhase) },
             modifier = modifier.weight(1f)
         )
@@ -80,6 +83,7 @@ private fun OnboardingAppBar(
 @Composable
 private fun OnboardingContent(
     state: OnboardUiState,
+    onNavigate: () -> Unit,
     onNext: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -97,13 +101,21 @@ private fun OnboardingContent(
         when (state.phase) {
             OnboardPhase.BLUETOOTH_CONNECT -> BluetoothConnect(state.bluetoothState)
             OnboardPhase.WATCH_PAIRING_CHECK -> WatchPairingCheck(state.isBondedWatch)
-            OnboardPhase.WATCH_CONNECTION -> WatchConnection()
-            else -> {}
+            OnboardPhase.APP_CONNECTION -> AppConnect(state.isConnectedApp)
         }
     }
-    NextButton(
-        title = stringResource(id = R.string.onboard_button),
-        enabled = state.enabledNextButton,
-        onClick = onNext
-    )
+
+    if (state.isServiceStarted) {
+        NextButton(
+            title = stringResource(id = R.string.onboard_button_complete),
+            onClick = onNavigate,
+        )
+    }
+    else {
+        NextButton(
+            title = stringResource(id = R.string.onboard_button),
+            enabled = state.enabledNextButton,
+            onClick = onNext,
+        )
+    }
 }
