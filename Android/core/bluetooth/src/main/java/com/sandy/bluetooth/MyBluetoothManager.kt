@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -28,20 +29,11 @@ class MyBluetoothManager @Inject constructor(
         }
     }.distinctUntilChanged()
 
-    @SuppressLint("MissingPermission")
-    fun isBondedWatch(): Boolean {
-        val bluetoothAdapter = bluetoothManager.adapter
-        val devices = bluetoothAdapter.bondedDevices.filter {
-            it.type == BluetoothDevice.DEVICE_TYPE_DUAL && it.name.contains("Watch")
-        }
-        return devices.isNotEmpty()
-    }
-
     private fun getBluetoothState(): BluetoothState {
         try {
-            val bluetoothAdapter = bluetoothManager.adapter ?: return BluetoothState.DISABLED
+            val adapter = bluetoothManager.adapter ?: return BluetoothState.DISABLED
             if (!isGrantedBluetoothPermission()) return BluetoothState.PERMISSION_DENIED
-            return if (bluetoothAdapter.isEnabled) {
+            return if (adapter.isEnabled) {
                 BluetoothState.ON
             }
             else {
@@ -61,6 +53,25 @@ class MyBluetoothManager @Inject constructor(
                 ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH)
             }
         return checkBluetoothPermission == PackageManager.PERMISSION_GRANTED
+    }
+
+    @SuppressLint("MissingPermission")
+    fun isBondedWatch(): Boolean {
+        val adapter = bluetoothManager.adapter
+        val devices = adapter.bondedDevices.filter {
+            it.type == BluetoothDevice.DEVICE_TYPE_DUAL// && it.name.contains("Watch")
+        }
+        Log.e("확인", "isBondedWatch: ${devices}")
+        return true //devices.isNotEmpty()
+    }
+
+    @SuppressLint("MissingPermission")
+    fun findDevice() {
+        val adapter = bluetoothManager.adapter
+        adapter.run {
+            if (isDiscovering) cancelDiscovery()
+            else startDiscovery()
+        }
     }
 
     companion object {

@@ -1,4 +1,4 @@
-package com.sandy.logisync.presentation.service
+package com.sandy.logisync.service
 
 import android.app.Service
 import android.content.Intent

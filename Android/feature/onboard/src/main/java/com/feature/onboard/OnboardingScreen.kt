@@ -25,6 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.core.desinsystem.common.NextButton
 import com.feature.onboard.components.BluetoothConnect
+import com.feature.onboard.components.WatchConnection
 import com.feature.onboard.components.WatchPairingCheck
 import com.feature.onboard.model.OnboardPhase
 import com.feature.onboard.model.OnboardUiEvent
@@ -96,7 +97,8 @@ private fun OnboardingContent(
         when (state.phase) {
             OnboardPhase.BLUETOOTH_CONNECT -> BluetoothConnect(state.bluetoothState)
             OnboardPhase.WATCH_PAIRING_CHECK -> WatchPairingCheck(state.isBondedWatch)
-            OnboardPhase.WEAR_APP_INSTALL -> {}
+            OnboardPhase.WATCH_CONNECTION -> WatchConnection()
+            else -> {}
         }
     }
     NextButton(

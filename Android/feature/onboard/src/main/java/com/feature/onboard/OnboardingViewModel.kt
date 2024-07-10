@@ -1,6 +1,5 @@
 package com.feature.onboard
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.feature.onboard.model.OnboardPhase
@@ -50,7 +49,11 @@ class OnboardingViewModel @Inject constructor(
             it.copy(
                 phase = nextPhase,
             ).also {
-                if (nextPhase == OnboardPhase.WATCH_PAIRING_CHECK) updateBondedWatchState()
+                when (nextPhase) {
+                    OnboardPhase.WATCH_PAIRING_CHECK -> updateBondedWatchState()
+                    OnboardPhase.WATCH_CONNECTION -> bluetoothManager.findDevice()
+                    else -> Unit
+                }
             }
         }
     }

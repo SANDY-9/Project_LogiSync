@@ -12,12 +12,13 @@ internal data class OnboardUiState(
 )
 
 internal enum class OnboardPhase {
-    BLUETOOTH_CONNECT, WATCH_PAIRING_CHECK, WEAR_APP_INSTALL;
+    BLUETOOTH_CONNECT, WATCH_PAIRING_CHECK, WATCH_CONNECTION, LINK_WEAR_APP;
 
     fun nextPhase(): OnboardPhase {
         val nextPhase = when (this) {
             BLUETOOTH_CONNECT -> WATCH_PAIRING_CHECK
-            else -> WEAR_APP_INSTALL
+            WATCH_PAIRING_CHECK -> WATCH_CONNECTION
+            else -> LINK_WEAR_APP
         }
         return nextPhase
     }
