@@ -22,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.core.desinsystem.common.NextButton
 import com.feature.onboard.components.AppConnect
 import com.feature.onboard.components.BluetoothConnect
@@ -33,7 +32,7 @@ import com.feature.onboard.model.OnboardUiState
 
 @Composable
 fun OnboardingScreen(
-    navController: NavController,
+    onNavigate: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: OnboardingViewModel = hiltViewModel()
 ) {
@@ -47,9 +46,7 @@ fun OnboardingScreen(
         )
         OnboardingContent(
             state = state,
-            onNavigate = {
-                navController
-            },
+            onNavigate = onNavigate,
             onNext = { viewModel.onEvent(OnboardUiEvent.NavigateToNextPhase) },
             modifier = modifier.weight(1f)
         )

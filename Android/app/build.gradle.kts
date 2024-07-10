@@ -65,6 +65,7 @@ dependencies {
     implementation(project(":feature:login"))
     implementation(project(":feature:signup"))
     implementation(project(":feature:onboard"))
+    implementation(project(":feature:home"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)
