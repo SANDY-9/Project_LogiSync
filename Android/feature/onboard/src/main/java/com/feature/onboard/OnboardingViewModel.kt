@@ -36,10 +36,12 @@ class OnboardingViewModel @Inject constructor(
         combine(
             bluetoothManager.getBluetoothStateFlow(), phaseFlow
         ) { bluetoothState, phase ->
+            val enabledNextButton =
+                phase == OnboardPhase.BLUETOOTH_CONNECT && bluetoothState == BluetoothState.ON
             _stateFlow.value.copy(
                 phase = phase,
                 bluetoothState = bluetoothState,
-                enabledNextButton = bluetoothState == BluetoothState.ON,
+                enabledNextButton = enabledNextButton,
             )
         }.catch {
 
