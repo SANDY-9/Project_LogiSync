@@ -14,6 +14,7 @@ hiltAndroidCompiler = "2.50"
 # Compose Version
 composeBom = "2024.06.00"
 activityCompose = "1.9.0"
+playServicesWearable = "18.2.0"
 viewModelCompose = "2.8.2"
 hiltNavigationCompose = "1.2.0"
 navigationCompose = "2.7.7"
@@ -76,6 +77,10 @@ firebase-database-ktx = { group = "com.google.firebase", name = "firebase-databa
 # Inject
 inject = "javax.inject:javax.inject:1"
 
+# Wearable
+play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }
+play-services-tasks = { module = "com.google.android.gms:play-services-tasks", version.ref = "playServicesWearable" }
+
 
 [bundles]
 androidx = [
@@ -111,6 +116,10 @@ test = [
 android-test = [
     "androidx-junit",
     "androidx-espresso-core",
+]
+wearable = [
+    "play-services-wearable",
+    "play-services-tasks",
 ]
 
 [plugins]

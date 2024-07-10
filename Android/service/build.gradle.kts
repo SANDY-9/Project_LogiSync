@@ -1,25 +1,20 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.sandy.logisync"
+    namespace = "com.sandy.service"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.sandy.logisync"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -38,33 +33,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-}
-
-kapt {
-    correctErrorTypes = true
 }
 
 dependencies {
-
-    implementation(project(":service"))
-
-    implementation(project(":core:navigation"))
-    implementation(project(":core:designsystem"))
-
-    implementation(project(":feature:login"))
-    implementation(project(":feature:signup"))
-    implementation(project(":feature:onboard"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)
@@ -76,8 +47,6 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
-    // Compose
-    implementation(libs.bundles.compose)
-    implementation(platform(libs.androidx.compose.bom))
-
+    // Wearable
+    implementation(libs.bundles.wearable)
 }
