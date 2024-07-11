@@ -24,6 +24,9 @@ googleGmsGoogleServices = "4.4.1"
 # Firebase version
 firebaseBom = "32.3.1"
 
+# Preferences DataStore
+dataStore = "1.1.0"
+
 # Test
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -81,6 +84,8 @@ inject = "javax.inject:javax.inject:1"
 play-services-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServicesWearable" }
 play-services-tasks = { module = "com.google.android.gms:play-services-tasks", version.ref = "playServicesWearable" }
 
+# PreferencesDatastore
+datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "dataStore" }
 
 [bundles]
 androidx = [
