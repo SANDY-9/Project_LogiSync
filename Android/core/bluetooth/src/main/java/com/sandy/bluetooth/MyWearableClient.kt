@@ -5,16 +5,11 @@ import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.Wearable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class MyWearableClient @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
 ) {
 
     fun isConnectWearable(): Boolean {

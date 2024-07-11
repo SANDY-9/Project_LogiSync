@@ -5,10 +5,11 @@
     <string name="home_profile_fix">회원정보 수정</string>
 
     <!-- 기기 연동 정보 -->
-    <string name="home_gear_pairing_title">연동기기 정보</string>
-    <string name="home_gear_pairing_connect">Connected</string>
-    <string name="home_gear_pairing_deconnect">워치가 휴대전화에 연결되어 있지 않습니다.</string>
-    <string name="home_gear_pairing_connect_title">연결하기</string>
+    <string name="home_device_pairing_title">연동기기 정보</string>
+    <string name="home_device_pairing_paired_fail">연동된 기기가 없습니다.</string>
+    <string name="home_device_pairing_connect">Connected</string>
+    <string name="home_device_pairing_deconnect">워치가 휴대전화에 연결되어 있지 않습니다.</string>
+    <string name="home_device_pairing_connect_title">연결하기</string>
 
     <!-- 심박수 -->
     <string name="home_heart_rate_title">심박수</string>

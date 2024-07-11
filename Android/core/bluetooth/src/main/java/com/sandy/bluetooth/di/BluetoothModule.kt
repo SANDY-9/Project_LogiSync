@@ -2,8 +2,6 @@ package com.sandy.bluetooth.di
 
 import android.bluetooth.BluetoothManager
 import android.content.Context
-import com.sandy.bluetooth.MyBluetoothManager
-import com.sandy.bluetooth.MyWearableClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +19,7 @@ object BluetoothModule {
         return context.getSystemService(BluetoothManager::class.java)
     }
 
-    @Singleton
+    /*@Singleton
     @Provides
     fun provideMyBluetoothManager(
         @ApplicationContext context: Context,
@@ -36,5 +34,5 @@ object BluetoothModule {
         @ApplicationContext context: Context,
     ): MyWearableClient {
         return MyWearableClient(context)
-    }
+    }*/
 }

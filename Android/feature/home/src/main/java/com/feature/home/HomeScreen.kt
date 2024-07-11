@@ -1,5 +1,8 @@
 package com.feature.home
 
+import android.app.Activity
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,28 +18,41 @@ import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.feature.home.components.HeartRateInfo
 import com.feature.home.components.PairingInfo
 import com.feature.home.components.Profile
 import com.feature.home.components.ReportInfo
+import com.feature.home.model.HomeUiState
 
 @Composable
 fun HomeScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
+    val state: HomeUiState by viewModel.stateFlow.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current as? Activity?
+    BackHandler(enabled = true) {
+        context?.finish()
+    }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         HomeAppBar()
-        HomeContent()
+        HomeContent(state)
     }
 }
 
@@ -71,8 +87,10 @@ private fun HomeAppBar(
 
 @Composable
 fun HomeContent(
+    state: HomeUiState,
     modifier: Modifier = Modifier,
 ) {
+    Log.e("확인", "HomeContent: $state")
     val scrollState = rememberScrollState()
     Column(
         modifier = modifier
@@ -83,7 +101,10 @@ fun HomeContent(
         Spacer(modifier = modifier.height(8.dp))
         Profile()
         Spacer(modifier = modifier.height(30.dp))
-        PairingInfo()
+        PairingInfo(
+            deviceName = state.pairedDeviceName,
+            isPairedWatch = state.isPairedWatch
+        )
         Spacer(modifier = modifier.height(30.dp))
         HeartRateInfo()
         Spacer(modifier = modifier.height(30.dp))

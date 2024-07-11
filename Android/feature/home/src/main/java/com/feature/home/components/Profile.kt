@@ -1,18 +1,16 @@
 package com.feature.home.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,7 +26,7 @@ import com.feature.home.R
 
 @Composable
 fun Profile(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -38,33 +36,36 @@ fun Profile(
             style = MaterialTheme.typography.titleMedium
         )
         Spacer(modifier = modifier.height(12.dp))
-        Row(
-            modifier = modifier.height(70.dp),
+        Box(
+            modifier = modifier.fillMaxWidth()
         ) {
-            Image(
-                modifier = modifier
-                    .size(width = 60.dp, height = 70.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop,
-                painter = painterResource(id = com.core.desinsystem.R.drawable.and),
-                contentDescription = null
-            )
-            Text(
-                modifier = modifier
-                    .align(Alignment.Bottom)
-                    .padding(horizontal = 8.dp),
-                text = "임선미",
-                style = MaterialTheme.typography.titleLarge,
-            )
-            Text(
-                modifier = modifier
-                    .align(Alignment.Bottom),
-                text = "사원 | TES 물류연구소",
-                style = MaterialTheme.typography.titleSmall
-            )
-            Spacer(modifier = modifier.weight(1f))
+            Row(
+                modifier = modifier.height(70.dp),
+            ) {
+                Image(
+                    modifier = modifier
+                        .size(width = 60.dp, height = 70.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop,
+                    painter = painterResource(id = com.core.desinsystem.R.drawable.and),
+                    contentDescription = null
+                )
+                Text(
+                    modifier = modifier
+                        .align(Alignment.Bottom)
+                        .padding(horizontal = 8.dp),
+                    text = "임선미",
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                Text(
+                    modifier = modifier
+                        .align(Alignment.Bottom),
+                    text = "사원 | TES 물류연구소",
+                    style = MaterialTheme.typography.titleSmall
+                )
+            }
             ProfileFixButton(
-                modifier = modifier.align(Alignment.Top)
+                modifier = modifier.align(Alignment.TopEnd)
             )
         }
     }

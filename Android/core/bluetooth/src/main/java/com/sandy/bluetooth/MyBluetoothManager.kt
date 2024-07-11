@@ -7,14 +7,14 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import androidx.core.content.ContextCompat
 import com.sandy.bluetooth.utils.BluetoothDisabledException
 import com.sandy.bluetooth.utils.BluetoothPermissionDeniedException
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class MyBluetoothManager @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val bluetoothManager: BluetoothManager,
 ) {
 
@@ -41,7 +41,6 @@ class MyBluetoothManager @Inject constructor(
         val devices = adapter.bondedDevices.filter {
             it.type == BluetoothDevice.DEVICE_TYPE_DUAL// && it.name.contains("Watch")
         }
-        Log.e("확인", "isBondedWatch: ${devices}")
         return devices
     }
 

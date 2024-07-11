@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.sandy.datastore.DeviceDataStoreManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,5 +27,11 @@ object DataStoreModule {
     @Singleton
     fun provideAppPrefsDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
         return context.appDataStore
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeviceDataStoreManager(dataStore: DataStore<Preferences>): DeviceDataStoreManager {
+        return DeviceDataStoreManager(dataStore)
     }
 }
