@@ -1,8 +1,10 @@
 package com.core.data.di
 
 import com.core.data.repository.bluetooth.BluetoothRepositoryImpl
+import com.core.data.repository.prefs.DevicePrefsRepositoryImpl
 import com.core.data.repository.wearable.WearableRepositoryImpl
 import com.core.domain.repository.BluetoothRepository
+import com.core.domain.repository.DevicePrefsRepository
 import com.core.domain.repository.WearableRepository
 import dagger.Binds
 import dagger.Module
@@ -22,4 +24,9 @@ internal abstract class DataModule {
     abstract fun bindsWearableRepository(
         impl: WearableRepositoryImpl
     ): WearableRepository
+
+    @Binds
+    abstract fun bindsDevicePrefsRepository(
+        impl: DevicePrefsRepositoryImpl
+    ): DevicePrefsRepository
 }
