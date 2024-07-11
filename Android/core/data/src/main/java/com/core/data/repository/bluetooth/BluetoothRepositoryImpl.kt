@@ -1,8 +1,10 @@
 package com.core.data.repository.bluetooth
 
+import com.core.domain.enums.BluetoothState
 import com.core.domain.repository.BluetoothRepository
-import com.core.enum.BluetoothState
 import com.sandy.bluetooth.MyBluetoothManager
+import com.sandy.bluetooth.utils.BluetoothDisabledException
+import com.sandy.bluetooth.utils.BluetoothPermissionDeniedException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -20,9 +22,20 @@ class BluetoothRepositoryImpl @Inject constructor(
 
     override fun getBluetoothState(): Flow<BluetoothState> = flow {
         while (true) {
-            val bluetoothState = bluetoothManager.getBluetoothState()
-            emit(bluetoothState)
-            delay(INTERVAL)
+            try {
+                val bluetoothEnabled = bluetoothManager.isBluetoothEnabled()
+                emit(
+                    if (bluetoothEnabled) BluetoothState.ON else BluetoothState.OFF
+                )
+            } catch (e: Exception) {
+                when (e) {
+                    is BluetoothDisabledException -> emit(BluetoothState.DISABLED)
+                    is BluetoothPermissionDeniedException -> emit(BluetoothState.PERMISSION_DENIED)
+                    else -> emit(BluetoothState.ERROR)
+                }
+            } finally {
+                delay(INTERVAL)
+            }
         }
     }.flowOn(Dispatchers.IO).distinctUntilChanged()
 
@@ -33,12 +46,9 @@ class BluetoothRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPairedDeviceName(): String {
-        return withContext(Dispatchers.IO) {
-            val device = bluetoothManager.getBluetoothPairedWatch()
-            val deviceName =
-                if (device.isNotEmpty()) bluetoothManager.getDeviceName(device[0]) else ""
-            return@withContext deviceName
-        }
-    }
+    override fun getPairedDeviceName(): Flow<String> = flow {
+        val device = bluetoothManager.getBluetoothPairedWatch()
+        val deviceName = if (device.isNotEmpty()) bluetoothManager.getDeviceName(device[0]) else ""
+        emit(deviceName)
+    }.flowOn(Dispatchers.IO)
 }

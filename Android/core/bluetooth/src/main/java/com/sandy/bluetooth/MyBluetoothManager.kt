@@ -11,11 +11,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.core.content.ContextCompat
-import com.core.enum.BluetoothState
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flow
+import com.sandy.bluetooth.utils.BluetoothDisabledException
+import com.sandy.bluetooth.utils.BluetoothPermissionDeniedException
 import javax.inject.Inject
 
 class MyBluetoothManager @Inject constructor(
@@ -23,19 +20,10 @@ class MyBluetoothManager @Inject constructor(
     private val bluetoothManager: BluetoothManager,
 ) {
 
-    fun getBluetoothState(): BluetoothState {
-        try {
-            val adapter = bluetoothManager.adapter ?: return BluetoothState.DISABLED
-            if (!isGrantedBluetoothPermission()) return BluetoothState.PERMISSION_DENIED
-            return if (adapter.isEnabled) {
-                BluetoothState.ON
-            }
-            else {
-                BluetoothState.OFF
-            }
-        } catch (e: Exception) {
-            return BluetoothState.ERROR
-        }
+    fun isBluetoothEnabled(): Boolean {
+        val adapter = bluetoothManager.adapter ?: throw BluetoothDisabledException()
+        if (!isGrantedBluetoothPermission()) throw BluetoothPermissionDeniedException()
+        return adapter.isEnabled
     }
 
     fun isGrantedBluetoothPermission(): Boolean {
