@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.core.content.ContextCompat
+import com.core.enum.BluetoothState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -22,14 +23,7 @@ class MyBluetoothManager @Inject constructor(
     private val bluetoothManager: BluetoothManager,
 ) {
 
-    fun getBluetoothStateFlow(interval: Long = 1200L): Flow<BluetoothState> = flow {
-        while (true) {
-            emit(getBluetoothState())
-            delay(interval)
-        }
-    }.distinctUntilChanged()
-
-    private fun getBluetoothState(): BluetoothState {
+    fun getBluetoothState(): BluetoothState {
         try {
             val adapter = bluetoothManager.adapter ?: return BluetoothState.DISABLED
             if (!isGrantedBluetoothPermission()) return BluetoothState.PERMISSION_DENIED
@@ -56,21 +50,22 @@ class MyBluetoothManager @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    fun isBondedWatch(): Boolean {
+    fun getBluetoothPairedWatch(): List<BluetoothDevice> {
         val adapter = bluetoothManager.adapter
         val devices = adapter.bondedDevices.filter {
             it.type == BluetoothDevice.DEVICE_TYPE_DUAL// && it.name.contains("Watch")
         }
         Log.e("확인", "isBondedWatch: ${devices}")
-        return true //devices.isNotEmpty()
+        return devices
     }
 
     @SuppressLint("MissingPermission")
-    fun findDevice() {
-        val adapter = bluetoothManager.adapter
-        adapter.run {
-            if (isDiscovering) cancelDiscovery()
-            else startDiscovery()
+    fun getDeviceName(device: BluetoothDevice): String {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            device.alias ?: device.name
+        }
+        else {
+            device.name
         }
     }
 
