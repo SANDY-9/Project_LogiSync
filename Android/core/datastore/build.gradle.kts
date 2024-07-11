@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.core.data"
+    namespace = "com.sandy.datastore"
     compileSdk = 34
 
     defaultConfig {
@@ -40,15 +40,7 @@ kapt {
 
 dependencies {
 
-    implementation(project(":core:firebase"))
-    implementation(project(":core:bluetooth"))
-    implementation(project(":core:datastore"))
-    implementation(project(":core:domain"))
-    implementation(project(":core:model"))
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.bundles.test)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.coroutines.android)
@@ -57,4 +49,6 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
+    // Prefs DataStore
+    implementation(libs.datastore)
 }
