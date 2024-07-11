@@ -41,7 +41,6 @@ kapt {
 dependencies {
 
     implementation(project(":core:firebase"))
-    implementation(project(":core:datastore"))
     implementation(project(":core:bluetooth"))
     implementation(project(":core:domain"))
     implementation(project(":core:model"))
