@@ -49,6 +49,9 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:navigation"))
     implementation(project(":core:model"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:data"))
+    implementation(project(":service"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)
