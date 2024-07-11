@@ -26,10 +26,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.common.BasicOutlinedButton
+import com.core.model.HeartRate
 import com.feature.home.R
 
 @Composable
 fun HeartRateInfo(
+    heartRate: HeartRate,
     modifier: Modifier = Modifier
 ) {
     Column {
@@ -134,5 +136,5 @@ private fun HeartRateCollectButton(
 @Preview(name = "HeartRateInfo")
 @Composable
 private fun PreviewHeartRateInfo() {
-    HeartRateInfo()
+    HeartRateInfo(HeartRate())
 }

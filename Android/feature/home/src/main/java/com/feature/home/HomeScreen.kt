@@ -90,7 +90,6 @@ fun HomeContent(
     state: HomeUiState,
     modifier: Modifier = Modifier,
 ) {
-    Log.e("확인", "HomeContent: $state")
     val scrollState = rememberScrollState()
     Column(
         modifier = modifier
@@ -99,14 +98,19 @@ fun HomeContent(
             .verticalScroll(scrollState)
     ) {
         Spacer(modifier = modifier.height(8.dp))
-        Profile()
+        Profile(
+            dateStr = state.date,
+            account = state.account,
+        )
         Spacer(modifier = modifier.height(30.dp))
         PairingInfo(
             deviceName = state.pairedDeviceName,
-            isPairedWatch = state.isPairedWatch
+            isPairedWatch = state.isPairedWatch,
         )
         Spacer(modifier = modifier.height(30.dp))
-        HeartRateInfo()
+        HeartRateInfo(
+            heartRate = state.heartRate,
+        )
         Spacer(modifier = modifier.height(30.dp))
         ReportInfo()
         Spacer(modifier = modifier.height(16.dp))

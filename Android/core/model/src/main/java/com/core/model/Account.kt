@@ -2,7 +2,7 @@ package com.core.model
 
 data class Account(
     val id: String = "",
-    val name: String = "",
+    val name: String = "홍길동",
     val tel: String = "",
     val duty: Duty = Duty.NORMAL,
 ) {
@@ -10,10 +10,10 @@ data class Account(
         ADMIN,
         NORMAL;
 
-        fun Duty.name(): String {
+        fun str(): String {
             return when (this) {
                 ADMIN -> "관리자"
-                else -> "일반 사원"
+                else -> "사원"
             }
         }
     }

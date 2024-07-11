@@ -22,17 +22,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.common.BasicOutlinedButton
+import com.core.model.Account
 import com.feature.home.R
 
 @Composable
 fun Profile(
+    dateStr: String,
+    account: Account,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
         Text(
-            text = "2024년 07월 10일 수요일",
+            text = dateStr,
             style = MaterialTheme.typography.titleMedium
         )
         Spacer(modifier = modifier.height(12.dp))
@@ -54,13 +57,13 @@ fun Profile(
                     modifier = modifier
                         .align(Alignment.Bottom)
                         .padding(horizontal = 8.dp),
-                    text = "임선미",
+                    text = account.name,
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Text(
                     modifier = modifier
                         .align(Alignment.Bottom),
-                    text = "사원 | TES 물류연구소",
+                    text = "${account.duty.str()}  |  TES물류기술연구소",
                     style = MaterialTheme.typography.titleSmall
                 )
             }
@@ -85,5 +88,5 @@ private fun ProfileFixButton(
 @Preview(name = "Profile")
 @Composable
 private fun PreviewProfile() {
-    Profile()
+    Profile("2024년 12월 02일 수요일", Account())
 }
