@@ -1,7 +1,7 @@
 package com.core.domain.usecases.bluetooth
 
+import com.core.domain.enums.BluetoothState
 import com.core.domain.repository.BluetoothRepository
-import com.core.enum.BluetoothState
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

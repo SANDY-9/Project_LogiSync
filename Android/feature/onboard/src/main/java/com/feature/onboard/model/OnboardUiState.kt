@@ -1,7 +1,7 @@
 package com.feature.onboard.model
 
 import androidx.compose.runtime.Stable
-import com.sandy.bluetooth.BluetoothState
+import com.core.domain.enums.BluetoothState
 
 @Stable
 internal data class OnboardUiState(

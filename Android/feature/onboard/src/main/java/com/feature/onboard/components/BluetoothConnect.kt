@@ -1,5 +1,9 @@
 package com.feature.onboard.components
 
+import android.Manifest
+import android.bluetooth.BluetoothAdapter
+import android.content.Intent
+import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,9 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.icons.Bluetooth
+import com.core.domain.enums.BluetoothState
 import com.feature.onboard.R
-import com.sandy.bluetooth.BluetoothState
-import com.sandy.bluetooth.MyBluetoothManager
 
 @Composable
 fun BluetoothConnect(
@@ -78,6 +81,21 @@ fun BluetoothConnect(
     }
 }
 
+private val bluetoothPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    arrayOf(
+        Manifest.permission.BLUETOOTH,
+        Manifest.permission.BLUETOOTH_ADMIN,
+        Manifest.permission.BLUETOOTH_CONNECT,
+        Manifest.permission.BLUETOOTH_SCAN,
+    )
+}
+else {
+    arrayOf(
+        Manifest.permission.BLUETOOTH,
+        Manifest.permission.BLUETOOTH_ADMIN,
+    )
+}
+
 @Composable
 private fun BluetoothPermissionButton(
     modifier: Modifier = Modifier,
@@ -98,7 +116,7 @@ private fun BluetoothPermissionButton(
             horizontal = 16.dp
         ),
         onClick = {
-            permissionLauncher.launch(MyBluetoothManager.bluetoothPermissions)
+            permissionLauncher.launch(bluetoothPermissions)
         }
     ) {
         Text(
@@ -127,7 +145,7 @@ private fun BluetoothConnectButton(
             horizontal = 16.dp
         ),
         onClick = {
-            val intent = MyBluetoothManager.getBluetoothIntent()
+            val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             bluetoothLauncher.launch(intent)
         }
     ) {

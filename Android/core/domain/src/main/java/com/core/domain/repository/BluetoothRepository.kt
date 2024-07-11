@@ -1,11 +1,11 @@
 package com.core.domain.repository
 
-import com.core.enum.BluetoothState
+import com.core.domain.enums.BluetoothState
 import kotlinx.coroutines.flow.Flow
 
 interface BluetoothRepository {
 
     fun getBluetoothState(): Flow<BluetoothState>
     suspend fun isPairedDevice(): Boolean
-    suspend fun getPairedDeviceName(): String
+    fun getPairedDeviceName(): Flow<String>
 }

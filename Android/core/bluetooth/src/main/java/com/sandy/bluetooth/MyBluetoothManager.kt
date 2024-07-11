@@ -2,20 +2,15 @@ package com.sandy.bluetooth
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.core.content.ContextCompat
-import com.core.enum.BluetoothState
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flow
+import com.sandy.bluetooth.utils.BluetoothDisabledException
+import com.sandy.bluetooth.utils.BluetoothPermissionDeniedException
 import javax.inject.Inject
 
 class MyBluetoothManager @Inject constructor(
@@ -23,19 +18,10 @@ class MyBluetoothManager @Inject constructor(
     private val bluetoothManager: BluetoothManager,
 ) {
 
-    fun getBluetoothState(): BluetoothState {
-        try {
-            val adapter = bluetoothManager.adapter ?: return BluetoothState.DISABLED
-            if (!isGrantedBluetoothPermission()) return BluetoothState.PERMISSION_DENIED
-            return if (adapter.isEnabled) {
-                BluetoothState.ON
-            }
-            else {
-                BluetoothState.OFF
-            }
-        } catch (e: Exception) {
-            return BluetoothState.ERROR
-        }
+    fun isBluetoothEnabled(): Boolean {
+        val adapter = bluetoothManager.adapter ?: throw BluetoothDisabledException()
+        if (!isGrantedBluetoothPermission()) throw BluetoothPermissionDeniedException()
+        return adapter.isEnabled
     }
 
     fun isGrantedBluetoothPermission(): Boolean {
@@ -66,27 +52,6 @@ class MyBluetoothManager @Inject constructor(
         }
         else {
             device.name
-        }
-    }
-
-    companion object {
-        val bluetoothPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            arrayOf(
-                Manifest.permission.BLUETOOTH,
-                Manifest.permission.BLUETOOTH_ADMIN,
-                Manifest.permission.BLUETOOTH_CONNECT,
-                Manifest.permission.BLUETOOTH_SCAN,
-            )
-        }
-        else {
-            arrayOf(
-                Manifest.permission.BLUETOOTH,
-                Manifest.permission.BLUETOOTH_ADMIN,
-            )
-        }
-
-        fun getBluetoothIntent(): Intent {
-            return Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
         }
     }
 }
