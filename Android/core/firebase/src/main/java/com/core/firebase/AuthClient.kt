@@ -6,6 +6,7 @@ import com.core.firebase.common.Constants.TEL
 import com.core.firebase.common.Constants.USERS
 import com.core.firebase.mappers.toAccount
 import com.core.firebase.model.AccountDTO
+import com.core.firebase.utils.EmptyValueError
 import com.core.firebase.utils.ErrorMassage.LOGIN_ERROR_MESSAGE
 import com.core.firebase.utils.ErrorMassage.NETWORK_ERROR_MESSAGE
 import com.core.firebase.utils.LoginError
@@ -18,11 +19,11 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.getValue
 import javax.inject.Inject
 
-internal class UserDataSourceImpl @Inject constructor(
+class AuthClient @Inject constructor(
     private val ref: DatabaseReference,
-) : UserDataSource {
+) {
 
-    override fun signup(
+    fun signup(
         id: String,
         pwd: String,
         name: String,
@@ -55,7 +56,7 @@ internal class UserDataSourceImpl @Inject constructor(
         user.addListenerForSingleValueEvent(signupListener)
     }
 
-    override fun checkTel(
+    fun checkTel(
         tel: String,
         onExisted: (Boolean) -> Unit
     ) {
@@ -67,7 +68,7 @@ internal class UserDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun checkId(
+    fun checkId(
         id: String,
         onExisted: (Boolean) -> Unit,
     ) {
@@ -79,22 +80,24 @@ internal class UserDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun login(
+    fun login(
         id: String,
         pwd: String,
         onLogin: (Account) -> Unit,
+        onError: (Throwable) -> Unit,
     ) {
+        if (id.isEmpty() || pwd.isEmpty()) throw EmptyValueError(LOGIN_ERROR_MESSAGE)
         ref.child(USERS).child(id).get().addOnSuccessListener { snapshot ->
             if (snapshot.exists()) {
                 val account = snapshot.getValue<AccountDTO>()
                 if (account?.pwd == pwd) {
                     onLogin(account.toAccount(id))
                 }
-                else throw LoginError(LOGIN_ERROR_MESSAGE)
+                else onError(LoginError(LOGIN_ERROR_MESSAGE))
             }
-            else throw LoginError(LOGIN_ERROR_MESSAGE)
+            else onError(LoginError(LOGIN_ERROR_MESSAGE))
         }.addOnFailureListener {
-            throw NetworkError(NETWORK_ERROR_MESSAGE)
+            onError(NetworkError(NETWORK_ERROR_MESSAGE))
         }
     }
 }
