@@ -3,12 +3,13 @@ package com.feature.onboard
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.core.domain.enums.BluetoothState
+import com.core.domain.usecases.bluetooth.GetBluetoothStateUseCase
+import com.core.domain.usecases.bluetooth.GetIsPairedDeviceUseCase
+import com.core.domain.usecases.wearable.GetWearableConnectStateUseCase
 import com.feature.onboard.model.OnboardPhase
 import com.feature.onboard.model.OnboardUiEvent
 import com.feature.onboard.model.OnboardUiState
-import com.sandy.bluetooth.BluetoothState
-import com.sandy.bluetooth.MyBluetoothManager
-import com.sandy.bluetooth.MyWearableClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,12 +20,14 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
-    private val bluetoothManager: MyBluetoothManager,
-    private val wearableClient: MyWearableClient,
+    getBluetoothStateUseCase: GetBluetoothStateUseCase,
+    private val getIsPairedDeviceUseCase: GetIsPairedDeviceUseCase,
+    private val getWearableConnectStateUseCase: GetWearableConnectStateUseCase,
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<OnboardUiState> = MutableStateFlow(OnboardUiState())
@@ -34,12 +37,15 @@ class OnboardingViewModel @Inject constructor(
 
     init {
         combine(
-            bluetoothManager.getBluetoothStateFlow(), phaseFlow
+            getBluetoothStateUseCase(),
+            phaseFlow,
         ) { bluetoothState, phase ->
+            val enabledNextButton =
+                phase == OnboardPhase.BLUETOOTH_CONNECT && bluetoothState == BluetoothState.ON
             _stateFlow.value.copy(
                 phase = phase,
                 bluetoothState = bluetoothState,
-                enabledNextButton = bluetoothState == BluetoothState.ON,
+                enabledNextButton = enabledNextButton,
             )
         }.catch {
 
@@ -64,18 +70,20 @@ class OnboardingViewModel @Inject constructor(
     }
 
     private fun updateBondedWatchState() {
-        _stateFlow.update {
-            val isBondedWatch = bluetoothManager.isBondedWatch()
-            it.copy(
-                isBondedWatch = isBondedWatch,
-                enabledNextButton = isBondedWatch,
-            )
+        viewModelScope.launch {
+            _stateFlow.update {
+                val isPairedDevice = getIsPairedDeviceUseCase()
+                it.copy(
+                    isBondedWatch = isPairedDevice,
+                    enabledNextButton = isPairedDevice,
+                )
+            }
         }
     }
 
     private fun updateIsConnectedAppState() {
         val scope = viewModelScope
-        wearableClient.getWearableCapabilityStateFlow().onEach { isConnected ->
+        getWearableConnectStateUseCase().onEach { isConnected ->
             _stateFlow.update {
                 it.copy(
                     isConnectedApp = isConnected,

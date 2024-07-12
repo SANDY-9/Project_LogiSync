@@ -1,49 +1,61 @@
 package com.sandy.bluetooth
 
-import android.content.Context
 import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.Wearable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import com.google.android.gms.wearable.CapabilityInfo
+import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.Node
+import com.sandy.bluetooth.utils.WearableFailException
 import javax.inject.Inject
 
 class MyWearableClient @Inject constructor(
-    private val context: Context,
+    private val capabilityClient: CapabilityClient,
+    private val messageClient: MessageClient,
 ) {
 
-    // 서비스 연동이 가능한지 flow 방출
-    fun getWearableCapabilityStateFlow(interval: Long = 1200L): Flow<Boolean> = flow {
-        while (true) {
-            val capabilityInfo = Tasks.await(
-                Wearable.getCapabilityClient(context)
-                    .getCapability(
-                        WEARABLE_CAPABILITY_NAME,
-                        CapabilityClient.FILTER_REACHABLE
-                    )
+    // CapabilityClient는 Wear OS 네트워크의 어느 노드가 어떤 맞춤 앱 기능을 지원하는지에 관한 정보를 제공
+    fun isConnectWearable(): Boolean {
+        val capabilityInfo = Tasks.await(
+            capabilityClient.getCapability(
+                WEARABLE_CAPABILITY_NAME,
+                CapabilityClient.FILTER_REACHABLE
             )
-            // capabilityInfo has the reachable nodes with the transcription capability
-            Log.e("확인", "getWearableCapabilityInfo: ${capabilityInfo.nodes}")
-            emit(capabilityInfo.nodes.isNotEmpty())
-            delay(interval)
-        }
-    }.flowOn(Dispatchers.IO).distinctUntilChanged()
+        )
+        updateTranscriptionCapability(capabilityInfo)
+        return capabilityInfo.nodes.isNotEmpty()
+    }
 
-    fun installLogiSyncWearApp() {
-        val nodesTask = Wearable.getNodeClient(context).connectedNodes
-        nodesTask.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val node = task.result
+    private var transcriptionNodeId: String? = null
+    private fun updateTranscriptionCapability(capabilityInfo: CapabilityInfo) {
+        transcriptionNodeId = pickBestNodeId(capabilityInfo.nodes)
+    }
+
+    private fun pickBestNodeId(nodes: Set<Node>): String? {
+        return nodes.firstOrNull { it.isNearby }?.id ?: nodes.firstOrNull()?.id
+    }
+
+    fun requestTranscription(data: String, transcription: Transcription) {
+        Log.e("확인", "updateTranscriptionCapability: $this")
+        transcriptionNodeId?.also { nodeId ->
+            Log.e("확인", "requestTranscription: $nodeId")
+            messageClient.sendMessage(
+                nodeId,
+                transcription.path,
+                data.toByteArray()
+            ).apply {
+                addOnSuccessListener {
+                    Log.e("확인", "requestTranscription: 성공?")
+                }
+                addOnFailureListener {
+                    throw WearableFailException()
+                }
             }
-        }
+        } ?: throw WearableFailException()
     }
 
     companion object {
         private const val WEARABLE_CAPABILITY_NAME = "logi_sync_wear_app"
+        private const val TEST_MESSAGE_PATH = "/heart_rate_transcription"
     }
 }

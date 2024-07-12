@@ -41,6 +41,9 @@ kapt {
 dependencies {
 
     implementation(project(":core:firebase"))
+    implementation(project(":core:bluetooth"))
+    implementation(project(":core:datastore"))
+    implementation(project(":core:domain"))
     implementation(project(":core:model"))
 
     testImplementation(libs.junit)

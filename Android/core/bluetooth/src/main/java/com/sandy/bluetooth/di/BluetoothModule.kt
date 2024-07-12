@@ -2,7 +2,9 @@ package com.sandy.bluetooth.di
 
 import android.bluetooth.BluetoothManager
 import android.content.Context
-import com.sandy.bluetooth.MyBluetoothManager
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.Wearable
 import com.sandy.bluetooth.MyWearableClient
 import dagger.Module
 import dagger.Provides
@@ -23,18 +25,22 @@ object BluetoothModule {
 
     @Singleton
     @Provides
-    fun provideMyBluetoothManager(
-        @ApplicationContext context: Context,
-        bluetoothManager: BluetoothManager
-    ): MyBluetoothManager {
-        return MyBluetoothManager(context, bluetoothManager)
+    fun provideCapabilityClient(@ApplicationContext context: Context): CapabilityClient {
+        return Wearable.getCapabilityClient(context)
+    }
+
+    @Singleton
+    @Provides
+    fun provideMessageClient(@ApplicationContext context: Context): MessageClient {
+        return Wearable.getMessageClient(context)
     }
 
     @Singleton
     @Provides
     fun provideMyWearableClient(
-        @ApplicationContext context: Context,
+        capabilityClient: CapabilityClient,
+        messageClient: MessageClient,
     ): MyWearableClient {
-        return MyWearableClient(context)
+        return MyWearableClient(capabilityClient, messageClient)
     }
 }

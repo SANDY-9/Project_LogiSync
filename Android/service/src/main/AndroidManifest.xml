@@ -8,7 +8,7 @@
             android:value="true" />
 
         <service
-            android:name=".MyWearableService"
+            android:name=".MyWearableListenerService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -16,6 +16,13 @@
                 <data
                     android:host="*"
                     android:pathPrefix="/"
+                    android:scheme="wear" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+                <data
+                    android:host="*"
+                    android:path="/start-activity"
                     android:scheme="wear" />
             </intent-filter>
         </service>

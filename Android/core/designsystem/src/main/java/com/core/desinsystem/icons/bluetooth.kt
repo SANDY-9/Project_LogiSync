@@ -81,10 +81,79 @@ val Icons.Bluetooth: ImageVector
 
 private var _bluetooth: ImageVector? = null
 
+val Icons.BluetoothOff: ImageVector
+    get() {
+        if (_bluetoothoff != null) {
+            return _bluetoothoff!!
+        }
+        _bluetoothoff = Builder(name = "bluetoothoff", defaultWidth = 24.0.dp, defaultHeight =
+        24.0.dp, viewportWidth = 960.0f, viewportHeight = 960.0f).apply {
+            path(fill = SolidColor(Color(0xFF5f6368)), stroke = null, strokeLineWidth = 0.0f,
+                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                pathFillType = NonZero) {
+                moveTo(440.0f, 576.0f)
+                lineTo(284.0f, 732.0f)
+                quadToRelative(-11.0f, 11.0f, -28.0f, 11.0f)
+                reflectiveQuadToRelative(-28.0f, -11.0f)
+                quadToRelative(-11.0f, -11.0f, -11.0f, -28.0f)
+                reflectiveQuadToRelative(11.0f, -28.0f)
+                lineToRelative(168.0f, -168.0f)
+                lineTo(84.0f, 196.0f)
+                quadToRelative(-11.0f, -11.0f, -11.0f, -28.0f)
+                reflectiveQuadToRelative(11.0f, -28.0f)
+                quadToRelative(11.0f, -11.0f, 28.0f, -11.0f)
+                reflectiveQuadToRelative(28.0f, 11.0f)
+                lineToRelative(680.0f, 680.0f)
+                quadToRelative(11.0f, 11.0f, 11.0f, 28.0f)
+                reflectiveQuadToRelative(-11.0f, 28.0f)
+                quadToRelative(-11.0f, 11.0f, -28.0f, 11.0f)
+                reflectiveQuadToRelative(-28.0f, -11.0f)
+                lineTo(624.0f, 736.0f)
+                lineTo(508.0f, 852.0f)
+                quadToRelative(-6.0f, 6.0f, -13.0f, 9.0f)
+                reflectiveQuadToRelative(-15.0f, 3.0f)
+                quadToRelative(-16.0f, 0.0f, -28.0f, -11.5f)
+                reflectiveQuadTo(440.0f, 823.0f)
+                verticalLineToRelative(-247.0f)
+                close()
+                moveTo(520.0f, 726.0f)
+                lineTo(566.0f, 680.0f)
+                lineTo(520.0f, 634.0f)
+                verticalLineToRelative(92.0f)
+                close()
+                moveTo(564.0f, 452.0f)
+                lineTo(508.0f, 396.0f)
+                lineTo(596.0f, 308.0f)
+                lineTo(520.0f, 234.0f)
+                verticalLineToRelative(174.0f)
+                lineToRelative(-80.0f, -80.0f)
+                verticalLineToRelative(-191.0f)
+                quadToRelative(0.0f, -18.0f, 12.0f, -29.5f)
+                reflectiveQuadToRelative(28.0f, -11.5f)
+                quadToRelative(8.0f, 0.0f, 15.0f, 3.0f)
+                reflectiveQuadToRelative(13.0f, 9.0f)
+                lineToRelative(172.0f, 172.0f)
+                quadToRelative(6.0f, 6.0f, 8.5f, 13.0f)
+                reflectiveQuadToRelative(2.5f, 15.0f)
+                quadToRelative(0.0f, 8.0f, -2.5f, 15.0f)
+                reflectiveQuadToRelative(-8.5f, 13.0f)
+                lineTo(564.0f, 452.0f)
+                close()
+            }
+        }
+            .build()
+        return _bluetoothoff!!
+    }
+
+private var _bluetoothoff: ImageVector? = null
+
 @Preview
 @Composable
 private fun Preview() {
     Box(modifier = Modifier.padding(12.dp)) {
         Image(imageVector = Icons.Bluetooth, contentDescription = "")
+    }
+    Box(modifier = Modifier.padding(12.dp)) {
+        Image(imageVector = Icons.BluetoothOff, contentDescription = "")
     }
 }

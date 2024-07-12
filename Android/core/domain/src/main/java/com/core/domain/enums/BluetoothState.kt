@@ -1,4 +1,4 @@
-package com.sandy.bluetooth
+package com.core.domain.enums
 
 enum class BluetoothState {
     NONE, // 대기 상태
