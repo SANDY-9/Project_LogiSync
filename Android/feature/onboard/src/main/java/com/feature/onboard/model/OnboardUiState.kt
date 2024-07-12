@@ -14,12 +14,13 @@ internal data class OnboardUiState(
 )
 
 internal enum class OnboardPhase {
-    BLUETOOTH_CONNECT, WATCH_PAIRING_CHECK, APP_CONNECTION;
+    BLUETOOTH_CONNECT, WATCH_PAIRING_CHECK, APP_CONNECTION, SERVICE_STARTED;
 
     fun nextPhase(): OnboardPhase {
         val nextPhase = when (this) {
             BLUETOOTH_CONNECT -> WATCH_PAIRING_CHECK
-            else -> APP_CONNECTION
+            WATCH_PAIRING_CHECK -> APP_CONNECTION
+            else -> SERVICE_STARTED
         }
         return nextPhase
     }
