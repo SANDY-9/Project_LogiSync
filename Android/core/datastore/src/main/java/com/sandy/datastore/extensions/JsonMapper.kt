@@ -1,6 +1,7 @@
 package com.sandy.datastore.extensions
 
 import com.sandy.datastore.model.AccountDTO
+import com.sandy.datastore.model.DeviceDTO
 import org.json.JSONObject
 
 internal fun AccountDTO.toJson(): String {
@@ -19,5 +20,22 @@ internal fun String.toAccountDTO(): AccountDTO {
         name = jsonObject.getString("name"),
         tel = jsonObject.getString("tel"),
         duty = jsonObject.getString("duty")
+    )
+}
+
+internal fun DeviceDTO.toJson(): String {
+    val jsonObject = JSONObject()
+    jsonObject.put("name", name)
+    jsonObject.put("alias", alias)
+    jsonObject.put("id", id)
+    return jsonObject.toString()
+}
+
+internal fun String.toDeviceDTO(): DeviceDTO {
+    val jsonObject = JSONObject(this)
+    return DeviceDTO(
+        name = jsonObject.getString("name"),
+        alias = jsonObject.getString("alias"),
+        id = jsonObject.getString("id"),
     )
 }
