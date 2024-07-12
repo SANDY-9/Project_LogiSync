@@ -27,7 +27,6 @@ import com.feature.onboard.components.AppConnect
 import com.feature.onboard.components.BluetoothConnect
 import com.feature.onboard.components.WatchPairingCheck
 import com.feature.onboard.model.OnboardPhase
-import com.feature.onboard.model.OnboardUiEvent
 import com.feature.onboard.model.OnboardUiState
 
 @Composable
@@ -47,7 +46,7 @@ fun OnboardingScreen(
         OnboardingContent(
             state = state,
             onNavigate = onNavigate,
-            onNext = { viewModel.onEvent(OnboardUiEvent.NavigateToNextPhase) },
+            onNext = viewModel::updatePhase,
             modifier = modifier.weight(1f)
         )
     }
@@ -95,10 +94,11 @@ private fun OnboardingContent(
             text = stringResource(id = R.string.onboard_connect_title2),
             style = MaterialTheme.typography.headlineSmall,
         )
+
         when (state.phase) {
             OnboardPhase.BLUETOOTH_CONNECT -> BluetoothConnect(state.bluetoothState)
             OnboardPhase.WATCH_PAIRING_CHECK -> WatchPairingCheck(state.isBondedWatch)
-            OnboardPhase.APP_CONNECTION -> AppConnect(state.isConnectedApp)
+            else -> AppConnect(state.isConnectedApp)
         }
     }
 

@@ -7,5 +7,4 @@ interface BluetoothRepository {
 
     fun getBluetoothState(): Flow<BluetoothState>
     suspend fun isPairedDevice(): Boolean
-    fun getPairedDeviceName(): Flow<String>
 }
