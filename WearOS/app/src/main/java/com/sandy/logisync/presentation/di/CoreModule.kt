@@ -1,4 +1,4 @@
-package com.sandy.logisync.di
+package com.sandy.logisync.presentation.di
 
 import android.content.Context
 import android.hardware.SensorManager

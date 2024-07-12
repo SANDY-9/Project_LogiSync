@@ -4,22 +4,50 @@ import android.util.Log
 import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
+import com.sandy.logisync.data.datastore.WearableDataStoreRepository
+import com.sandy.logisync.model.toAccount
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MyWearableListenerService : WearableListenerService() {
+
+    @Inject
+    lateinit var wearableDataStoreRepository: WearableDataStoreRepository
+
+    @Inject
+    lateinit var myWearableClient: MyWearableClient
 
     // 노드에서 전송된 메시지가 타겟 노드에서 이 콜백을 트리거
     override fun onMessageReceived(p0: MessageEvent) {
-        val id = p0.data.toString(Charsets.UTF_8)
-        Log.e("확인", "onMessageReceived: $id")
+        val data = p0.data.toString(Charsets.UTF_8)
         when (p0.path) {
-            MessagePath.LOGIN.path -> {
-                Log.e("확인", "onMessageReceived LOGIN: ")
-            }
+            MessagePath.GET_LOGIN.path -> login(data)
 
-            MessagePath.REQUEST_HEAT_RATE.path -> {
+            MessagePath.GET_REQUEST_HEAT_RATE.path -> {
                 Log.e("확인", "onMessageReceived HEAT_RATE: ")
             }
         }
+    }
+
+    private fun login(accountData: String) {
+        val scope = CoroutineScope(Dispatchers.IO)
+        wearableDataStoreRepository.getAccount().onEach { existAccount ->
+            if (existAccount == null) {
+                wearableDataStoreRepository.registerAccount(accountData)
+            }
+            else {
+                val account = accountData.toAccount()
+                myWearableClient.requestTranscription(
+                    if (account.id == existAccount.id) MessageResponse.SUCCESS else MessageResponse.FAIL,
+                    TranscriptionPath.SEND_LOGIN_RESPONSE
+                )
+            }
+        }.launchIn(scope)
     }
 
     // 앱의 인스턴스가 알리는 기능이 네트워크에서 사용 가능해지면 이벤트가 이 콜백을 트리거합니다.

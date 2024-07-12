@@ -25,10 +25,7 @@ class MyWearableClient @Inject constructor(
                     CapabilityClient.FILTER_REACHABLE
                 )
             )
-            Log.e("확인", "getWearableCapabilityInfo: ${capabilityInfo.nodes}")
-            updateTranscriptionCapability(capabilityInfo).also {
-                requestTranscription(heartRate!!)
-            }
+            updateTranscriptionCapability(capabilityInfo)
         }
     }
 
@@ -42,21 +39,16 @@ class MyWearableClient @Inject constructor(
         return nodes.firstOrNull { it.isNearby }?.id ?: nodes.firstOrNull()?.id
     }
 
-    private var heartRate: ByteArray? = null
-
     // 메세지는 무조건 ByteArray형태
-    fun requestTranscription(heartRate: ByteArray) {
-        Log.e("확인", "requestTranscription: ${heartRate.toString(Charsets.UTF_8)}")
-        this.heartRate = heartRate
+    fun requestTranscription(data: String, transcriptionPath: TranscriptionPath) {
         transcriptionNodeId?.also { nodeId ->
-            Log.e("확인", "requestTranscription: $nodeId")
-            val sendTask = messageClient.sendMessage(
+            messageClient.sendMessage(
                 nodeId,
-                HEART_RATE_TRANSCRIPTION_MESSAGE_PATH,
-                heartRate
+                transcriptionPath.path,
+                data.toByteArray(Charsets.UTF_8)
             ).apply {
                 addOnSuccessListener {
-                    Log.e("확인", "requestTranscription 성공: $it")
+                    Log.e("확인", "requestTranscription: 앱->워치 메시지 전송 성공 $data")
                 }
                 addOnFailureListener {
                     Log.e("확인", "requestTranscription 실패: $it")

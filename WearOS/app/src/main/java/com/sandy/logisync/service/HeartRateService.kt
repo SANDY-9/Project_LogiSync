@@ -66,7 +66,7 @@ class HeartRateService : Service(), SensorEventListener {
             //if (rate > 0) _heartRate.postValue(rate)
             _heartRate.postValue(rate)
             Log.e("확인", "onSensorChanged: $rate")
-            myWearableClient.requestTranscription(10.toString().toByteArray())
+            // myWearableClient.requestTranscription(10.toString().toByteArray())
         }
     }
 

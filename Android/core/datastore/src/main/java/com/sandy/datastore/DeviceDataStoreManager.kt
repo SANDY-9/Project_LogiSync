@@ -1,6 +1,5 @@
 package com.sandy.datastore
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -23,7 +22,6 @@ class DeviceDataStoreManager @Inject constructor(
         id: String,
     ) {
         val deviceDTO = DeviceDTO(name, alias ?: "", id)
-        Log.e("확인", "updateLastConnectedDevice: $deviceDTO")
         dataStore.editPrefs(
             key = PrefsKeys.LAST_CONNECTED_DEVICE,
             value = deviceDTO.toJson()
