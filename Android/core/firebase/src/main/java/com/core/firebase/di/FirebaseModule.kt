@@ -1,10 +1,9 @@
 package com.core.firebase.di
 
 import com.core.firebase.BuildConfig
-import com.core.firebase.UserDataSource
-import com.core.firebase.UserDataSourceImpl
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,12 +17,12 @@ object FirebaseModule {
     @Provides
     @Singleton
     fun provideDatabaseReference(): DatabaseReference {
-        return FirebaseDatabase.getInstance().getReferenceFromUrl(BuildConfig.DATABASE_KEY)
+        return Firebase.database.getReferenceFromUrl(BuildConfig.DATABASE_KEY)
     }
 
-    @Provides
+    /*@Provides
     @Singleton
-    fun bindsUserDataSource(ref: DatabaseReference): UserDataSource {
-        return UserDataSourceImpl(ref)
-    }
+    fun bindsUserDataSource(ref: DatabaseReference): AuthClient {
+        return AuthClient(ref)
+    }*/
 }

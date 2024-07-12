@@ -1,7 +1,7 @@
 package com.feature.signup
 
 import androidx.lifecycle.ViewModel
-import com.core.firebase.UserDataSource
+import com.core.firebase.AuthClient
 import com.core.model.Account
 import com.feature.signup.model.SignupStep
 import com.feature.signup.model.SignupUiEvent
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignupViewModel @Inject constructor(
-    private val userDataSource: UserDataSource,
+    private val accountDataSource: AuthClient,
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<SignupUiState> = MutableStateFlow(SignupUiState())
@@ -164,7 +164,7 @@ class SignupViewModel @Inject constructor(
     }
 
     private fun checkSignup() {
-        userDataSource.checkTel(state.check.tel) { existed ->
+        accountDataSource.checkTel(state.check.tel) { existed ->
             if (!existed) updatePhase(SignupStep.AGREEMENT)
         }
     }
@@ -174,13 +174,13 @@ class SignupViewModel @Inject constructor(
     }
 
     private fun checkId() {
-        userDataSource.checkId(state.joining.id) { existed ->
+        accountDataSource.checkId(state.joining.id) { existed ->
 
         }
     }
 
     private fun requestSignup() {
-        userDataSource.signup(
+        accountDataSource.signup(
             id = state.joining.id,
             pwd = state.joining.pwd,
             name = state.check.name,
