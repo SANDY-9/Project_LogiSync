@@ -10,7 +10,7 @@ class MyWearableListenerService : WearableListenerService() {
     // 노드에서 전송된 메시지가 타겟 노드에서 이 콜백을 트리거
     override fun onMessageReceived(p0: MessageEvent) {
         val id = p0.data.toString(Charsets.UTF_8)
-        Log.e("확인", "onMessageReceived: $id}")
+        Log.e("확인", "onMessageReceived: $id")
         when (p0.path) {
             MessagePath.LOGIN.path -> {
                 Log.e("확인", "onMessageReceived LOGIN: ")

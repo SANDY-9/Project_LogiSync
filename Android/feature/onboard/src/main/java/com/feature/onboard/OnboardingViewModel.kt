@@ -6,10 +6,10 @@ import com.core.domain.enums.BluetoothState
 import com.core.domain.usecases.bluetooth.GetBluetoothStateUseCase
 import com.core.domain.usecases.bluetooth.GetIsPairedDeviceUseCase
 import com.core.domain.usecases.wearable.GetWearableConnectStateUseCase
+import com.core.domain.usecases.wearable.LoginWearableUseCase
 import com.feature.onboard.model.OnboardPhase
 import com.feature.onboard.model.OnboardUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +24,7 @@ class OnboardingViewModel @Inject constructor(
     private val getBluetoothStateUseCase: GetBluetoothStateUseCase,
     private val getIsPairedDeviceUseCase: GetIsPairedDeviceUseCase,
     private val getWearableConnectStateUseCase: GetWearableConnectStateUseCase,
+    private val loginWearableUseCase: LoginWearableUseCase,
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<OnboardUiState> = MutableStateFlow(OnboardUiState())
@@ -73,7 +74,6 @@ class OnboardingViewModel @Inject constructor(
     }
 
     private fun updateIsConnectedAppState() {
-        val scope = viewModelScope
         getWearableConnectStateUseCase().onEach { pairedDevice ->
             val isConnected = pairedDevice != null
             _stateFlow.update {
@@ -83,15 +83,16 @@ class OnboardingViewModel @Inject constructor(
                 )
             }
             if (isConnected) phaseFlow.value = OnboardPhase.SERVICE_STARTED
-            if (isConnected) scope.cancel()
-        }.launchIn(scope)
+        }.launchIn(viewModelScope)
     }
 
     private fun updateIsServiceStartedState() {
-        _stateFlow.update {
-            it.copy(
-                isServiceStarted = true
-            )
-        }
+        loginWearableUseCase().onEach {
+            _stateFlow.update {
+                it.copy(
+                    isServiceStarted = true
+                )
+            }
+        }.launchIn(viewModelScope)
     }
 }

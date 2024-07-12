@@ -2,6 +2,7 @@ package com.core.data.repository.wearable
 
 import com.core.data.mapper.toDevice
 import com.core.domain.repository.WearableRepository
+import com.core.model.Account
 import com.core.model.Device
 import com.sandy.bluetooth.MyBluetoothManager
 import com.sandy.bluetooth.MyWearableClient
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import javax.inject.Inject
 
 private const val INTERVAL = 1200L
@@ -44,8 +46,19 @@ class WearableRepositoryImpl @Inject constructor(
         }*/
     }.flowOn(Dispatchers.IO).distinctUntilChanged()
 
-    override suspend fun sendLogin(id: String) = withContext(Dispatchers.IO) {
-        wearableClient.requestTranscription(data = id, transcription = Transcription.LOGIN)
+    override suspend fun sendLogin(account: Account) = withContext(Dispatchers.IO) {
+        wearableClient.requestTranscription(
+            data = account.toJson(),
+            transcription = Transcription.LOGIN
+        )
+    }
+
+    private fun Account.toJson(): String {
+        val jsonObject = JSONObject()
+        jsonObject.put("id", id)
+        jsonObject.put("name", name)
+        jsonObject.put("tel", tel)
+        return jsonObject.toString()
     }
 
     override suspend fun requestCollectHeartRate(id: String) = withContext(Dispatchers.IO) {
