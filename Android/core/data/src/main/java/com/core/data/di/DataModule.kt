@@ -29,4 +29,9 @@ internal abstract class DataModule {
     abstract fun bindsDevicePrefsRepository(
         impl: DevicePrefsRepositoryImpl
     ): DevicePrefsRepository
+
+    @Binds
+    abstract fun bindsLoginRepository(
+        impl: LoginRepositoryImpl
+    ): LoginRepository
 }
