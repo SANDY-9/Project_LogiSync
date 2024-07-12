@@ -6,7 +6,7 @@ import javax.inject.Inject
 class CollectHeartRateUseCase @Inject constructor(
     private val wearableRepository: WearableRepository
 ) {
-    suspend fun invoke(id: String): Boolean {
+    suspend operator fun invoke(id: String): Boolean {
         try {
             wearableRepository.requestCollectHeartRate(id)
             return true

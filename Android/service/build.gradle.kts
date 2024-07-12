@@ -37,6 +37,8 @@ android {
 
 dependencies {
 
+    implementation(project(":core:bluetooth"))
+
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)
 

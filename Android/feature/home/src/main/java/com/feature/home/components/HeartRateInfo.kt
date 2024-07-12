@@ -1,11 +1,8 @@
 package com.feature.home.components
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,7 +14,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,8 +26,9 @@ import com.core.model.HeartRate
 import com.feature.home.R
 
 @Composable
-fun HeartRateInfo(
+internal fun HeartRateInfo(
     heartRate: HeartRate,
+    onRequestCollect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column {
@@ -50,14 +47,18 @@ fun HeartRateInfo(
                 )
             ) {
                 Column(
-                    modifier = modifier.weight(1f).padding(end = 24.dp)
+                    modifier = modifier
+                        .weight(1f)
+                        .padding(end = 24.dp)
                 ) {
-                    HeartRateRecord()
+                    HeartRateRecord(heartRate.rate)
                     HeartRateAnalysis()
                     Spacer(modifier = modifier.height(16.dp))
                     HeartRateGraph()
                 }
-                HeartRateCollectButton()
+                HeartRateCollectButton(
+                    onClick = onRequestCollect,
+                )
             }
         }
     }
@@ -65,6 +66,7 @@ fun HeartRateInfo(
 
 @Composable
 private fun HeartRateRecord(
+    rate: Int,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -78,7 +80,7 @@ private fun HeartRateRecord(
         )
         Text(
             modifier = Modifier.padding(horizontal = 8.dp),
-            text = "76",
+            text = "$rate",
             style = MaterialTheme.typography.headlineMedium,
         )
         Text(
@@ -125,16 +127,17 @@ private fun HeartRateGraph(
 @Composable
 private fun HeartRateCollectButton(
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
     BasicOutlinedButton(
         modifier = modifier,
         title = stringResource(id = R.string.home_heart_rate_collect),
-        onClick = { /*TODO*/ }
+        onClick = onClick,
     )
 }
 
 @Preview(name = "HeartRateInfo")
 @Composable
 private fun PreviewHeartRateInfo() {
-    HeartRateInfo(HeartRate())
+    HeartRateInfo(HeartRate(), {})
 }

@@ -8,6 +8,7 @@ package com.sandy.logisync.presentation.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +22,7 @@ import com.sandy.logisync.presentation.common.STOP_HEART_RATE_SENSOR
 import com.sandy.logisync.presentation.ui.screens.WatchScreen
 import com.sandy.logisync.presentation.ui.theme.LogisyncWearTheme
 import com.sandy.logisync.service.HeartRateService
+import com.sandy.logisync.service.MyWearableListenerService
 import com.sandy.logisync.utils.PermissionManager
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -57,6 +59,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun commandHeartRateService(command: String) {
+        Log.e("확인", "commandHeartRateService: $command")
+        startService(Intent(this, MyWearableListenerService::class.java))
         val intent = Intent(this, HeartRateService::class.java).apply {
             action = command
         }

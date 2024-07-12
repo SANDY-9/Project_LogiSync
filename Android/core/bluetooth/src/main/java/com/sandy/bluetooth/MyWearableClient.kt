@@ -22,7 +22,6 @@ class MyWearableClient @Inject constructor(
                 CapabilityClient.FILTER_REACHABLE
             )
         )
-        Log.e("확인", "getWearableCapabilityInfo: ${capabilityInfo.nodes}")
         updateTranscriptionCapability(capabilityInfo)
         return capabilityInfo.nodes.isNotEmpty()
     }
@@ -37,12 +36,17 @@ class MyWearableClient @Inject constructor(
     }
 
     fun requestTranscription(data: String, transcription: Transcription) {
+        Log.e("확인", "updateTranscriptionCapability: $this")
         transcriptionNodeId?.also { nodeId ->
+            Log.e("확인", "requestTranscription: $nodeId")
             messageClient.sendMessage(
                 nodeId,
                 transcription.path,
                 data.toByteArray()
             ).apply {
+                addOnSuccessListener {
+                    Log.e("확인", "requestTranscription: 성공?")
+                }
                 addOnFailureListener {
                     throw WearableFailException()
                 }

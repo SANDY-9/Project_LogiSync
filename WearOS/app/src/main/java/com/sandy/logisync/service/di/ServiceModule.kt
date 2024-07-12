@@ -1,11 +1,10 @@
-package com.sandy.bluetooth.di
+package com.sandy.logisync.service.di
 
-import android.bluetooth.BluetoothManager
 import android.content.Context
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
-import com.sandy.bluetooth.MyWearableClient
+import com.sandy.logisync.service.MyWearableClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,13 +14,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object BluetoothModule {
-
-    @Singleton
-    @Provides
-    fun provideBluetoothManager(@ApplicationContext context: Context): BluetoothManager {
-        return context.getSystemService(BluetoothManager::class.java)
-    }
+object ServiceModule {
 
     @Singleton
     @Provides
@@ -39,7 +32,7 @@ object BluetoothModule {
     @Provides
     fun provideMyWearableClient(
         capabilityClient: CapabilityClient,
-        messageClient: MessageClient,
+        messageClient: MessageClient
     ): MyWearableClient {
         return MyWearableClient(capabilityClient, messageClient)
     }

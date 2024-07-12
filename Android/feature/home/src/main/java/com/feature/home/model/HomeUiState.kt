@@ -9,6 +9,7 @@ import com.feature.home.utils.DateUtils
 data class HomeUiState(
     val date: String = DateUtils.getDate(),
     val account: Account = Account(),
+    val heartRateLoading: Boolean = false,
     val heartRate: HeartRate = HeartRate(),
     val pairedDeviceName: String = "",
     val isPairedWatch: Boolean = false,

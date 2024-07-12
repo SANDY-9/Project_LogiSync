@@ -13,11 +13,15 @@ import androidx.lifecycle.MutableLiveData
 import com.sandy.logisync.presentation.common.START_HEART_RATE_SENSOR
 import com.sandy.logisync.presentation.common.STOP_HEART_RATE_SENSOR
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HeartRateService : Service(), SensorEventListener {
 
     private var sensorManager: SensorManager? = null
+
+    @Inject
+    lateinit var myWearableClient: MyWearableClient
 
     companion object {
         private val _heartRate = MutableLiveData<Int>()
@@ -28,7 +32,12 @@ class HeartRateService : Service(), SensorEventListener {
         return null
     }
 
+    override fun onCreate() {
+        super.onCreate()
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.e("확인", "onStartCommand: 확인")
         intent?.let {
             when (it.action) {
                 START_HEART_RATE_SENSOR -> startHeartRateSensor()
@@ -39,8 +48,10 @@ class HeartRateService : Service(), SensorEventListener {
     }
 
     private fun startHeartRateSensor() {
+        myWearableClient.setupConnectApp()
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         val sensor = sensorManager?.getDefaultSensor(Sensor.TYPE_HEART_RATE)
+        Log.e("확인", "startHeartRateSensor: $sensor")
         sensorManager?.registerListener(
             this,
             sensor,
@@ -54,6 +65,8 @@ class HeartRateService : Service(), SensorEventListener {
         rate?.let { rate ->
             //if (rate > 0) _heartRate.postValue(rate)
             _heartRate.postValue(rate)
+            Log.e("확인", "onSensorChanged: $rate")
+            myWearableClient.requestTranscription(10.toString().toByteArray())
         }
     }
 

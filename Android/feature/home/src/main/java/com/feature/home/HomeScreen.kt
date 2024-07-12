@@ -1,7 +1,6 @@
 package com.feature.home
 
 import android.app.Activity
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -41,18 +40,24 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val state: HomeUiState by viewModel.stateFlow.collectAsStateWithLifecycle()
 
+    // DisposableEffect
     val context = LocalContext.current as? Activity?
+    HomeWearableListener(context)
     BackHandler(enabled = true) {
         context?.finish()
     }
 
+    // Ui
+    val state: HomeUiState by viewModel.stateFlow.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         HomeAppBar()
-        HomeContent(state)
+        HomeContent(
+            state = state,
+            onRequestCollect = viewModel::requestCollectHeartBeat,
+        )
     }
 }
 
@@ -86,8 +91,9 @@ private fun HomeAppBar(
 }
 
 @Composable
-fun HomeContent(
+private fun HomeContent(
     state: HomeUiState,
+    onRequestCollect: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
@@ -110,6 +116,7 @@ fun HomeContent(
         Spacer(modifier = modifier.height(30.dp))
         HeartRateInfo(
             heartRate = state.heartRate,
+            onRequestCollect = onRequestCollect,
         )
         Spacer(modifier = modifier.height(30.dp))
         ReportInfo()
