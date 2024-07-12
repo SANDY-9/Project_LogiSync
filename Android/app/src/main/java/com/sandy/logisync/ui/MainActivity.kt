@@ -32,8 +32,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     MainNavGraph(
                         navController = rememberNavController(),
-                        startDestination = Route.Login.route
-                        //startDestination = Route.Onboarding.route
+                        //startDestination = Route.Login.route
+                        startDestination = Route.Onboarding.route
                         //startDestination = Route.Home.route
                     )
                 }

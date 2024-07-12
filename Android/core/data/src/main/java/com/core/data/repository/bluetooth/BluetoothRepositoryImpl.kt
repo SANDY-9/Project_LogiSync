@@ -1,5 +1,6 @@
 package com.core.data.repository.bluetooth
 
+import android.util.Log
 import com.core.domain.enums.BluetoothState
 import com.core.domain.repository.BluetoothRepository
 import com.sandy.bluetooth.MyBluetoothManager
@@ -42,13 +43,8 @@ class BluetoothRepositoryImpl @Inject constructor(
     override suspend fun isPairedDevice(): Boolean {
         return withContext(Dispatchers.IO) {
             val device = bluetoothManager.getBluetoothPairedWatch()
+            Log.e("확인", "isPairedDevice: $device")
             return@withContext true //device.isNotEmpty()
         }
     }
-
-    override fun getPairedDeviceName(): Flow<String> = flow {
-        val device = bluetoothManager.getBluetoothPairedWatch()
-        val deviceName = if (device.isNotEmpty()) bluetoothManager.getDeviceName(device[0]) else ""
-        emit(deviceName)
-    }.flowOn(Dispatchers.IO)
 }

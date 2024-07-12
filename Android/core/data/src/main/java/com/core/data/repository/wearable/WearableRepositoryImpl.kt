@@ -1,6 +1,9 @@
 package com.core.data.repository.wearable
 
+import com.core.data.mapper.toDevice
 import com.core.domain.repository.WearableRepository
+import com.core.model.Device
+import com.sandy.bluetooth.MyBluetoothManager
 import com.sandy.bluetooth.MyWearableClient
 import com.sandy.bluetooth.Transcription
 import kotlinx.coroutines.Dispatchers
@@ -15,15 +18,28 @@ private const val INTERVAL = 1200L
 
 class WearableRepositoryImpl @Inject constructor(
     private val wearableClient: MyWearableClient,
+    private val bluetoothManager: MyBluetoothManager,
 ) : WearableRepository {
 
     // 테스트용
-    override fun getWearableConnectState(): Flow<Boolean> = flow {
-        val isConnected = wearableClient.isConnectWearable()
-        emit(isConnected)
+    override fun getWearableConnectState(): Flow<Device?> = flow {
+        val node = wearableClient.getConnectWearable()
+        if (node == null) {
+            emit(null)
+        }
+        else {
+            val alias = bluetoothManager.getDeviceAlias()
+            emit(node.toDevice(alias))
+        }
         /*while (true) {
-            val isConnected = wearableClient.isConnectWearable()
-            emit(isConnected)
+            val node = wearableClient.getConnectWearable()
+            if(node == null) {
+                emit(null)
+            }
+            else {
+                val alias = bluetoothManager.getDeviceAlias()
+                emit(node.toDevice(alias))
+            }
             delay(INTERVAL)
         }*/
     }.flowOn(Dispatchers.IO).distinctUntilChanged()

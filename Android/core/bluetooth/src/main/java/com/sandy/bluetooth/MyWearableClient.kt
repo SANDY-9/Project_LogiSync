@@ -15,15 +15,16 @@ class MyWearableClient @Inject constructor(
 ) {
 
     // CapabilityClient는 Wear OS 네트워크의 어느 노드가 어떤 맞춤 앱 기능을 지원하는지에 관한 정보를 제공
-    fun isConnectWearable(): Boolean {
+    fun getConnectWearable(): Node? {
         val capabilityInfo = Tasks.await(
             capabilityClient.getCapability(
                 WEARABLE_CAPABILITY_NAME,
                 CapabilityClient.FILTER_REACHABLE
             )
         )
+        Log.e("확인", "isConnectWearable: ${capabilityInfo.nodes.firstOrNull()}")
         updateTranscriptionCapability(capabilityInfo)
-        return capabilityInfo.nodes.isNotEmpty()
+        return capabilityInfo.nodes.firstOrNull()
     }
 
     private var transcriptionNodeId: String? = null
