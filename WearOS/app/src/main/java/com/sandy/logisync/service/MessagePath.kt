@@ -1,7 +1,7 @@
 package com.sandy.logisync.service
 
-internal enum class MessagePath(val path: String) {
+enum class MessagePath(val path: String) {
     TEST("/test"),
-    REQUEST_HEAT_RATE("/request_heart_rate"),
-    LOGIN("/login"),
+    GET_REQUEST_HEAT_RATE("/request_heart_rate"),
+    GET_LOGIN("/login"),
 }

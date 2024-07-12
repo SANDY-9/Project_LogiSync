@@ -77,6 +77,9 @@ dependencies {
 
     // Wearable
     implementation("com.google.android.gms:play-services-wearable:18.2.0")
+
+    // dataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 }
 
 kapt {

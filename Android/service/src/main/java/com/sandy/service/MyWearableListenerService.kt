@@ -1,6 +1,7 @@
 package com.sandy.service
 
 import android.content.Intent
+import android.util.Log
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,6 +21,10 @@ class MyWearableListenerService : WearableListenerService() {
     override fun onMessageReceived(p0: MessageEvent) {
         val data = p0.data.toString(Charsets.UTF_8)
         when (p0.path) {
+            MessagePath.GET_LOGIN_RESPONSE.path -> {
+                Log.e("확인", "onMessageReceived: $data")
+            }
+
             MessagePath.GET_HEART_RATE.path -> {
                 _heartRate.value = data.toInt()
             }

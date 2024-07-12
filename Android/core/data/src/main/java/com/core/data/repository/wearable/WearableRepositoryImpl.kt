@@ -6,7 +6,7 @@ import com.core.model.Account
 import com.core.model.Device
 import com.sandy.bluetooth.MyBluetoothManager
 import com.sandy.bluetooth.MyWearableClient
-import com.sandy.bluetooth.Transcription
+import com.sandy.bluetooth.TranscriptionPath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -49,7 +49,7 @@ class WearableRepositoryImpl @Inject constructor(
     override suspend fun sendLogin(account: Account) = withContext(Dispatchers.IO) {
         wearableClient.requestTranscription(
             data = account.toJson(),
-            transcription = Transcription.LOGIN
+            transcriptionPath = TranscriptionPath.SEND_LOGIN
         )
     }
 
@@ -64,7 +64,7 @@ class WearableRepositoryImpl @Inject constructor(
     override suspend fun requestCollectHeartRate(id: String) = withContext(Dispatchers.IO) {
         wearableClient.requestTranscription(
             data = id,
-            transcription = Transcription.REQUEST_HEAT_RATE
+            transcriptionPath = TranscriptionPath.SEND_REQUEST_HEAT_RATE
         )
     }
 }

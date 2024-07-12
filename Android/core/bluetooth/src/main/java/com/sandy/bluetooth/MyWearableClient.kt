@@ -22,7 +22,6 @@ class MyWearableClient @Inject constructor(
                 CapabilityClient.FILTER_REACHABLE
             )
         )
-        Log.e("확인", "isConnectWearable: ${capabilityInfo.nodes.firstOrNull()}")
         updateTranscriptionCapability(capabilityInfo)
         return capabilityInfo.nodes.firstOrNull()
     }
@@ -36,17 +35,16 @@ class MyWearableClient @Inject constructor(
         return nodes.firstOrNull { it.isNearby }?.id ?: nodes.firstOrNull()?.id
     }
 
-    fun requestTranscription(data: String, transcription: Transcription) {
-        Log.e("확인", "updateTranscriptionCapability: $this")
+    fun requestTranscription(data: String, transcriptionPath: TranscriptionPath) {
         transcriptionNodeId?.also { nodeId ->
             Log.e("확인", "requestTranscription: $nodeId")
             messageClient.sendMessage(
                 nodeId,
-                transcription.path,
+                transcriptionPath.path,
                 data.toByteArray()
             ).apply {
                 addOnSuccessListener {
-                    Log.e("확인", "requestTranscription: 성공?")
+                    Log.e("확인", "requestTranscription: 앱->워치 메시지 전송 성공 $data")
                 }
                 addOnFailureListener {
                     throw WearableFailException()
