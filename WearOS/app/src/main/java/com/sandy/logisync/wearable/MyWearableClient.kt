@@ -1,4 +1,4 @@
-package com.sandy.logisync.service
+package com.sandy.logisync.wearable
 
 import android.util.Log
 import com.google.android.gms.tasks.Tasks

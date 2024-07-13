@@ -6,6 +6,10 @@ import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import com.sandy.logisync.data.datastore.WearableDataStoreRepository
 import com.sandy.logisync.model.toAccount
+import com.sandy.logisync.wearable.MessagePath
+import com.sandy.logisync.wearable.MessageResponse
+import com.sandy.logisync.wearable.MyWearableClient
+import com.sandy.logisync.wearable.TranscriptionPath
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
