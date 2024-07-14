@@ -51,10 +51,13 @@
         </activity>
 
         <service
-            android:name="com.sandy.logisync.service.MyWearableListenerService"
+            android:name="com.sandy.logisync.wearable.service.MyWearableListenerService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <action android:name="com.google.android.gms.wearable.REQUEST_RECEIVED" />
+                <action android:name="com.google.android.gms.wearable.CAPABILITY_CHANGED" />
+
                 <data
                     android:host="*"
                     android:path="/start-activity"
