@@ -106,14 +106,17 @@ class MainActivity : ComponentActivity() {
         mainViewModel.isGrantedPermission
             .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
             .onEach { isGranted ->
+                //if (isGranted) PassiveDataMonitoringWorker.registerWorker(this)
             }
             .launchIn(lifecycleScope)
     }
 
     private fun LogiSyncWearApp(): @Composable () -> Unit = {
+        val measuredHeartRate by mainViewModel.measuredHeartRate.collectAsState()
         val isGrantedPermission by mainViewModel.isGrantedPermission.collectAsState()
         LogisyncWearTheme {
             if (isGrantedPermission) {
+                WatchScreen(measuredHeartRate)
             }
             else {
                 PermissionScreen(onPermission = this::requestPermission)
