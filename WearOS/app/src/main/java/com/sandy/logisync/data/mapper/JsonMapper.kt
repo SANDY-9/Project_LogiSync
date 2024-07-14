@@ -17,15 +17,15 @@ fun String.toAccount(): Account {
 
 fun HeartRate.toJson(): String {
     val jsonObject = JSONObject()
-    jsonObject.put("date", date.toString())
-    jsonObject.put("value", value)
+    jsonObject.put("bpm", bpm)
+    jsonObject.put("time", time.toString())
     return jsonObject.toString()
 }
 
 fun String.toHeartRate(): HeartRate {
     val jsonObject = JSONObject(this)
     return HeartRate(
-        date = LocalDateTime.parse(jsonObject.getString("date")),
-        value = jsonObject.getInt("value")
+        bpm = jsonObject.getInt("bpm"),
+        time = LocalDateTime.parse(jsonObject.getString("time")),
     )
 }

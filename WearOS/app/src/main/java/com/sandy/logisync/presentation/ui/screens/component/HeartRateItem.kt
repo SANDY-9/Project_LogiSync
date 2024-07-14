@@ -63,11 +63,11 @@ private fun AvailableHeartRate(
         Spacer(modifier = modifier.size(8.dp))
         Text(
             style = MaterialTheme.typography.display2,
-            text = "${heartRate?.value}"
+            text = "${heartRate?.bpm}"
         )
     }
     Text(
-        text = heartRate?.date.toString(),
+        text = heartRate?.time.toString(),
         style = MaterialTheme.typography.caption3
     )
 }
