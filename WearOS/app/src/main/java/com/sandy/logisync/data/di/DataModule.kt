@@ -4,6 +4,8 @@ import com.sandy.logisync.data.datastore.WearableDataStoreRepository
 import com.sandy.logisync.data.datastore.WearableDataStoreRepositoryImpl
 import com.sandy.logisync.data.health.HealthMeasureRepository
 import com.sandy.logisync.data.health.HealthMeasureRepositoryImpl
+import com.sandy.logisync.data.network.NetworkRepository
+import com.sandy.logisync.data.network.NetworkRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -22,4 +24,9 @@ abstract class DataModule {
     abstract fun bindsHealthMeasureRepository(
         impl: HealthMeasureRepositoryImpl
     ): HealthMeasureRepository
+
+    @Binds
+    abstract fun bindsNetworkRepository(
+        impl: NetworkRepositoryImpl
+    ): NetworkRepository
 }
