@@ -35,13 +35,13 @@ fun HeartRateItem(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         when (measuredHeartRate.availability) {
+            MeasuredAvailability.ACQUIRING -> HeartRateLoading()
             MeasuredAvailability.AVAILABLE -> AvailableHeartRate(
                 heartRate = measuredHeartRate.heartRate
             )
-
             MeasuredAvailability.UNAVAILABLE_DEVICE_OFF_BODY -> DeviceOffBodyMessage()
             MeasuredAvailability.UNAVAILABLE -> UnavailableHeartRateMessage()
-            else -> Unit
+            MeasuredAvailability.NONE -> Unit
         }
 
     }

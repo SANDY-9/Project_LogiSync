@@ -6,7 +6,8 @@ data class MeasuredHeartRate(
 )
 
 enum class MeasuredAvailability {
-    LOADING,
+    NONE,
+    ACQUIRING,
     AVAILABLE,
     UNAVAILABLE,
     UNAVAILABLE_DEVICE_OFF_BODY,

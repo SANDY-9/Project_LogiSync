@@ -116,7 +116,10 @@ class MainActivity : ComponentActivity() {
         val isGrantedPermission by mainViewModel.isGrantedPermission.collectAsState()
         LogisyncWearTheme {
             if (isGrantedPermission) {
-                WatchScreen(measuredHeartRate)
+                WatchScreen(
+                    measuredHeartRate = measuredHeartRate,
+                    onCollect = mainViewModel::collectHeartRate,
+                )
             }
             else {
                 PermissionScreen(onPermission = this::requestPermission)

@@ -2,8 +2,10 @@
 <resources>
     <string name="app_name">로지싱크Wear</string>
 
-    // heart rate
+    <!-- heart rate -->
     <string name="heart_rate_title">심박수</string>
     <string name="heart_rate_error_body_off">워치를 손목에 착용해주세요.</string>
     <string name="heart_rate_error_body_disabled">심박수 측정을\n지원하지 않는 기기입니다.</string>
+    <string name="heart_rate_collect">수집</string>
+
 </resources>

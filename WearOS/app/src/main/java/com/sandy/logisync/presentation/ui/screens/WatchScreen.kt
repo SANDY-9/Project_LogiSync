@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.Text
 import androidx.wear.tooling.preview.devices.WearDevices
+import com.sandy.logisync.R
 import com.sandy.logisync.model.HeartRate
 import com.sandy.logisync.model.MeasuredAvailability
 import com.sandy.logisync.model.MeasuredHeartRate
@@ -25,6 +27,7 @@ import java.time.LocalDateTime
 @Composable
 fun WatchScreen(
     measuredHeartRate: MeasuredHeartRate,
+    onCollect: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -39,9 +42,9 @@ fun WatchScreen(
             modifier = modifier
                 .padding(4.dp)
                 .size(70.dp, 40.dp),
-            onClick = { /*TODO*/ },
+            onClick = onCollect,
         ) {
-            Text(text = "수집")
+            Text(text = stringResource(id = R.string.heart_rate_collect))
         }
     }
 }
@@ -56,6 +59,7 @@ fun WatchScreenPreview() {
                 date = LocalDateTime.now(),
                 value = 60
             )
-        )
+        ),
+        {}
     )
 }
