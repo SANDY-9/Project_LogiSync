@@ -1,6 +1,5 @@
 package com.sandy.logisync.data.datastore
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -18,7 +17,6 @@ class WearableDataStoreRepositoryImpl @Inject constructor(
 ) : WearableDataStoreRepository {
 
     override suspend fun registerAccount(account: String) {
-        Log.e("확인", "registerAccount: $account")
         dataStore.editPrefs(
             key = PrefsKeys.ACCOUNT,
             value = account,
@@ -35,7 +33,6 @@ class WearableDataStoreRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateLastHeartRate(heartRate: HeartRate) {
-        Log.e("확인", "updateLastHeartRate: $heartRate")
         dataStore.editPrefs(
             key = PrefsKeys.LAST_HEART_RATE,
             value = heartRate.toJson()

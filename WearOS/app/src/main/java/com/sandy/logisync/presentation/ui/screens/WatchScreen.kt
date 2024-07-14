@@ -56,8 +56,8 @@ fun WatchScreenPreview() {
         MeasuredHeartRate(
             MeasuredAvailability.AVAILABLE,
             HeartRate(
-                date = LocalDateTime.now(),
-                value = 60
+                time = LocalDateTime.now(),
+                bpm = 60
             )
         ),
         {}

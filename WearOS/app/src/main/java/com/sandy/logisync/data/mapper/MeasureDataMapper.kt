@@ -22,7 +22,7 @@ internal fun MeasureMessage.toMeasuredHeartRate(): MeasuredHeartRate {
 
 private fun HeartRateDTO.toHeartRate(): HeartRate {
     return HeartRate(
-        date = date,
-        value = value.toInt(),
+        bpm = value.toInt(),
+        time = date,
     )
 }
