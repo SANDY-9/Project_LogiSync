@@ -27,6 +27,9 @@ class MainViewModel @Inject constructor(
     wearableDataStoreRepository: WearableDataStoreRepository,
 ) : ViewModel() {
 
+    private val _initialPairedMobile = MutableStateFlow<Boolean>(false)
+    val initialPairedMobile = _initialPairedMobile.asStateFlow()
+
     private val _measuredHeartRate = MutableStateFlow(
         MeasuredHeartRate(MeasuredAvailability.NONE, null)
     )
@@ -36,6 +39,10 @@ class MainViewModel @Inject constructor(
     val isGrantedPermission = _isGrantedPermission.asStateFlow()
 
     init {
+        wearableDataStoreRepository.getAccount().onEach {
+            _initialPairedMobile.value = it != null
+        }.launchIn(viewModelScope)
+        // 심박수
         wearableDataStoreRepository.getLastHeartRate().shareIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,

@@ -21,10 +21,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import com.sandy.logisync.data.health.HeartRateServiceManager
+import com.sandy.logisync.presentation.ui.screens.NotInitialPairedScreen
 import com.sandy.logisync.presentation.ui.screens.PermissionScreen
 import com.sandy.logisync.presentation.ui.screens.WatchScreen
 import com.sandy.logisync.presentation.ui.theme.LogisyncWearTheme
-import com.sandy.logisync.wearable.health.HeartRateServiceManager
 import com.sandy.logisync.wearable.service.MyWearableListenerService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -112,17 +113,23 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun LogiSyncWearApp(): @Composable () -> Unit = {
+        val initialPaired by mainViewModel.initialPairedMobile.collectAsStateWithLifecycle()
         val measuredHeartRate by mainViewModel.measuredHeartRate.collectAsStateWithLifecycle()
         val isGrantedPermission by mainViewModel.isGrantedPermission.collectAsStateWithLifecycle()
         LogisyncWearTheme {
-            if (isGrantedPermission) {
-                WatchScreen(
-                    measuredHeartRate = measuredHeartRate,
-                    onCollect = mainViewModel::collectHeartRate,
-                )
+            if (initialPaired) {
+                if (isGrantedPermission) {
+                    WatchScreen(
+                        measuredHeartRate = measuredHeartRate,
+                        onCollect = mainViewModel::collectHeartRate,
+                    )
+                }
+                else {
+                    PermissionScreen(onPermission = this::requestPermission)
+                }
             }
             else {
-                PermissionScreen(onPermission = this::requestPermission)
+                NotInitialPairedScreen()
             }
         }
 
