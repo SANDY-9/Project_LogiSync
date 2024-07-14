@@ -15,10 +15,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.sandy.logisync.presentation.ui.screens.PermissionScreen
@@ -112,8 +112,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun LogiSyncWearApp(): @Composable () -> Unit = {
-        val measuredHeartRate by mainViewModel.measuredHeartRate.collectAsState()
-        val isGrantedPermission by mainViewModel.isGrantedPermission.collectAsState()
+        val measuredHeartRate by mainViewModel.measuredHeartRate.collectAsStateWithLifecycle()
+        val isGrantedPermission by mainViewModel.isGrantedPermission.collectAsStateWithLifecycle()
         LogisyncWearTheme {
             if (isGrantedPermission) {
                 WatchScreen(

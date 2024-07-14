@@ -2,19 +2,23 @@ package com.sandy.logisync.presentation.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sandy.logisync.data.datastore.WearableDataStoreRepository
 import com.sandy.logisync.data.health.HealthMeasureRepository
 import com.sandy.logisync.model.MeasuredAvailability
 import com.sandy.logisync.model.MeasuredHeartRate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val healthMeasureRepository: HealthMeasureRepository,
+    private val wearableDataStoreRepository: WearableDataStoreRepository,
 ) : ViewModel() {
 
     private val _measuredHeartRate = MutableStateFlow(
@@ -26,7 +30,20 @@ class MainViewModel @Inject constructor(
     val isGrantedPermission = _isGrantedPermission.asStateFlow()
 
     init {
-        collectHeartRate()
+        wearableDataStoreRepository.getLastHeartRate().shareIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+        ).onEach { lastHeartRate ->
+            if (lastHeartRate == null) {
+                collectHeartRate()
+            }
+            else {
+                _measuredHeartRate.value = MeasuredHeartRate(
+                    availability = MeasuredAvailability.AVAILABLE,
+                    heartRate = lastHeartRate
+                )
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun updateGrantedPermission(isGranted: Boolean) {
