@@ -6,9 +6,10 @@
 
 package com.sandy.logisync.presentation.ui
 
+import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,68 +18,113 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.sandy.logisync.presentation.common.START_HEART_RATE_SENSOR
-import com.sandy.logisync.presentation.common.STOP_HEART_RATE_SENSOR
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import com.sandy.logisync.presentation.ui.screens.PermissionScreen
 import com.sandy.logisync.presentation.ui.screens.WatchScreen
 import com.sandy.logisync.presentation.ui.theme.LogisyncWearTheme
-import com.sandy.logisync.service.HeartRateService
-import com.sandy.logisync.service.MyWearableListenerService
-import com.sandy.logisync.utils.PermissionManager
+import com.sandy.logisync.wearable.health.HeartRateServiceManager
+import com.sandy.logisync.wearable.service.MyWearableListenerService
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
 
+    @Inject
+    lateinit var healthClient: HeartRateServiceManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         requestPermission()
         setTheme(android.R.style.Theme_DeviceDefault)
-        setContent(content = connectWearApp())
+        setContent(content = LogiSyncWearApp())
         subscribeToObservers()
     }
 
     override fun onDestroy() {
-        commandHeartRateService(STOP_HEART_RATE_SENSOR)
+        //commandHeartRateService(STOP_HEART_RATE_SENSOR)
+        // healthClient.unregisterHeartRateCallback()
         super.onDestroy()
     }
 
-    private val permissionLauncher = registerForActivityResult(
+    private fun startMyWearableListenerService() {
+        val intent = Intent(this, MyWearableListenerService::class.java)
+        startService(intent)
+    }
+
+    private fun requestPermission() {
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.BODY_SENSORS,
+        )
+        multiplePermissionLauncher.launch(permissions)
+    }
+
+    private val multiplePermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) {
         val isNotGranted = it.values.contains(false)
         if (!isNotGranted) {
-            commandHeartRateService(START_HEART_RATE_SENSOR)
+            backgroundLocationPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        }
+        else {
+            mainViewModel.updateGrantedPermission(false)
         }
     }
 
-    private fun requestPermission() {
-        permissionLauncher.launch(PermissionManager.permissions)
+    private val backgroundLocationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                backgroundBioPermissionLauncher.launch(Manifest.permission.BODY_SENSORS_BACKGROUND)
+            }
+            else {
+                mainViewModel.updateGrantedPermission(true)
+            }
+        }
+        else {
+            mainViewModel.updateGrantedPermission(false)
+        }
     }
 
-    private fun commandHeartRateService(command: String) {
-        Log.e("확인", "commandHeartRateService: $command")
-        startService(Intent(this, MyWearableListenerService::class.java))
-        val intent = Intent(this, HeartRateService::class.java).apply {
-            action = command
-        }
-        startService(intent)
+    private val backgroundBioPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        mainViewModel.updateGrantedPermission(isGranted)
     }
 
     private fun subscribeToObservers() {
-        HeartRateService.heartRate.observe(this) { rate ->
-            mainViewModel.updateHeartRate(rate)
-        }
+        mainViewModel.isGrantedPermission
+            .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+            .onEach { isGranted ->
+                //if (isGranted) PassiveDataMonitoringWorker.registerWorker(this)
+            }
+            .launchIn(lifecycleScope)
     }
 
-    private fun connectWearApp(): @Composable () -> Unit {
-        return {
-            val heartRate by mainViewModel.hearRate.collectAsState()
-            LogisyncWearTheme {
-                WatchScreen(heartRate = heartRate)
+    private fun LogiSyncWearApp(): @Composable () -> Unit = {
+        val measuredHeartRate by mainViewModel.measuredHeartRate.collectAsState()
+        val isGrantedPermission by mainViewModel.isGrantedPermission.collectAsState()
+        LogisyncWearTheme {
+            if (isGrantedPermission) {
+                WatchScreen(
+                    measuredHeartRate = measuredHeartRate,
+                    onCollect = mainViewModel::collectHeartRate,
+                )
+            }
+            else {
+                PermissionScreen(onPermission = this::requestPermission)
             }
         }
+
     }
 }

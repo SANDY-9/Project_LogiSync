@@ -74,11 +74,14 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+    implementation("androidx.compose.material3:material3:1.2.1")
 
     // Wearable
     implementation("com.google.android.gms:play-services-wearable:18.2.0")
+    implementation("androidx.health:health-services-client:1.1.0-alpha03")
+    implementation("com.google.guava:guava:31.0.1-android")
 
-    // dataStore
+    // DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 }
 

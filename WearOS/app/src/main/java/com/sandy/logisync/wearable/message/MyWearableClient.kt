@@ -1,4 +1,4 @@
-package com.sandy.logisync.service
+package com.sandy.logisync.wearable.message
 
 import android.util.Log
 import com.google.android.gms.tasks.Tasks
@@ -59,6 +59,5 @@ class MyWearableClient @Inject constructor(
 
     companion object {
         private const val WEARABLE_CAPABILITY_NAME = "logi_sync_wear_app"
-        private const val HEART_RATE_TRANSCRIPTION_MESSAGE_PATH = "/heart_rate_transcription"
     }
 }

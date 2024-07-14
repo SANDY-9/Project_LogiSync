@@ -1,10 +1,10 @@
-package com.sandy.logisync.service.di
+package com.sandy.logisync.wearable.di
 
 import android.content.Context
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
-import com.sandy.logisync.service.MyWearableClient
+import com.sandy.logisync.wearable.message.MyWearableClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +14,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ServiceModule {
+object WearableModule {
 
     @Singleton
     @Provides

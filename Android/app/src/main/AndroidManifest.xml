@@ -30,7 +30,7 @@
 
 
         <service
-            android:name="com.sandy.service.MyWearableService"
+            android:name="com.sandy.service.MyWearableListenerService"
             android:enabled="true"
             android:exported="true" />
 
