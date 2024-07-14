@@ -21,11 +21,13 @@ class MainViewModel @Inject constructor(
     healthMeasureRepository: HealthMeasureRepository,
 ) : ViewModel() {
 
-    private val _heartRate = MutableStateFlow(0)
-    val hearRate = _heartRate.asStateFlow()
+    val measuredHeartRate = healthMeasureRepository.getMeasuredHeartRate()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = MeasuredHeartRate(MeasuredAvailability.LOADING, null)
+        )
 
-    fun updateHeartRate(heartRate: Int) {
-        _heartRate.value = heartRate
     private val _isGrantedPermission = MutableStateFlow(false)
     val isGrantedPermission = _isGrantedPermission.asStateFlow()
 

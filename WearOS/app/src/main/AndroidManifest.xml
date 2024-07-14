@@ -22,11 +22,6 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
 
-        <service
-            android:name="com.sandy.logisync.service.HeartRateService"
-            android:enabled="true"
-            android:exported="true" />
-
         <uses-library
             android:name="com.google.android.wearable"
             android:required="true" />
