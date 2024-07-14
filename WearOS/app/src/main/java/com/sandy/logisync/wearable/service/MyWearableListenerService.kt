@@ -1,20 +1,20 @@
-package com.sandy.logisync.service
+package com.sandy.logisync.wearable.service
 
 import android.util.Log
 import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
 import com.sandy.logisync.data.datastore.WearableDataStoreRepository
-import com.sandy.logisync.model.toAccount
-import com.sandy.logisync.wearable.MessagePath
-import com.sandy.logisync.wearable.MessageResponse
-import com.sandy.logisync.wearable.MyWearableClient
-import com.sandy.logisync.wearable.TranscriptionPath
+import com.sandy.logisync.wearable.message.MessagePath
+import com.sandy.logisync.wearable.message.MessageResponse
+import com.sandy.logisync.wearable.message.MyWearableClient
+import com.sandy.logisync.wearable.message.TranscriptionPath
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.json.JSONObject
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -39,19 +39,24 @@ class MyWearableListenerService : WearableListenerService() {
     }
 
     private fun login(accountData: String) {
+        Log.e("확인", "login: $accountData")
         val scope = CoroutineScope(Dispatchers.IO)
         wearableDataStoreRepository.getAccount().onEach { existAccount ->
             if (existAccount == null) {
                 wearableDataStoreRepository.registerAccount(accountData)
             }
             else {
-                val account = accountData.toAccount()
                 myWearableClient.requestTranscription(
-                    if (account.id == existAccount.id) MessageResponse.SUCCESS else MessageResponse.FAIL,
+                    if (accountData.getId() == existAccount.id) MessageResponse.SUCCESS else MessageResponse.FAIL,
                     TranscriptionPath.SEND_LOGIN_RESPONSE
                 )
             }
         }.launchIn(scope)
+    }
+
+    private fun String.getId(): String {
+        val jsonObject = JSONObject(this)
+        return jsonObject.getString("id").trim()
     }
 
     // 앱의 인스턴스가 알리는 기능이 네트워크에서 사용 가능해지면 이벤트가 이 콜백을 트리거합니다.

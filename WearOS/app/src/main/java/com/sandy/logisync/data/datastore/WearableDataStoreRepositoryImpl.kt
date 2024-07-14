@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.sandy.logisync.data.mapper.toAccount
 import com.sandy.logisync.model.Account
-import com.sandy.logisync.model.toAccount
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

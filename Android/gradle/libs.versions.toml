@@ -19,9 +19,9 @@ viewModelCompose = "2.8.2"
 hiltNavigationCompose = "1.2.0"
 navigationCompose = "2.7.7"
 jetbrainsKotlinJvm = "1.9.0"
-googleGmsGoogleServices = "4.4.1"
 
 # Firebase version
+googleGmsGoogleServices = "4.4.1"
 firebaseBom = "32.3.1"
 
 # Preferences DataStore

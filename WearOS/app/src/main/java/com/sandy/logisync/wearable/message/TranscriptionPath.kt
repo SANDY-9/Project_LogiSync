@@ -1,4 +1,4 @@
-package com.sandy.logisync.wearable
+package com.sandy.logisync.wearable.message
 
 enum class TranscriptionPath(val path: String) {
     SEND_LOGIN_RESPONSE("/login_transcription"),

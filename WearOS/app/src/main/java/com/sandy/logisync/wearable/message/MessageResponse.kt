@@ -1,4 +1,4 @@
-package com.sandy.logisync.wearable
+package com.sandy.logisync.wearable.message
 
 object MessageResponse {
     const val SUCCESS = "OK"

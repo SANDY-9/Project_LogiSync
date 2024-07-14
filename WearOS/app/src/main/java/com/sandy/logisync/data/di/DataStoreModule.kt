@@ -1,4 +1,4 @@
-package com.sandy.logisync.di
+package com.sandy.logisync.data.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
