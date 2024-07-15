@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import com.sandy.statistics.compoents.HeartRateChart
 import com.sandy.statistics.compoents.HeartRateDescriptionCard
 import com.sandy.statistics.compoents.HeartRateRecordItem
+import com.sandy.statistics.compoents.MyDatePicker
 import com.sandy.statistics.model.StatisticsUiState
 
 @Composable
@@ -43,7 +45,7 @@ fun StatisticsScreen(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        StatisticsAppBar()
+        StatisticsAppBar({})
         LazyColumn(
             modifier = modifier.weight(1f),
         ) {
@@ -54,11 +56,13 @@ fun StatisticsScreen(
                 HeartRateRecordItem(state.recordItem[index])
             }
         }
+        MyDatePicker()
     }
 }
 
 @Composable
 private fun StatisticsAppBar(
+    onClink: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -79,7 +83,7 @@ private fun StatisticsAppBar(
             modifier = modifier
                 .padding(end = 8.dp)
                 .align(Alignment.CenterEnd),
-            onClick = {}
+            onClick = onClink,
         ) {
             Icon(
                 imageVector = Icons.Rounded.DateRange,
