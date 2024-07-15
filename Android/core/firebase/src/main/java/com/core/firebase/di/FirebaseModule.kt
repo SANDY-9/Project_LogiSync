@@ -19,10 +19,4 @@ object FirebaseModule {
     fun provideDatabaseReference(): DatabaseReference {
         return Firebase.database.getReferenceFromUrl(BuildConfig.DATABASE_KEY)
     }
-
-    /*@Provides
-    @Singleton
-    fun bindsUserDataSource(ref: DatabaseReference): AuthClient {
-        return AuthClient(ref)
-    }*/
 }
