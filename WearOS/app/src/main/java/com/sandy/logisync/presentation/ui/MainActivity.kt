@@ -26,6 +26,7 @@ import com.sandy.logisync.presentation.ui.screens.NotInitialPairedScreen
 import com.sandy.logisync.presentation.ui.screens.PermissionScreen
 import com.sandy.logisync.presentation.ui.screens.WatchScreen
 import com.sandy.logisync.presentation.ui.theme.LogisyncWearTheme
+import com.sandy.logisync.wearable.health.HeartRateMonitoringWorker
 import com.sandy.logisync.wearable.service.MyWearableListenerService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -107,7 +108,9 @@ class MainActivity : ComponentActivity() {
         mainViewModel.isGrantedPermission
             .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
             .onEach { isGranted ->
-                //if (isGranted) PassiveDataMonitoringWorker.registerWorker(this)
+                if (isGranted) {
+                    HeartRateMonitoringWorker.registerWorker(this)
+                }
             }
             .launchIn(lifecycleScope)
     }
