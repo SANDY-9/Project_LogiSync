@@ -8,5 +8,5 @@ internal fun Map<String, Int>.toHeartRateList(): List<HeartRate> {
             bpm = value,
             date = key
         )
-    }
+    }.sortedByDescending { it.date }
 }

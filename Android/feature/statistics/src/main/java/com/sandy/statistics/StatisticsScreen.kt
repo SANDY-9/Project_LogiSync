@@ -16,22 +16,30 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.sandy.statistics.compoents.HeartRateChart
 import com.sandy.statistics.compoents.HeartRateDescriptionCard
 import com.sandy.statistics.compoents.HeartRateRecordItem
+import com.sandy.statistics.model.StatisticsUiState
 
 @Composable
 fun StatisticsScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
+    viewModel: StatisticsViewModel = hiltViewModel(),
 ) {
+
+    val state by viewModel.stateFlow.collectAsStateWithLifecycle()
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -40,10 +48,10 @@ fun StatisticsScreen(
             modifier = modifier.weight(1f),
         ) {
             item {
-                StatisticsContent()
+                StatisticsContent(state = state)
             }
-            items(10) {
-                HeartRateRecordItem()
+            items(state.recordItem.size) { index ->
+                HeartRateRecordItem(state.recordItem[index])
             }
         }
     }
@@ -83,6 +91,7 @@ private fun StatisticsAppBar(
 
 @Composable
 private fun StatisticsContent(
+    state: StatisticsUiState,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -90,9 +99,17 @@ private fun StatisticsContent(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        HeartRateChart()
+        HeartRateChart(
+            year = state.year,
+            month = state.month,
+            day = state.day,
+            chartItem = state.chartItem,
+        )
         Spacer(modifier = modifier.height(30.dp))
-        HeartRateDescriptionCard()
+        HeartRateDescriptionCard(
+            minBPM = state.minBPM,
+            maxBPM = state.maxBPM,
+        )
         Spacer(modifier = modifier.height(30.dp))
         Text(
             text = stringResource(id = R.string.heart_rate_record_title),

@@ -21,10 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.core.model.HeartRate
 import com.sandy.statistics.R
 
 @Composable
 fun HeartRateRecordItem(
+    heartRate: HeartRate,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -38,8 +40,14 @@ fun HeartRateRecordItem(
                 .padding(vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            HeartRateDesc(modifier = modifier.weight(1f))
-            HeartRateLevel()
+            HeartRateDesc(
+                bpm = heartRate.bpm,
+                time = heartRate.time(),
+                modifier = modifier.weight(1f)
+            )
+            HeartRateLevel(
+                bpm = heartRate.bpm
+            )
         }
         HorizontalDivider()
     }
@@ -47,6 +55,8 @@ fun HeartRateRecordItem(
 
 @Composable
 private fun HeartRateDesc(
+    bpm: Int,
+    time: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -56,7 +66,7 @@ private fun HeartRateDesc(
             verticalAlignment = Alignment.Bottom
         ){
             Text(
-                text = "76",
+                text = "$bpm",
                 style = MaterialTheme.typography.titleLarge
             )
             Text(
@@ -66,7 +76,7 @@ private fun HeartRateDesc(
             )
         }
         Text(
-            text = "오후 15:00",
+            text = time,
             style = MaterialTheme.typography.labelLarge
         )
     }
@@ -74,6 +84,7 @@ private fun HeartRateDesc(
 
 @Composable
 private fun HeartRateLevel(
+    bpm: Int,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -95,5 +106,5 @@ private fun HeartRateLevel(
 @Preview(name = "HeartRateRecord")
 @Composable
 private fun PreviewHeartRateRecord() {
-    HeartRateRecordItem()
+    HeartRateRecordItem(HeartRate())
 }

@@ -1,10 +1,12 @@
 package com.core.model
 
+import com.core.utils.DateUtil
+
 data class HeartRate(
-    val rate: Int = 0,
+    val bpm: Int = 0,
     val date: String = "",
 ) {
-    fun date(): String {
-        return "오후 14:00"
+    fun time(): String {
+        return DateUtil.convertTime(date)
     }
 }

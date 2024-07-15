@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,8 @@ import com.sandy.statistics.R
 
 @Composable
 fun HeartRateDescriptionCard(
+    minBPM: Int = 0,
+    maxBPM: Int = 0,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -37,7 +40,10 @@ fun HeartRateDescriptionCard(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            HeartRateRange()
+            HeartRateRange(
+                minBPM = minBPM,
+                maxBPM = maxBPM,
+            )
             Spacer(modifier = modifier.height(8.dp))
             HeartRateDescription()
             HeartRateAvg()
@@ -47,6 +53,8 @@ fun HeartRateDescriptionCard(
 
 @Composable
 private fun HeartRateRange(
+    minBPM: Int,
+    maxBPM: Int,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -55,16 +63,20 @@ private fun HeartRateRange(
         Icon(
             modifier = modifier.size(15.dp),
             imageVector = Icons.Rounded.Favorite,
+            tint = Color.Red,
             contentDescription = null
         )
         Spacer(modifier = modifier.width(8.dp))
         Text(
-            text = "최소값",
+            text = "$minBPM",
             style = MaterialTheme.typography.headlineSmall,
         )
-        Text(text = stringResource(id = R.string.heart_rate_avg_unit))
         Text(
-            text = "최대값",
+            modifier = modifier.padding(horizontal = 8.dp),
+            text = stringResource(id = R.string.heart_rate_avg_unit),
+        )
+        Text(
+            text = "$maxBPM",
             style = MaterialTheme.typography.headlineSmall,
         )
     }

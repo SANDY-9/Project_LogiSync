@@ -11,10 +11,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
@@ -27,30 +26,40 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.core.utils.DateUtil
+import com.sandy.statistics.model.HeartRateChartItem
 
 @Composable
 fun HeartRateChart(
-    modifier: Modifier = Modifier
+    year: Int,
+    month: Int,
+    day: Int,
+    chartItem: List<HeartRateChartItem>,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ChartTitle()
-        Chart()
+        ChartTitle(year, month, day)
+        Chart(chartItem)
     }
 }
 
 @Composable
-private fun ChartTitle() {
+private fun ChartTitle(
+    year: Int,
+    month: Int,
+    day: Int,
+    modifier: Modifier = Modifier,
+) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = { /*TODO*/ }) {
@@ -60,7 +69,7 @@ private fun ChartTitle() {
             )
         }
         Text(
-            text = "2024년 7월 1일 월요일",
+            text = DateUtil.getDate(year, month, day),
         )
         IconButton(onClick = { /*TODO*/ }) {
             Icon(
@@ -71,23 +80,14 @@ private fun ChartTitle() {
     }
 }
 
-private val stroke = Stroke(width = 2f, pathEffect = PathEffect.dashPathEffect(intervals = floatArrayOf(10f, 10f), phase = 10f))
+private val stroke = Stroke(
+    width = 2f,
+    pathEffect = PathEffect.dashPathEffect(intervals = floatArrayOf(10f, 10f), phase = 10f)
+)
+
 @Composable
 private fun Chart(
-    item: List<Pair<Int, Int>> = listOf(
-        50 to 70,
-        60 to 100,
-        95 to 100,
-        83 to 85,
-        100 to 138,
-        70 to 138,
-        65 to 90,
-        77 to 86,
-        65 to 158,
-        95 to 95,
-        95 to 182,
-        71 to 98,
-    ),
+    item: List<HeartRateChartItem>,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -159,13 +159,11 @@ private fun Chart(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            itemsIndexed(
-                items = item,
-            ) { index, item ->
+            items(items = item) { item ->
                 ChartItem(
-                    index + 8,
-                    item.first,
-                    item.second,
+                    time = item.hour,
+                    minBpm = item.minBpm,
+                    maxBpm = item.maxBpm,
                 )
             }
         }
@@ -175,10 +173,14 @@ private fun Chart(
 @Composable
 private fun ChartItem(
     time: Int,
-    minBps: Int,
-    maxBps: Int,
+    maxBpm: Int?,
+    minBpm: Int?,
     modifier: Modifier = Modifier,
 ) {
+    val graphPadding = PaddingValues(
+        top = (maxBpm?.let { 200 - it } ?: 200).dp,
+        bottom = (minBpm ?: 200).dp
+    )
     Column(
         modifier = modifier
             .width(30.dp)
@@ -189,10 +191,7 @@ private fun ChartItem(
             modifier = modifier
                 .height(200.dp)
                 .width(12.dp)
-                .padding(
-                    top = (200 - maxBps).dp,
-                    bottom = (minBps).dp
-                )
+                .padding(graphPadding)
                 .background(
                     color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(100.dp)
@@ -208,10 +207,4 @@ private fun ChartItem(
             )
         }
     }
-}
-
-@Preview(name = "HeartRateChart")
-@Composable
-private fun PreviewHeartRateChart() {
-    HeartRateChart()
 }
