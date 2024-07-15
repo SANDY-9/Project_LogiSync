@@ -2,6 +2,10 @@
 <resources>
     <string name="app_name">로지싱크Wear</string>
 
+    <!-- auth -->
+    <string name="auth_error1">LogiSync 모바일 앱과\n최초 연동이 필요합니다.</string>
+    <string name="auth_error2">모바일 앱을 실행해주세요.</string>
+
     <!-- heart rate -->
     <string name="heart_rate_title">심박수</string>
     <string name="heart_rate_error_body_off">워치를 손목에 착용해주세요.</string>
