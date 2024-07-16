@@ -10,6 +10,7 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 private const val HEART_RATE = "heart_rate"
+private const val BPM = "bpm"
 
 class MyFirebaseClient @Inject constructor(
     private val ref: DatabaseReference,
@@ -23,8 +24,8 @@ class MyFirebaseClient @Inject constructor(
         onError: (Throwable) -> Unit,
     ) {
         Log.e("확인", "updateHeartRate: $id, $bpm, $time")
-        val idChild = ref.child(HEART_RATE).child(id)
-        idChild.child(IndexChildCreateUtil.getYearMonthIndexChild())
+        val bpmChild = ref.child(HEART_RATE).child(id).child(BPM)
+        bpmChild.child(IndexChildCreateUtil.getYearMonthIndexChild())
             .child(IndexChildCreateUtil.getDayIndexChild())
             .child(IndexChildCreateUtil.getTimeIndexChild(time))
             .setValue(bpm)
@@ -42,6 +43,6 @@ class MyFirebaseClient @Inject constructor(
                 onError(error.toException())
             }
         }
-        idChild.addListenerForSingleValueEvent(dataListener)
+        bpmChild.addListenerForSingleValueEvent(dataListener)
     }
 }
