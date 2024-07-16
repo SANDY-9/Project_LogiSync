@@ -1,6 +1,7 @@
 package com.core.firebase
 
 import com.core.firebase.common.Constants.HEART_RATE
+import com.core.firebase.common.Constants.HEART_RATE_BPM
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.getValue
 import kotlinx.coroutines.channels.awaitClose
@@ -15,7 +16,9 @@ class HeartRateClient @Inject constructor(
         yearMonth: String,
         day: Int,
     ) = callbackFlow<Map<String, Int>> {
-        ref.child(HEART_RATE).child(id).child(yearMonth).child(day.toString()).get()
+        ref.child(HEART_RATE).child(id).child(HEART_RATE_BPM)
+            .child(yearMonth).child(day.toString())
+            .get()
             .addOnSuccessListener { snapshot ->
                 val measuredHeartRate = snapshot.getValue<Map<String, Int>>()
                 trySend(measuredHeartRate ?: emptyMap())
