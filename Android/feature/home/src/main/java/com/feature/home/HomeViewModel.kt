@@ -49,7 +49,7 @@ class HomeViewModel @Inject constructor(
         MyWearableListenerService.heartRate.onEach { rate ->
             _stateFlow.update {
                 it.copy(
-                    heartRate = HeartRate(rate = rate)
+                    heartRate = HeartRate(bpm = rate)
                 )
             }
         }.launchIn(viewModelScope)

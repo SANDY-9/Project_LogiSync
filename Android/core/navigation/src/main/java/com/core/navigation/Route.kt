@@ -7,6 +7,7 @@ sealed class Route(
     data object Signup : Route(route = Screen.SIGNUP.name)
     data object Onboarding : Route(route = Screen.ONBOARDING.name)
     data object Home : Route(route = Screen.HOME.name)
+    data object Statistics : Route(route = Screen.STATISTICS.name)
 }
 
 enum class Screen {
@@ -14,4 +15,5 @@ enum class Screen {
     SIGNUP,
     ONBOARDING,
     HOME,
+    STATISTICS,
 }

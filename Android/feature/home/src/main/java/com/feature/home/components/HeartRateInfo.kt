@@ -51,7 +51,7 @@ internal fun HeartRateInfo(
                         .weight(1f)
                         .padding(end = 24.dp)
                 ) {
-                    HeartRateRecord(heartRate.rate)
+                    HeartRateRecord(heartRate.bpm)
                     HeartRateAnalysis()
                     Spacer(modifier = modifier.height(16.dp))
                     HeartRateGraph()

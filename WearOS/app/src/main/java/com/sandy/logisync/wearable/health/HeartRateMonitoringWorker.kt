@@ -13,14 +13,11 @@ import com.sandy.logisync.data.network.NetworkRepository
 import com.sandy.logisync.model.MeasuredAvailability
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDateTime
@@ -48,12 +45,12 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
 
     private var num = 0
     private fun monitorHeartRate() {
-        CoroutineScope(Dispatchers.IO).launch {
+        suspend {
             healthMeasureRepository.getMeasuredHeartRate().onEach {
                 // num++
                 if (it.availability == MeasuredAvailability.UNAVAILABLE_DEVICE_OFF_BODY ||
                     it.availability == MeasuredAvailability.UNAVAILABLE
-                ) cancel()
+                ) awaitCancellation()
                 Log.e("확인", "monitorHeartRate: 이거1 $num, ${it.availability}")
             }.filter {
                 it.availability == MeasuredAvailability.AVAILABLE

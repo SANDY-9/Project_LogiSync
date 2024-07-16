@@ -11,11 +11,9 @@ import androidx.health.services.client.data.DataTypeAvailability
 import androidx.health.services.client.data.DeltaDataType
 import com.sandy.logisync.wearable.health.HeartRateDTO
 import com.sandy.logisync.wearable.health.MeasureMessage
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flowOn
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -66,5 +64,5 @@ class HeartRateServiceManager @Inject constructor(
         awaitClose {
             measureClient.unregisterMeasureCallbackAsync(DataType.HEART_RATE_BPM, callback)
         }
-    }.flowOn(Dispatchers.Main)
+    }
 }
