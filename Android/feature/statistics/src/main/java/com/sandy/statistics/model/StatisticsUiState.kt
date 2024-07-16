@@ -6,9 +6,10 @@ import java.time.LocalDate
 data class StatisticsUiState(
 
     val id: String = "",
-    val year: Int = LocalDate.now().year,
-    val month: Int = LocalDate.now().monthValue,
-    val day: Int = LocalDate.now().dayOfMonth,
+
+    // chart
+    val chartType: ChartType = ChartType.DAILY,
+    val pickedDate: LocalDate = LocalDate.now(),
     val minBPM: Int = 0,
     val maxBPM: Int = 0,
     val recordItem: List<HeartRate> = emptyList(),
@@ -21,4 +22,8 @@ data class StatisticsUiState(
     val selectedStartDateStr: String = "시작 날짜",
     val selectedEndDateStr: String = "마지막 날짜",
 
-    )
+    ) {
+    enum class ChartType {
+        DAILY, RANGE,
+    }
+}

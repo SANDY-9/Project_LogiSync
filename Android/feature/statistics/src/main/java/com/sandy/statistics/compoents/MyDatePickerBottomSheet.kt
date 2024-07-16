@@ -25,6 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.common.NextButton
 import com.sandy.statistics.R
+import com.sandy.statistics.utils.minDate
+import com.sandy.statistics.utils.minDateMillis
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -36,6 +38,7 @@ fun MyDateRangePickerBottomSheet(
     selectedEndDateStr: String,
     onSelectedStartDate: (Long?) -> Unit,
     onSelectedEndDate: (Long?) -> Unit,
+    onComplete: () -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
@@ -63,7 +66,10 @@ fun MyDateRangePickerBottomSheet(
                 onClick = {
                     coroutineScope.launch {
                         bottomSheetState.hide()
-                    }.invokeOnCompletion { onDismissRequest() }
+                    }.invokeOnCompletion {
+                        onComplete()
+                        onDismissRequest()
+                    }
                 }
             )
         }
@@ -75,7 +81,7 @@ private val currentYear = LocalDate.now().year
 @OptIn(ExperimentalMaterial3Api::class)
 private val selectableDates = object : SelectableDates {
     override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-        return utcTimeMillis <= System.currentTimeMillis()
+        return utcTimeMillis <= System.currentTimeMillis() && utcTimeMillis >= minDateMillis
     }
 }
 
@@ -87,7 +93,7 @@ private fun MyDateRangePicker(
     onSelectedStartDate: (Long?) -> Unit,
     onSelectedEndDate: (Long?) -> Unit,
     modifier: Modifier = Modifier,
-    yearRange: IntRange = 2024..currentYear,
+    yearRange: IntRange = minDate.year..currentYear,
 ) {
     val state = rememberDateRangePickerState(
         yearRange = yearRange,

@@ -2,8 +2,9 @@ package com.sandy.statistics
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,8 +14,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,13 +53,19 @@ fun StatisticsScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         StatisticsAppBar(
-            onClink = viewModel::updateVisibleDatePicker
+            onReset = viewModel::resetChart,
+            onDatePickerClick = viewModel::setDatePickerVisible,
         )
         LazyColumn(
             modifier = modifier.weight(1f),
         ) {
             item {
-                StatisticsContent(state = state)
+                StatisticsContent(
+                    state = state,
+                    onPrevClick = viewModel::getPrevDateChart,
+                    onNextClick = viewModel::getNextDateChart,
+                    modifier = Modifier,
+                )
             }
             items(state.recordItem.size) { index ->
                 HeartRateRecordItem(state.recordItem[index])
@@ -70,7 +77,8 @@ fun StatisticsScreen(
                 selectedEndDateStr = state.selectedEndDateStr,
                 onSelectedStartDate = viewModel::selectedStartDate,
                 onSelectedEndDate = viewModel::selectedEndDate,
-                onDismissRequest = viewModel::updateVisibleDatePicker,
+                onComplete = viewModel::requestHeartRates,
+                onDismissRequest = viewModel::setDatePickerVisible,
             )
         }
     }
@@ -78,40 +86,52 @@ fun StatisticsScreen(
 
 @Composable
 private fun StatisticsAppBar(
-    onClink: () -> Unit,
+    onReset: () -> Unit,
+    onDatePickerClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
 
         Text(
-            modifier = modifier
-                .padding(start = 16.dp)
-                .align(Alignment.CenterStart),
+            modifier = modifier.padding(start = 16.dp),
             text = stringResource(id = R.string.heart_rate_statistics_title),
             style = MaterialTheme.typography.headlineSmall,
         )
 
-        IconButton(
+        Spacer(modifier = modifier.weight(1f))
+
+        Icon(
             modifier = modifier
-                .padding(end = 8.dp)
-                .align(Alignment.CenterEnd),
-            onClick = onClink,
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.DateRange,
-                contentDescription = null
-            )
-        }
+                .padding(end = 10.dp)
+                .clickable(
+                    onClick = onReset
+                ),
+            imageVector = Icons.Rounded.Refresh,
+            contentDescription = null
+        )
+
+        Icon(
+            modifier = modifier
+                .padding(end = 16.dp)
+                .clickable(
+                    onClick = onDatePickerClick
+                ),
+            imageVector = Icons.Rounded.DateRange,
+            contentDescription = null
+        )
     }
 }
 
 @Composable
 private fun StatisticsContent(
     state: StatisticsUiState,
+    onPrevClick: () -> Unit,
+    onNextClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -120,9 +140,9 @@ private fun StatisticsContent(
             .padding(horizontal = 16.dp)
     ) {
         HeartRateChart(
-            year = state.year,
-            month = state.month,
-            day = state.day,
+            date = state.pickedDate,
+            onPrevClick = onPrevClick,
+            onNextClick = onNextClick,
             chartItem = state.chartItem,
         )
         Spacer(modifier = modifier.height(30.dp))

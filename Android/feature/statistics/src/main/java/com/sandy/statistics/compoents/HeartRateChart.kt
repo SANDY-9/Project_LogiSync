@@ -33,12 +33,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.core.utils.DateUtil
 import com.sandy.statistics.model.HeartRateChartItem
+import com.sandy.statistics.utils.minDate
+import java.time.LocalDate
 
 @Composable
 fun HeartRateChart(
-    year: Int,
-    month: Int,
-    day: Int,
+    date: LocalDate,
+    onPrevClick: () -> Unit,
+    onNextClick: () -> Unit,
     chartItem: List<HeartRateChartItem>,
     modifier: Modifier = Modifier,
 ) {
@@ -46,32 +48,44 @@ fun HeartRateChart(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ChartTitle(year, month, day)
+        ChartTitle(
+            date = date,
+            onPrevClick = onPrevClick,
+            onNextClick = onNextClick,
+        )
         Chart(chartItem)
     }
 }
 
+private val today = LocalDate.now()
+
 @Composable
 private fun ChartTitle(
-    year: Int,
-    month: Int,
-    day: Int,
+    date: LocalDate,
+    onPrevClick: () -> Unit,
+    onNextClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(
+            onClick = onPrevClick,
+            enabled = !date.isEqual(minDate)
+        ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
                 contentDescription = null
             )
         }
         Text(
-            text = DateUtil.getDate(year, month, day),
+            text = DateUtil.convertFullDate(date),
         )
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(
+            onClick = onNextClick,
+            enabled = !date.isEqual(today)
+        ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
                 contentDescription = null

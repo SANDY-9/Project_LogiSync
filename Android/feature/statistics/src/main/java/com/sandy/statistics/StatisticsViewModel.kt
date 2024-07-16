@@ -37,9 +37,7 @@ class StatisticsViewModel @Inject constructor(
                 _stateFlow.update { state ->
                     state.copy(
                         id = id,
-                        year = year,
-                        month = monthValue,
-                        day = dayOfMonth
+                        pickedDate = this
                     )
                 }
                 requestDailyHeartRates(year, monthValue, dayOfMonth, id)
@@ -88,10 +86,37 @@ class StatisticsViewModel @Inject constructor(
         return heartRateChartItems
     }
 
-    fun updateVisibleDatePicker() {
+    fun getPrevDateChart() {
         _stateFlow.update {
             it.copy(
-                datePickerVisible = !it.datePickerVisible,
+                pickedDate = it.pickedDate.minusDays(1),
+            )
+        }
+    }
+
+    fun getNextDateChart() {
+        _stateFlow.update {
+            it.copy(
+                pickedDate = it.pickedDate.plusDays(1),
+            )
+        }
+    }
+
+    fun resetChart() {
+        _stateFlow.update {
+            it.copy(
+                chartType = StatisticsUiState.ChartType.DAILY,
+                pickedDate = LocalDate.now(),
+                selectedStartDate = null,
+                selectedEndDate = null,
+            )
+        }
+    }
+
+    fun setDatePickerVisible() {
+        _stateFlow.update {
+            it.copy(
+                datePickerVisible = !it.datePickerVisible
             )
         }
     }
@@ -112,6 +137,14 @@ class StatisticsViewModel @Inject constructor(
             it.copy(
                 selectedEndDate = date,
                 selectedEndDateStr = str,
+            )
+        }
+    }
+
+    fun requestHeartRates() {
+        _stateFlow.update {
+            it.copy(
+                chartType = StatisticsUiState.ChartType.RANGE,
             )
         }
     }

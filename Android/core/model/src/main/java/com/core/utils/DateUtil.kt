@@ -11,14 +11,10 @@ import java.util.Locale
 object DateUtil {
 
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 ")
-    fun getDate(
-        year: Int = LocalDateTime.now().year,
-        month: Int = LocalDateTime.now().monthValue,
-        day: Int = LocalDateTime.now().dayOfMonth,
-    ): String {
-        val date = LocalDate.of(year, month, day)
-        val dateStr = date.format(dateFormatter)
-        val dayOfWeekStr = date.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREA)
+    fun convertFullDate(date: LocalDate): String {
+        val set = LocalDate.of(date.year, date.month, date.dayOfMonth)
+        val dateStr = set.format(dateFormatter)
+        val dayOfWeekStr = set.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREA)
         return dateStr + dayOfWeekStr
     }
 
