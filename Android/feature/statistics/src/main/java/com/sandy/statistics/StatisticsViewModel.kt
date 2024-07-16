@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.core.domain.usecases.prefs.GetAccountUseCase
 import com.core.domain.usecases.statistics.GetDailyHeartRateListUseCase
 import com.core.model.HeartRate
+import com.core.utils.DateUtil
 import com.sandy.statistics.model.HeartRateChartItem
 import com.sandy.statistics.model.StatisticsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -85,5 +86,33 @@ class StatisticsViewModel @Inject constructor(
             } ?: HeartRateChartItem(hour, null, null)
         }.sortedBy { it.hour }
         return heartRateChartItems
+    }
+
+    fun updateVisibleDatePicker() {
+        _stateFlow.update {
+            it.copy(
+                datePickerVisible = !it.datePickerVisible,
+            )
+        }
+    }
+
+    fun selectedStartDate(date: Long?) {
+        _stateFlow.update {
+            val str = date?.let { date -> DateUtil.convertDate(date) } ?: "시작 날짜"
+            it.copy(
+                selectedStartDate = date,
+                selectedStartDateStr = str,
+            )
+        }
+    }
+
+    fun selectedEndDate(date: Long?) {
+        _stateFlow.update {
+            val str = date?.let { date -> DateUtil.convertDate(date) } ?: "마지막 날짜"
+            it.copy(
+                selectedEndDate = date,
+                selectedEndDateStr = str,
+            )
+        }
     }
 }

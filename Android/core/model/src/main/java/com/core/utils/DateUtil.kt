@@ -1,9 +1,11 @@
 package com.core.utils
 
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
+import java.util.Calendar
 import java.util.Locale
 
 object DateUtil {
@@ -30,5 +32,12 @@ object DateUtil {
         else {
             return ""
         }
+    }
+
+    private val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.KOREA)
+    fun convertDate(timeInMillis: Long): String {
+        val calender = Calendar.getInstance()
+        calender.timeInMillis = timeInMillis
+        return dateFormat.format(calender.timeInMillis)
     }
 }
