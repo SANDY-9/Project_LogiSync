@@ -36,4 +36,14 @@ object DateUtil {
         calender.timeInMillis = timeInMillis
         return dateFormat.format(calender.timeInMillis)
     }
+
+    private val dateTimeDateFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
+    private val dateTimeTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+    fun convertDateTime(dateTime: LocalDateTime): String {
+        val date = dateTime.format(dateTimeDateFormatter)
+        val time = dateTime.format(dateTimeTimeFormatter)
+        val hour = time.split(":").first().toInt()
+        val suffix = if (hour >= 12) "오후" else "오전"
+        return "$date $suffix $time"
+    }
 }
