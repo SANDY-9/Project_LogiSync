@@ -37,6 +37,10 @@ android {
 dependencies {
 
     implementation(project(":core:bluetooth"))
+    implementation(project(":core:firebase"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:model"))
+    implementation(project(":core:data"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)

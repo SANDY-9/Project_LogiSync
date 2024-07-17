@@ -23,6 +23,7 @@ jetbrainsKotlinJvm = "1.9.0"
 # Firebase version
 googleGmsGoogleServices = "4.3.15"
 firebaseBom = "32.3.1"
+firebaseMessagingDirectboot = "20.2.0"
 
 # Preferences DataStore
 dataStore = "1.1.0"
@@ -78,6 +79,7 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database" 
 firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
+firebase-messaging-directboot = { module = "com.google.firebase:firebase-messaging-directboot", version.ref = "firebaseMessagingDirectboot" }
 
 # Inject
 inject = "javax.inject:javax.inject:1"
@@ -117,6 +119,7 @@ firebase = [
     "firebase-database-ktx",
     "firebase-analytics",
     "firebase-messaging-ktx",
+    "firebase-messaging-directboot",
 ]
 test = [
     "junit",
