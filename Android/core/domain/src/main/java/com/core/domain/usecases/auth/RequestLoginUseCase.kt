@@ -1,4 +1,4 @@
-package com.core.domain.usecases.login
+package com.core.domain.usecases.auth
 
 import com.core.domain.repository.AuthPrefsRepository
 import com.core.domain.repository.LoginRepository

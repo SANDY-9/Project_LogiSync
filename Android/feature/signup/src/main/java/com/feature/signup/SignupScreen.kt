@@ -1,5 +1,6 @@
 package com.feature.signup
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,37 +12,55 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.core.model.Account
+import com.core.navigation.Route
 import com.feature.signup.components.Agreement
 import com.feature.signup.components.Check
 import com.feature.signup.components.Joining
 import com.feature.signup.model.AgreementState
+import com.feature.signup.model.AgreementType
 import com.feature.signup.model.CheckState
+import com.feature.signup.model.InputType
 import com.feature.signup.model.JoiningState
 import com.feature.signup.model.SignupStep
-import com.feature.signup.model.SignupUiEvent
 
+private const val NETWORK_ERROR_MESSAGE = "네트워크 연결 상태를 확인해주세요."
 @Composable
 fun SignupScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: SignupViewModel = hiltViewModel(),
 ) {
-
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    LaunchedEffect(state.signupComplete) {
+        if (state.signupComplete) {
+            navController.navigate(Route.Onboarding.route) {
+                popUpTo(Route.Signup.route) { inclusive = true }
+            }
+        }
+    }
+
+    LaunchedEffect(state.error) {
+        if (state.error) {
+            Toast.makeText(context, NETWORK_ERROR_MESSAGE, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-
         SignupTopAppBar(
             onNavigate = { navController.navigateUp() }
         )
@@ -52,14 +71,20 @@ fun SignupScreen(
                 .weight(1f),
             phase = state.phase,
             checkState = state.check,
+            onInputChange = viewModel::input,
+            onInputClear = viewModel::clear,
+            onSignupCheck = viewModel::checkSignup,
             agreementState = state.agreement,
+            onCheckChange = viewModel::agree,
+            onContentExpand = viewModel::expandContent,
+            onAgreementComplete = viewModel::completeAgreement,
             joiningState = state.joining,
-            event = viewModel::onEvent,
+            onIdCheck = viewModel::checkId,
+            onVisibleChange = viewModel::changePwdVisible,
+            onSignupComplete = viewModel::requestSignup,
         )
-
     }
 }
-
 @Composable
 private fun SignupTopAppBar(
     onNavigate: () -> Unit,
@@ -83,75 +108,51 @@ private fun SignupTopAppBar(
         }
     }
 }
-
 @Composable
 private fun SignupPhaseContent(
     phase: SignupStep,
     checkState: CheckState,
+    onInputChange: (String, InputType) -> Unit,
+    onInputClear: (InputType) -> Unit,
+    onSignupCheck: () -> Unit,
     agreementState: AgreementState,
+    onCheckChange: (Boolean, AgreementType) -> Unit,
+    onContentExpand: (AgreementType) -> Unit,
+    onAgreementComplete: () -> Unit,
     joiningState: JoiningState,
-    event: (SignupUiEvent) -> Unit,
+    onIdCheck: () -> Unit,
+    onVisibleChange: (InputType) -> Unit,
+    onSignupComplete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
         when (phase) {
             SignupStep.CHECK -> Check(
                 check = checkState,
-                onNameInputChange = { input ->
-                    event(SignupUiEvent.InputName(input))
-                },
-                onTelInputChange = { input ->
-                    event(SignupUiEvent.InputTel(input))
-                },
-                onSignupCheck = {
-                    event(SignupUiEvent.CheckSignup)
-                },
+                onInputChange = onInputChange,
+                onInputClear = onInputClear,
+                onSignupCheck = onSignupCheck,
             )
 
             SignupStep.AGREEMENT -> Agreement(
                 agreement = agreementState,
-                onAllCheckChange = { checked ->
-                    event(SignupUiEvent.ChangeAllChecked(checked))
-                },
-                onServiceCheckChange = { checked ->
-                    event(SignupUiEvent.ChangeServiceChecked(checked))
-                },
-                onPersonalCheckChange = { checked ->
-                    event(SignupUiEvent.ChangePersonalChecked(checked))
-                },
-                onServiceExpand = {
-                    event(SignupUiEvent.ChangeServiceExpanded)
-                },
-                onPersonalExpand = {
-                    event(SignupUiEvent.ChangePersonalExpanded)
-                },
-                onAgreementCheck = {
-                    event(SignupUiEvent.CheckAgreement)
-                },
+                onCheckChange = onCheckChange,
+                onContentExpand = onContentExpand,
+                isAgreeComplete = agreementState.isAgreeComplete,
+                onComplete = onAgreementComplete,
             )
 
             SignupStep.JOINING -> Joining(
                 joining = joiningState,
-                onIdInputChange = { input ->
-                    event(SignupUiEvent.InputId(input))
-                },
-                onIdCheck = {
-                    event(SignupUiEvent.CheckId)
-                },
-                onPwdInputChange = { input ->
-                    event(SignupUiEvent.InputPwd(input))
-                },
-                onPwdCheckInputChange = { input ->
-                    event(SignupUiEvent.InputPwdCheck(input))
-                },
-                onComplete = {
-                    event(SignupUiEvent.RequestSignup)
-                },
+                onInputChange = onInputChange,
+                onInputClear = onInputClear,
+                onIdCheck = onIdCheck,
+                onVisibleChange = onVisibleChange,
+                onSignupComplete = onSignupComplete,
             )
         }
     }
 }
-
 @Composable
 @Preview(name = "Signup")
 private fun SignupScreenPreview() {

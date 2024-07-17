@@ -26,17 +26,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.feature.signup.R
 import com.feature.signup.model.AgreementState
+import com.feature.signup.model.AgreementType
 
 // 회원가입 약관 동의
 @Composable
 internal fun Agreement(
     agreement: AgreementState,
-    onAllCheckChange: (Boolean) -> Unit,
-    onServiceCheckChange: (Boolean) -> Unit,
-    onPersonalCheckChange: (Boolean) -> Unit,
-    onServiceExpand: () -> Unit,
-    onPersonalExpand: () -> Unit,
-    onAgreementCheck: () -> Unit,
+    onCheckChange: (Boolean, AgreementType) -> Unit,
+    onContentExpand: (AgreementType) -> Unit,
+    isAgreeComplete: Boolean,
+    onComplete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
@@ -60,25 +59,35 @@ internal fun Agreement(
 
             AgreeCheckBox(
                 checkState = agreement.isAllChecked,
-                onCheckChange = onAllCheckChange,
+                onCheckChange = {
+                    onCheckChange(it, AgreementType.ALL)
+                },
                 title = stringResource(id = R.string.signup_agree_all)
             )
 
             AgreeExpandableCheckBox(
                 checkState = agreement.isServiceChecked,
-                onCheckChange = onServiceCheckChange,
+                onCheckChange = {
+                    onCheckChange(it, AgreementType.SERVICE)
+                },
                 title = stringResource(id = R.string.signup_agree_service),
                 expand = agreement.isServiceExpand,
-                onExpand = onServiceExpand,
+                onExpand = {
+                    onContentExpand(AgreementType.SERVICE)
+                },
                 content = stringResource(id = R.string.signup_agree_content),
             )
 
             AgreeExpandableCheckBox(
                 checkState = agreement.isPersonalChecked,
-                onCheckChange = onPersonalCheckChange,
+                onCheckChange = {
+                    onCheckChange(it, AgreementType.PERSONAL)
+                },
                 title = stringResource(id = R.string.signup_agree_personal),
                 expand = agreement.isPersonalExpand,
-                onExpand = onPersonalExpand,
+                onExpand = {
+                    onContentExpand(AgreementType.PERSONAL)
+                },
                 content = stringResource(id = R.string.signup_agree_content),
             )
         }
@@ -87,7 +96,8 @@ internal fun Agreement(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            onClick = onAgreementCheck
+            enabled = isAgreeComplete,
+            onClick = onComplete,
         ) {
             Text(
                 text = stringResource(id = R.string.signup_next_step2)

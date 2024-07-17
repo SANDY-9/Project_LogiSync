@@ -28,15 +28,15 @@ class AuthClient @Inject constructor(
         pwd: String,
         name: String,
         tel: String,
-        duty: String,
         onSuccess: (Boolean) -> Unit,
+        onError: (Throwable) -> Unit,
     ) {
         val user = ref.child(USERS)
         val account = AccountDTO(
             pwd = pwd,
             name = name,
             tel = tel,
-            duty = duty
+            duty = Account.Duty.NORMAL.name
         )
         user.child(id).setValue(account)
 
@@ -50,7 +50,7 @@ class AuthClient @Inject constructor(
             }
 
             override fun onCancelled(error: DatabaseError) {
-                throw NetworkError(NETWORK_ERROR_MESSAGE)
+                onError(error.toException())
             }
         }
         user.addListenerForSingleValueEvent(signupListener)
@@ -58,25 +58,27 @@ class AuthClient @Inject constructor(
 
     fun checkTel(
         tel: String,
-        onExisted: (Boolean) -> Unit
+        onSuccess: (Boolean) -> Unit,
+        onError: (Throwable) -> Unit,
     ) {
         ref.child(USERS).orderByChild(TEL).equalTo(tel).get().addOnSuccessListener { snapshot ->
             val existed = snapshot.exists()
-            onExisted(existed)
+            onSuccess(existed)
         }.addOnFailureListener {
-            throw NetworkError(NETWORK_ERROR_MESSAGE)
+            onError(it)
         }
     }
 
     fun checkId(
         id: String,
-        onExisted: (Boolean) -> Unit,
+        onSuccess: (Boolean) -> Unit,
+        onError: (Throwable) -> Unit,
     ) {
         ref.child(USERS).child(id).get().addOnSuccessListener { snapshot ->
             val existed = snapshot.exists()
-            onExisted(existed)
+            onSuccess(existed)
         }.addOnFailureListener {
-            throw NetworkError(NETWORK_ERROR_MESSAGE)
+            onError(it)
         }
     }
 
