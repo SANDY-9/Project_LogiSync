@@ -43,4 +43,17 @@ object InputValidationHelper {
         val regex = "^[a-zA-Z0-9]{4,12}$".toRegex()
         return input.trim().matches(regex)
     }
+
+    fun isValidPassword(input: String): Boolean {
+        // 비밀번호가 8글자 이상인지 확인
+        if (input.length < 8) return false
+        // 각 조건에 해당하는 정규식 패턴
+        val hasLetter = "[a-zA-Z]".toRegex()
+        val hasDigit = "\\d".toRegex()
+        val hasSpecialChar = "[^a-zA-Z\\d]".toRegex() // 특수문자는 영문자와 숫자가 아닌 모든 문자
+        // 모든 조건을 만족하는지 확인
+        return hasLetter.containsMatchIn(input) &&
+                hasDigit.containsMatchIn(input) &&
+                hasSpecialChar.containsMatchIn(input)
+    }
 }

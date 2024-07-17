@@ -6,7 +6,6 @@ import com.core.model.Account
 import com.feature.signup.model.AgreementType
 import com.feature.signup.model.InputType
 import com.feature.signup.model.SignupStep
-import com.feature.signup.model.SignupUiEvent
 import com.feature.signup.model.SignupUiState
 import com.feature.signup.utils.InputValidationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,16 +22,6 @@ class SignupViewModel @Inject constructor(
     private val _stateFlow: MutableStateFlow<SignupUiState> = MutableStateFlow(SignupUiState())
     internal val stateFlow: StateFlow<SignupUiState> = _stateFlow.asStateFlow()
     private val state get() = stateFlow.value
-    internal fun onEvent(event: SignupUiEvent) {
-        when (event) {
-            // check
-            is SignupUiEvent.CheckId -> checkId()
-            // navigate
-            is SignupUiEvent.RequestSignup -> requestSignup()
-            else -> {}
-        }
-    }
-
     internal fun input(input: String, type: InputType) {
         _stateFlow.value = when (type) {
             InputType.NAME -> {
@@ -69,12 +58,23 @@ class SignupViewModel @Inject constructor(
 
             InputType.PASSWORD -> {
                 val joining = state.joining
-                state.copy(joining = joining.copy(pwd = input))
+                state.copy(
+                    joining = joining.copy(
+                        pwd = input,
+                        isNotValidPwd = !InputValidationHelper.isValidPassword(input),
+                    )
+                )
             }
 
             InputType.PWD_CHECK -> {
                 val joining = state.joining
-                state.copy(joining = joining.copy(pwdCheck = input))
+                val isNotValidPwdCheck = joining.pwd.isNotBlank() && input != joining.pwd
+                state.copy(
+                    joining = joining.copy(
+                        pwdCheck = input,
+                        isNotValidPwdCheck = isNotValidPwdCheck,
+                    )
+                )
             }
         }
     }
@@ -89,7 +89,7 @@ class SignupViewModel @Inject constructor(
                 state.copy(check = state.check.copy(tel = ""))
             }
 
-            InputType.ID -> {
+            else -> {  // InputType.ID
                 state.copy(
                     joining = state.joining.copy(
                         id = "",
@@ -97,14 +97,6 @@ class SignupViewModel @Inject constructor(
                         existedId = if (state.joining.existedId != null) null else state.joining.existedId,
                     )
                 )
-            }
-
-            InputType.PASSWORD -> {
-                state.copy(joining = state.joining.copy(pwd = ""))
-            }
-
-            InputType.PWD_CHECK -> {
-                state.copy(joining = state.joining.copy(pwdCheck = ""))
             }
         }
     }
@@ -168,26 +160,41 @@ class SignupViewModel @Inject constructor(
         }
     }
 
-    fun completeAgreement() {
+    internal fun completeAgreement() {
         _stateFlow.value = state.copy(
             phase = SignupStep.JOINING
         )
     }
 
-    fun checkId() {
+    internal fun checkId() {
         accountDataSource.checkId(state.joining.id) { existed ->
             _stateFlow.update {
                 val joining = it.joining
                 it.copy(
-                    joining = joining.copy(
-                        existedId = existed,
-                    )
+                    joining = joining.copy(existedId = existed)
                 )
             }
         }
     }
 
-    private fun requestSignup() {
+    internal fun changePwdVisible(type: InputType) {
+        _stateFlow.value = if (type == InputType.PASSWORD) {
+            state.copy(
+                joining = state.joining.copy(
+                    pwdVisible = !state.joining.pwdVisible,
+                )
+            )
+        }
+        else {
+            state.copy(
+                joining = state.joining.copy(
+                    pwdCheckVisible = !state.joining.pwdCheckVisible,
+                )
+            )
+        }
+    }
+
+    internal fun requestSignup() {
         accountDataSource.signup(
             id = state.joining.id,
             pwd = state.joining.pwd,
@@ -196,11 +203,5 @@ class SignupViewModel @Inject constructor(
             duty = Account.Duty.NORMAL.name
         ) {
         }
-    }
-
-    private fun updatePhase(nextPhase: SignupStep) {
-        _stateFlow.value = state.copy(
-            phase = nextPhase
-        )
     }
 }

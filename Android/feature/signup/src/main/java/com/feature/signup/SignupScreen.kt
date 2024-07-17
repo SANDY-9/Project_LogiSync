@@ -60,7 +60,8 @@ fun SignupScreen(
             onAgreementComplete = viewModel::completeAgreement,
             joiningState = state.joining,
             onIdCheck = viewModel::checkId,
-            onSignupComplete = {},
+            onVisibleChange = viewModel::changePwdVisible,
+            onSignupComplete = viewModel::requestSignup,
         )
     }
 }
@@ -100,6 +101,7 @@ private fun SignupPhaseContent(
     onAgreementComplete: () -> Unit,
     joiningState: JoiningState,
     onIdCheck: () -> Unit,
+    onVisibleChange: (InputType) -> Unit,
     onSignupComplete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -125,6 +127,7 @@ private fun SignupPhaseContent(
                 onInputChange = onInputChange,
                 onInputClear = onInputClear,
                 onIdCheck = onIdCheck,
+                onVisibleChange = onVisibleChange,
                 onSignupComplete = onSignupComplete,
             )
         }

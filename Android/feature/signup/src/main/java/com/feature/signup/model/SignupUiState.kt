@@ -26,8 +26,10 @@ internal data class SignupUiState(
         existedId = null,
         pwd = "",
         pwdCheck = "",
-        pwdError = false,
-        pwdCheckError = false,
+        pwdVisible = false,
+        pwdCheckVisible = false,
+        isNotValidPwd = null,
+        isNotValidPwdCheck = null,
         isSingUpEnabled = false,
     )
 )
@@ -54,8 +56,10 @@ internal data class JoiningState(
     val existedId: Boolean?,
     val pwd: String,
     val pwdCheck: String,
-    val pwdError: Boolean,
-    val pwdCheckError: Boolean,
+    val pwdVisible: Boolean,
+    val pwdCheckVisible: Boolean,
+    val isNotValidPwd: Boolean?,
+    val isNotValidPwdCheck: Boolean?,
     val isSingUpEnabled: Boolean,
 )
 
