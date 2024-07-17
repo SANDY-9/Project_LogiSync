@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.feature.signup.components.Agreement
 import com.feature.signup.components.Check
+import com.feature.signup.components.Joining
 import com.feature.signup.model.AgreementState
 import com.feature.signup.model.AgreementType
 import com.feature.signup.model.CheckState
@@ -35,13 +36,11 @@ fun SignupScreen(
     modifier: Modifier = Modifier,
     viewModel: SignupViewModel = hiltViewModel(),
 ) {
-
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-
         SignupTopAppBar(
             onNavigate = { navController.navigateUp() }
         )
@@ -52,24 +51,19 @@ fun SignupScreen(
                 .weight(1f),
             phase = state.phase,
             checkState = state.check,
-            onNameInputChange = viewModel::input,
-            onNameInputClear = viewModel::clear,
-            onTelInputChange = viewModel::input,
-            onTelInputClear = viewModel::clear,
+            onInputChange = viewModel::input,
+            onInputClear = viewModel::clear,
             onSignupCheck = viewModel::checkSignup,
             agreementState = state.agreement,
-            onAllCheckChange = viewModel::agree,
-            onServiceCheckChange = viewModel::agree,
-            onPersonalCheckChange = viewModel::agree,
-            onServiceExpand = viewModel::expandContent,
-            onPersonalExpand = viewModel::expandContent,
+            onCheckChange = viewModel::agree,
+            onContentExpand = viewModel::expandContent,
             onAgreementComplete = viewModel::completeAgreement,
             joiningState = state.joining,
+            onIdCheck = viewModel::checkId,
+            onSignupComplete = {},
         )
-
     }
 }
-
 @Composable
 private fun SignupTopAppBar(
     onNavigate: () -> Unit,
@@ -93,74 +87,49 @@ private fun SignupTopAppBar(
         }
     }
 }
-
 @Composable
 private fun SignupPhaseContent(
     phase: SignupStep,
     checkState: CheckState,
-    onNameInputChange: (String, InputType) -> Unit,
-    onNameInputClear: (InputType) -> Unit,
-    onTelInputChange: (String, InputType) -> Unit,
-    onTelInputClear: (InputType) -> Unit,
+    onInputChange: (String, InputType) -> Unit,
+    onInputClear: (InputType) -> Unit,
     onSignupCheck: () -> Unit,
     agreementState: AgreementState,
-    onAllCheckChange: (Boolean, AgreementType) -> Unit,
-    onServiceCheckChange: (Boolean, AgreementType) -> Unit,
-    onPersonalCheckChange: (Boolean, AgreementType) -> Unit,
-    onServiceExpand: (AgreementType) -> Unit,
-    onPersonalExpand: (AgreementType) -> Unit,
+    onCheckChange: (Boolean, AgreementType) -> Unit,
+    onContentExpand: (AgreementType) -> Unit,
     onAgreementComplete: () -> Unit,
     joiningState: JoiningState,
+    onIdCheck: () -> Unit,
+    onSignupComplete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
         when (phase) {
             SignupStep.CHECK -> Check(
                 check = checkState,
-                onNameInputChange = onNameInputChange,
-                onNameInputClear = onNameInputClear,
-                onTelInputChange = onTelInputChange,
-                onTelInputClear = onTelInputClear,
+                onInputChange = onInputChange,
+                onInputClear = onInputClear,
                 onSignupCheck = onSignupCheck,
-                isInputComplete = checkState.isInputComplete,
-                existId = checkState.existedId,
             )
 
             SignupStep.AGREEMENT -> Agreement(
                 agreement = agreementState,
-                onAllCheckChange = onAllCheckChange,
-                onServiceCheckChange = onServiceCheckChange,
-                onPersonalCheckChange = onPersonalCheckChange,
-                onServiceExpand = onServiceExpand,
-                onPersonalExpand = onPersonalExpand,
+                onCheckChange = onCheckChange,
+                onContentExpand = onContentExpand,
                 isAgreeComplete = agreementState.isAgreeComplete,
                 onComplete = onAgreementComplete,
             )
 
-            else -> Unit
-
-            /*SignupStep.JOINING -> Joining(
+            SignupStep.JOINING -> Joining(
                 joining = joiningState,
-                onIdInputChange = { input ->
-                    event(SignupUiEvent.InputId(input))
-                },
-                onIdCheck = {
-                    event(SignupUiEvent.CheckId)
-                },
-                onPwdInputChange = { input ->
-                    event(SignupUiEvent.InputPwd(input))
-                },
-                onPwdCheckInputChange = { input ->
-                    event(SignupUiEvent.InputPwdCheck(input))
-                },
-                onComplete = {
-                    event(SignupUiEvent.RequestSignup)
-                },
-            )*/
+                onInputChange = onInputChange,
+                onInputClear = onInputClear,
+                onIdCheck = onIdCheck,
+                onSignupComplete = onSignupComplete,
+            )
         }
     }
 }
-
 @Composable
 @Preview(name = "Signup")
 private fun SignupScreenPreview() {

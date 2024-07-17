@@ -36,23 +36,18 @@ import com.feature.signup.model.CheckState
 import com.feature.signup.model.InputType
 
 private const val EXIST_MEMBER_ERROR = "이미 가입되어 있는 회원입니다."
-
 // 회원가입 여부 확인
 @Composable
 internal fun Check(
     check: CheckState,
-    onNameInputChange: (String, InputType) -> Unit,
-    onNameInputClear: (InputType) -> Unit,
-    onTelInputChange: (String, InputType) -> Unit,
-    onTelInputClear: (InputType) -> Unit,
+    onInputChange: (String, InputType) -> Unit,
+    onInputClear: (InputType) -> Unit,
     onSignupCheck: () -> Unit,
-    isInputComplete: Boolean,
-    existId: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    LaunchedEffect(existId) {
-        if (existId) {
+    LaunchedEffect(check.existedId) {
+        if (check.existedId) {
             Toast.makeText(context, EXIST_MEMBER_ERROR, Toast.LENGTH_SHORT).show()
         }
     }
@@ -78,10 +73,10 @@ internal fun Check(
             NameTextField(
                 input = check.name,
                 onInputChange = {
-                    onNameInputChange(it, InputType.NAME)
+                    onInputChange(it, InputType.NAME)
                 },
                 onInputClear = {
-                    onNameInputClear(InputType.NAME)
+                    onInputClear(InputType.NAME)
                 },
                 focusManager = focusManager
             )
@@ -91,10 +86,10 @@ internal fun Check(
             TelTextField(
                 input = check.tel,
                 onInputChange = {
-                    onTelInputChange(it, InputType.TEL)
+                    onInputChange(it, InputType.TEL)
                 },
                 onInputClear = {
-                    onTelInputClear(InputType.TEL)
+                    onInputClear(InputType.TEL)
                 },
                 focusManager = focusManager
             )
@@ -104,17 +99,15 @@ internal fun Check(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            enabled = isInputComplete,
+            enabled = check.isInputComplete,
             onClick = onSignupCheck,
         ) {
             Text(
                 text = stringResource(id = R.string.signup_next_step1)
             )
-
         }
     }
 }
-
 @Composable
 private fun NameTextField(
     input: String,
@@ -141,7 +134,6 @@ private fun NameTextField(
         },
     )
 }
-
 @Composable
 private fun TelTextField(
     input: String,
@@ -174,7 +166,6 @@ private fun TelTextField(
         ),
     )
 }
-
 @Preview
 @Composable
 fun CheckPreview() {

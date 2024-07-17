@@ -44,7 +44,6 @@ fun Modifier.addFocusCleaner(focusManager: FocusManager, doOnClear: () -> Unit =
         })
     }
 }
-
 @Composable
 fun MyTextField(
     value: String,
@@ -85,7 +84,11 @@ fun MyTextField(
         leadingIcon = leadingIcon,
         trailingIcon = {
             if (value.isNotBlank()) {
-                IconButton(onClick = onValueClear) {
+                IconButton(
+                    onClick = {
+                        focusManager.moveFocus(FocusDirection.Previous)
+                        onValueClear()
+                    }) {
                     Icon(
                         imageVector = Icons.Clear,
                         tint = Color.Gray,
@@ -118,7 +121,6 @@ fun MyTextField(
         colors = colors,
     )
 }
-
 @Composable
 private fun TextFieldPlaceHolder(
     str: String,
@@ -127,7 +129,6 @@ private fun TextFieldPlaceHolder(
         text = str
     )
 }
-
 @Composable
 fun IDTextField(
     placeHolder: String,
@@ -144,7 +145,6 @@ fun IDTextField(
         modifier = modifier,
     )
 }
-
 @Composable
 fun PWTextField(
     placeHolder: String,
@@ -163,7 +163,6 @@ fun PWTextField(
         modifier = modifier,
     )
 }
-
 @Preview
 @Composable
 private fun TextFieldPreview() {
@@ -174,6 +173,5 @@ private fun TextFieldPreview() {
         onValueChange = { query = it },
         onValueClear = { query = "" },
         focusManager = focusManager,
-
         )
 }

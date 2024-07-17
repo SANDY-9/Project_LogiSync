@@ -20,18 +20,13 @@ import javax.inject.Inject
 class SignupViewModel @Inject constructor(
     private val accountDataSource: AuthClient,
 ) : ViewModel() {
-
     private val _stateFlow: MutableStateFlow<SignupUiState> = MutableStateFlow(SignupUiState())
     internal val stateFlow: StateFlow<SignupUiState> = _stateFlow.asStateFlow()
-
     private val state get() = stateFlow.value
-
     internal fun onEvent(event: SignupUiEvent) {
         when (event) {
-
             // check
             is SignupUiEvent.CheckId -> checkId()
-
             // navigate
             is SignupUiEvent.RequestSignup -> requestSignup()
             else -> {}
@@ -63,7 +58,13 @@ class SignupViewModel @Inject constructor(
 
             InputType.ID -> {
                 val joining = state.joining
-                state.copy(joining = joining.copy(id = input))
+                state.copy(
+                    joining = joining.copy(
+                        id = input,
+                        isValidId = InputValidationHelper.isValidId(input),
+                        existedId = if (state.joining.existedId != null) null else state.joining.existedId,
+                    )
+                )
             }
 
             InputType.PASSWORD -> {
@@ -89,7 +90,13 @@ class SignupViewModel @Inject constructor(
             }
 
             InputType.ID -> {
-                state.copy(joining = state.joining.copy(id = ""))
+                state.copy(
+                    joining = state.joining.copy(
+                        id = "",
+                        isValidId = false,
+                        existedId = if (state.joining.existedId != null) null else state.joining.existedId,
+                    )
+                )
             }
 
             InputType.PASSWORD -> {
@@ -167,9 +174,16 @@ class SignupViewModel @Inject constructor(
         )
     }
 
-    private fun checkId() {
+    fun checkId() {
         accountDataSource.checkId(state.joining.id) { existed ->
-
+            _stateFlow.update {
+                val joining = it.joining
+                it.copy(
+                    joining = joining.copy(
+                        existedId = existed,
+                    )
+                )
+            }
         }
     }
 
@@ -181,7 +195,6 @@ class SignupViewModel @Inject constructor(
             tel = state.check.tel,
             duty = Account.Duty.NORMAL.name
         ) {
-
         }
     }
 

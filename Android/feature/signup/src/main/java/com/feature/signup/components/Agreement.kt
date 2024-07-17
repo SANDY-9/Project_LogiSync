@@ -32,11 +32,8 @@ import com.feature.signup.model.AgreementType
 @Composable
 internal fun Agreement(
     agreement: AgreementState,
-    onAllCheckChange: (Boolean, AgreementType) -> Unit,
-    onServiceCheckChange: (Boolean, AgreementType) -> Unit,
-    onPersonalCheckChange: (Boolean, AgreementType) -> Unit,
-    onServiceExpand: (AgreementType) -> Unit,
-    onPersonalExpand: (AgreementType) -> Unit,
+    onCheckChange: (Boolean, AgreementType) -> Unit,
+    onContentExpand: (AgreementType) -> Unit,
     isAgreeComplete: Boolean,
     onComplete: () -> Unit,
     modifier: Modifier = Modifier,
@@ -63,7 +60,7 @@ internal fun Agreement(
             AgreeCheckBox(
                 checkState = agreement.isAllChecked,
                 onCheckChange = {
-                    onAllCheckChange(it, AgreementType.ALL)
+                    onCheckChange(it, AgreementType.ALL)
                 },
                 title = stringResource(id = R.string.signup_agree_all)
             )
@@ -71,12 +68,12 @@ internal fun Agreement(
             AgreeExpandableCheckBox(
                 checkState = agreement.isServiceChecked,
                 onCheckChange = {
-                    onServiceCheckChange(it, AgreementType.SERVICE)
+                    onCheckChange(it, AgreementType.SERVICE)
                 },
                 title = stringResource(id = R.string.signup_agree_service),
                 expand = agreement.isServiceExpand,
                 onExpand = {
-                    onServiceExpand(AgreementType.SERVICE)
+                    onContentExpand(AgreementType.SERVICE)
                 },
                 content = stringResource(id = R.string.signup_agree_content),
             )
@@ -84,12 +81,12 @@ internal fun Agreement(
             AgreeExpandableCheckBox(
                 checkState = agreement.isPersonalChecked,
                 onCheckChange = {
-                    onPersonalCheckChange(it, AgreementType.PERSONAL)
+                    onCheckChange(it, AgreementType.PERSONAL)
                 },
                 title = stringResource(id = R.string.signup_agree_personal),
                 expand = agreement.isPersonalExpand,
                 onExpand = {
-                    onPersonalExpand(AgreementType.PERSONAL)
+                    onContentExpand(AgreementType.PERSONAL)
                 },
                 content = stringResource(id = R.string.signup_agree_content),
             )

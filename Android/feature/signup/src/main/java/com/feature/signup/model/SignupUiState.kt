@@ -5,7 +5,7 @@ import androidx.compose.runtime.Stable
 
 @Stable
 internal data class SignupUiState(
-    val phase: SignupStep = SignupStep.CHECK,
+    val phase: SignupStep = SignupStep.JOINING,//SignupStep.CHECK,
     val check: CheckState = CheckState(
         name = "",
         tel = "",
@@ -22,14 +22,15 @@ internal data class SignupUiState(
     ),
     val joining: JoiningState = JoiningState(
         id = "",
+        isValidId = false,
+        existedId = null,
         pwd = "",
         pwdCheck = "",
-        idError = false,
         pwdError = false,
         pwdCheckError = false,
+        isSingUpEnabled = false,
     )
 )
-
 @Immutable
 internal data class CheckState(
     val name: String,
@@ -37,7 +38,6 @@ internal data class CheckState(
     val isInputComplete: Boolean,
     val existedId: Boolean,
 )
-
 @Immutable
 internal data class AgreementState(
     val isAllChecked: Boolean,
@@ -47,15 +47,16 @@ internal data class AgreementState(
     val isPersonalExpand: Boolean,
     val isAgreeComplete: Boolean,
 )
-
 @Immutable
 internal data class JoiningState(
     val id: String,
+    val isValidId: Boolean,
+    val existedId: Boolean?,
     val pwd: String,
     val pwdCheck: String,
-    val idError: Boolean,
     val pwdError: Boolean,
     val pwdCheckError: Boolean,
+    val isSingUpEnabled: Boolean,
 )
 
 internal enum class SignupStep {
