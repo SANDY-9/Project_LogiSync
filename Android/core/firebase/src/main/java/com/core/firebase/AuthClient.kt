@@ -1,8 +1,10 @@
 package com.core.firebase
 
+import android.util.Log
 import com.core.firebase.common.Constants.ADMIN
 import com.core.firebase.common.Constants.DUTY
 import com.core.firebase.common.Constants.TEL
+import com.core.firebase.common.Constants.TOKEN
 import com.core.firebase.common.Constants.USERS
 import com.core.firebase.mappers.toAccount
 import com.core.firebase.model.AccountDTO
@@ -21,6 +23,7 @@ import javax.inject.Inject
 
 class AuthClient @Inject constructor(
     private val ref: DatabaseReference,
+    private val messagingClient: MessagingClient,
 ) {
 
     fun signup(
@@ -45,6 +48,9 @@ class AuthClient @Inject constructor(
                 // 최초 가입의 경우
                 if (snapshot.children.count() == 1) {
                     user.child(id).child(DUTY).setValue(ADMIN)
+                }
+                sendRegistrationToServer(id) {
+                    onError(NetworkError(NETWORK_ERROR_MESSAGE))
                 }
                 onSuccess(true)
             }
@@ -93,6 +99,9 @@ class AuthClient @Inject constructor(
             if (snapshot.exists()) {
                 val account = snapshot.getValue<AccountDTO>()
                 if (account?.pwd == pwd) {
+                    sendRegistrationToServer(id) {
+                        onError(NetworkError(NETWORK_ERROR_MESSAGE))
+                    }
                     onLogin(account.toAccount(id))
                 }
                 else onError(LoginError(LOGIN_ERROR_MESSAGE))
@@ -102,4 +111,23 @@ class AuthClient @Inject constructor(
             onError(NetworkError(NETWORK_ERROR_MESSAGE))
         }
     }
+
+    private fun sendRegistrationToServer(
+        id: String,
+        onError: (Throwable) -> Unit,
+    ) {
+        messagingClient.getToken(
+            onToken = { token ->
+                messagingClient.updateToken(
+                    id = id,
+                    token = token,
+                    onError = { onError(it) },
+                )
+            },
+            onError = {
+                onError(it ?: NetworkError(NETWORK_ERROR_MESSAGE))
+            },
+        )
+    }
+
 }
