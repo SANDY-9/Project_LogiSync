@@ -50,4 +50,9 @@ dependencies {
 
     // Wearable
     implementation(libs.bundles.wearable)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
+
 }
