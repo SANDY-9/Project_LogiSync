@@ -19,9 +19,11 @@ import javax.inject.Inject
 class SignupViewModel @Inject constructor(
     private val accountDataSource: AuthClient,
 ) : ViewModel() {
+
     private val _stateFlow: MutableStateFlow<SignupUiState> = MutableStateFlow(SignupUiState())
     internal val stateFlow: StateFlow<SignupUiState> = _stateFlow.asStateFlow()
     private val state get() = stateFlow.value
+
     internal fun input(input: String, type: InputType) {
         _stateFlow.value = when (type) {
             InputType.NAME -> {
@@ -202,6 +204,9 @@ class SignupViewModel @Inject constructor(
             tel = state.check.tel,
             duty = Account.Duty.NORMAL.name
         ) {
+            _stateFlow.value = state.copy(
+                signupComplete = true
+            )
         }
     }
 }

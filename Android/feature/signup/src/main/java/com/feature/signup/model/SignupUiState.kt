@@ -5,7 +5,7 @@ import androidx.compose.runtime.Stable
 
 @Stable
 internal data class SignupUiState(
-    val phase: SignupStep = SignupStep.JOINING,//SignupStep.CHECK,
+    val phase: SignupStep = SignupStep.CHECK,
     val check: CheckState = CheckState(
         name = "",
         tel = "",
@@ -31,7 +31,8 @@ internal data class SignupUiState(
         isNotValidPwd = null,
         isNotValidPwdCheck = null,
         isSingUpEnabled = false,
-    )
+    ),
+    val signupComplete: Boolean = false,
 )
 @Immutable
 internal data class CheckState(
