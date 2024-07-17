@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.core.domain.usecases.login.RequestLoginUseCase
+import com.core.domain.usecases.auth.RequestLoginUseCase
 import com.feature.login.loginscreen.model.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,4 +1,4 @@
-package com.core.data.repository.login
+package com.core.data.repository.auth
 
 import com.core.domain.repository.LoginRepository
 import com.core.firebase.AuthClient
@@ -13,27 +13,6 @@ import javax.inject.Inject
 class LoginRepositoryImpl @Inject constructor(
     private val authClient: AuthClient,
 ) : LoginRepository {
-    override fun signup(
-        id: String,
-        pwd: String,
-        name: String,
-        tel: String,
-        duty: String
-    ): Flow<Boolean> = callbackFlow {
-        authClient.signup(id, pwd, name, tel, duty) { isSuccess ->
-            trySend(isSuccess)
-        }
-        awaitClose()
-    }
-
-    override fun checkTel(tel: String): Flow<Boolean> {
-        TODO("Not yet implemented")
-    }
-
-    override fun checkId(id: String): Flow<Boolean> {
-        TODO("Not yet implemented")
-    }
-
     override fun login(id: String, pwd: String): Flow<Account> = callbackFlow {
         authClient.login(
             id = id,

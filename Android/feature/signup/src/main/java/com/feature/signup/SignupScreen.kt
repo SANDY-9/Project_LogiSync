@@ -1,5 +1,6 @@
 package com.feature.signup
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,6 +35,7 @@ import com.feature.signup.model.InputType
 import com.feature.signup.model.JoiningState
 import com.feature.signup.model.SignupStep
 
+private const val NETWORK_ERROR_MESSAGE = "네트워크 연결 상태를 확인해주세요."
 @Composable
 fun SignupScreen(
     navController: NavController,
@@ -40,12 +43,18 @@ fun SignupScreen(
     viewModel: SignupViewModel = hiltViewModel(),
 ) {
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
-
+    val context = LocalContext.current
     LaunchedEffect(state.signupComplete) {
         if (state.signupComplete) {
             navController.navigate(Route.Onboarding.route) {
                 popUpTo(Route.Signup.route) { inclusive = true }
             }
+        }
+    }
+
+    LaunchedEffect(state.error) {
+        if (state.error) {
+            Toast.makeText(context, NETWORK_ERROR_MESSAGE, Toast.LENGTH_SHORT).show()
         }
     }
 

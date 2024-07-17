@@ -5,6 +5,7 @@ import androidx.compose.runtime.Stable
 
 @Stable
 internal data class SignupUiState(
+    val error: Boolean = false,
     val phase: SignupStep = SignupStep.CHECK,
     val check: CheckState = CheckState(
         name = "",

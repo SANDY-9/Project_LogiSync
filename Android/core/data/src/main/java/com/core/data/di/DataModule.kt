@@ -1,7 +1,8 @@
 package com.core.data.di
 
+import com.core.data.repository.auth.LoginRepositoryImpl
+import com.core.data.repository.auth.SignupRepositoryImpl
 import com.core.data.repository.bluetooth.BluetoothRepositoryImpl
-import com.core.data.repository.login.LoginRepositoryImpl
 import com.core.data.repository.prefs.AuthPrefsRepositoryImpl
 import com.core.data.repository.prefs.DevicePrefsRepositoryImpl
 import com.core.data.repository.wearable.WearableRepositoryImpl
@@ -9,6 +10,7 @@ import com.core.domain.repository.AuthPrefsRepository
 import com.core.domain.repository.BluetoothRepository
 import com.core.domain.repository.DevicePrefsRepository
 import com.core.domain.repository.LoginRepository
+import com.core.domain.repository.SignupRepository
 import com.core.domain.repository.WearableRepository
 import dagger.Binds
 import dagger.Module
@@ -43,4 +45,9 @@ internal abstract class DataModule {
     abstract fun bindsAuthPrefsRepository(
         impl: AuthPrefsRepositoryImpl
     ): AuthPrefsRepository
+
+    @Binds
+    abstract fun bindsSignupRepository(
+        impl: SignupRepositoryImpl
+    ): SignupRepository
 }

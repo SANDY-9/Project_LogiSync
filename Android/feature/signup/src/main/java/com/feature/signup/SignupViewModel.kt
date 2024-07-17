@@ -1,8 +1,10 @@
 package com.feature.signup
 
 import androidx.lifecycle.ViewModel
-import com.core.firebase.AuthClient
-import com.core.model.Account
+import androidx.lifecycle.viewModelScope
+import com.core.domain.usecases.auth.GetIsExistId
+import com.core.domain.usecases.auth.GetIsExistMember
+import com.core.domain.usecases.auth.RequestSignupUseCase
 import com.feature.signup.model.AgreementType
 import com.feature.signup.model.InputType
 import com.feature.signup.model.SignupStep
@@ -12,12 +14,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class SignupViewModel @Inject constructor(
-    private val accountDataSource: AuthClient,
+    private val getIsExistMember: GetIsExistMember,
+    private val getIsExistId: GetIsExistId,
+    private val requestSignupUseCase: RequestSignupUseCase,
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<SignupUiState> = MutableStateFlow(SignupUiState())
@@ -98,15 +105,14 @@ class SignupViewModel @Inject constructor(
     }
 
     internal fun checkSignup() {
-        _stateFlow.value = state.copy(
-            check = state.check.copy(existedId = false)
-        )
-        accountDataSource.checkTel(state.check.tel) { existed ->
+        getIsExistMember(state.check.tel).onEach { exist ->
             _stateFlow.value = _stateFlow.value.copy(
-                phase = if (existed) state.phase else SignupStep.AGREEMENT,
-                check = state.check.copy(existedId = existed),
+                phase = if (exist) state.phase else SignupStep.AGREEMENT,
+                check = state.check.copy(existedId = exist),
             )
-        }
+        }.catch {
+            notifyNetworkError()
+        }.launchIn(viewModelScope)
     }
 
     internal fun agree(checked: Boolean, type: AgreementType) {
@@ -159,14 +165,15 @@ class SignupViewModel @Inject constructor(
     }
 
     internal fun checkId() {
-        accountDataSource.checkId(state.joining.id) { existed ->
-            _stateFlow.update {
-                val joining = it.joining
-                it.copy(
-                    joining = joining.copy(existedId = existed)
+        getIsExistId(state.joining.id).onEach { exist ->
+            _stateFlow.value = state.copy(
+                joining = state.joining.copy(
+                    existedId = exist
                 )
-            }
-        }
+            )
+        }.catch {
+            notifyNetworkError()
+        }.launchIn(viewModelScope)
     }
 
     internal fun changePwdVisible(type: InputType) {
@@ -187,14 +194,28 @@ class SignupViewModel @Inject constructor(
     }
 
     internal fun requestSignup() {
-        accountDataSource.signup(
+        requestSignupUseCase(
             id = state.joining.id,
             pwd = state.joining.pwd,
             name = state.check.name,
             tel = state.check.tel,
-            duty = Account.Duty.NORMAL.name
-        ) {
+        ).onEach {
             _stateFlow.value = state.copy(signupComplete = true)
+        }.catch {
+            notifyNetworkError()
+        }.launchIn(viewModelScope)
+    }
+
+    private fun notifyNetworkError() {
+        _stateFlow.update {
+            it.copy(
+                error = true
+            )
+        }
+        _stateFlow.update {
+            it.copy(
+                error = false
+            )
         }
     }
 }
