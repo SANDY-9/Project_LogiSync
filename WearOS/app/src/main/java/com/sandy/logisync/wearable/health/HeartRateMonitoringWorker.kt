@@ -1,6 +1,7 @@
 package com.sandy.logisync.wearable.health
 
 import android.content.Context
+import android.os.PowerManager
 import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
@@ -34,30 +35,38 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
     @Assisted params: WorkerParameters,
     private val healthMeasureRepository: HealthMeasureRepository,
     private val networkRepository: NetworkRepository,
+    private val powerManager: PowerManager,
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
         Log.e("확인", "doWork: 워커 실행 ${LocalDateTime.now()}")
         monitorHeartRate()
-        //registerNextMonitoring()
+        registerNextMonitoring()
         return Result.success()
     }
 
-    private var num = 0
     private fun monitorHeartRate() {
         suspend {
+            val wakeLock = powerManager.newWakeLock(
+                PowerManager.SCREEN_BRIGHT_WAKE_LOCK or
+                        PowerManager.ACQUIRE_CAUSES_WAKEUP or
+                        PowerManager.ON_AFTER_RELEASE,
+                "LogiSync::WAKELOCK"
+            )
+            wakeLock.acquire(1 * 60 * 1000L /*1 minutes*/)
             healthMeasureRepository.getMeasuredHeartRate().onEach {
                 // num++
                 if (it.availability == MeasuredAvailability.UNAVAILABLE_DEVICE_OFF_BODY ||
                     it.availability == MeasuredAvailability.UNAVAILABLE
                 ) awaitCancellation()
-                Log.e("확인", "monitorHeartRate: 이거1 $num, ${it.availability}")
+                Log.e("확인", "monitorHeartRate: 이거1 ${it.availability}")
             }.filter {
                 it.availability == MeasuredAvailability.AVAILABLE
             }.collect {
                 val heartRate = it.heartRate
                 heartRate?.let { heartRate ->
                     Log.e("확인", "monitorHeartRate: 이거2 $heartRate")
+                    wakeLock.release()
                     networkRepository.updateHeartRate(heartRate.bpm, heartRate.time)
                         .catch { error ->
                             Log.e("확인", "monitorHeartRate: $error")
