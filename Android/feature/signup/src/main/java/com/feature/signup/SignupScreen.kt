@@ -20,8 +20,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.feature.signup.components.Agreement
 import com.feature.signup.components.Check
 import com.feature.signup.model.AgreementState
+import com.feature.signup.model.AgreementType
 import com.feature.signup.model.CheckState
 import com.feature.signup.model.InputType
 import com.feature.signup.model.JoiningState
@@ -56,6 +58,12 @@ fun SignupScreen(
             onTelInputClear = viewModel::clear,
             onSignupCheck = viewModel::checkSignup,
             agreementState = state.agreement,
+            onAllCheckChange = viewModel::agree,
+            onServiceCheckChange = viewModel::agree,
+            onPersonalCheckChange = viewModel::agree,
+            onServiceExpand = viewModel::expandContent,
+            onPersonalExpand = viewModel::expandContent,
+            onAgreementComplete = viewModel::completeAgreement,
             joiningState = state.joining,
         )
 
@@ -96,6 +104,12 @@ private fun SignupPhaseContent(
     onTelInputClear: (InputType) -> Unit,
     onSignupCheck: () -> Unit,
     agreementState: AgreementState,
+    onAllCheckChange: (Boolean, AgreementType) -> Unit,
+    onServiceCheckChange: (Boolean, AgreementType) -> Unit,
+    onPersonalCheckChange: (Boolean, AgreementType) -> Unit,
+    onServiceExpand: (AgreementType) -> Unit,
+    onPersonalExpand: (AgreementType) -> Unit,
+    onAgreementComplete: () -> Unit,
     joiningState: JoiningState,
     modifier: Modifier = Modifier,
 ) {
@@ -112,31 +126,20 @@ private fun SignupPhaseContent(
                 existId = checkState.existedId,
             )
 
-            else -> Unit
-
-            /*SignupStep.AGREEMENT -> Agreement(
+            SignupStep.AGREEMENT -> Agreement(
                 agreement = agreementState,
-                onAllCheckChange = { checked ->
-                    event(SignupUiEvent.ChangeAllChecked(checked))
-                },
-                onServiceCheckChange = { checked ->
-                    event(SignupUiEvent.ChangeServiceChecked(checked))
-                },
-                onPersonalCheckChange = { checked ->
-                    event(SignupUiEvent.ChangePersonalChecked(checked))
-                },
-                onServiceExpand = {
-                    event(SignupUiEvent.ChangeServiceExpanded)
-                },
-                onPersonalExpand = {
-                    event(SignupUiEvent.ChangePersonalExpanded)
-                },
-                onAgreementCheck = {
-                    event(SignupUiEvent.CheckAgreement)
-                },
+                onAllCheckChange = onAllCheckChange,
+                onServiceCheckChange = onServiceCheckChange,
+                onPersonalCheckChange = onPersonalCheckChange,
+                onServiceExpand = onServiceExpand,
+                onPersonalExpand = onPersonalExpand,
+                isAgreeComplete = agreementState.isAgreeComplete,
+                onComplete = onAgreementComplete,
             )
 
-            SignupStep.JOINING -> Joining(
+            else -> Unit
+
+            /*SignupStep.JOINING -> Joining(
                 joining = joiningState,
                 onIdInputChange = { input ->
                     event(SignupUiEvent.InputId(input))

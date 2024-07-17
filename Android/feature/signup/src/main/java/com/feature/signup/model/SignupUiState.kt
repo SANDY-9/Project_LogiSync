@@ -18,7 +18,7 @@ internal data class SignupUiState(
         isServiceExpand = false,
         isPersonalChecked = false,
         isPersonalExpand = false,
-        agreeError = false,
+        isAgreeComplete = false,
     ),
     val joining: JoiningState = JoiningState(
         id = "",
@@ -45,7 +45,7 @@ internal data class AgreementState(
     val isServiceExpand: Boolean,
     val isPersonalChecked: Boolean,
     val isPersonalExpand: Boolean,
-    val agreeError: Boolean,
+    val isAgreeComplete: Boolean,
 )
 
 @Immutable
@@ -64,4 +64,8 @@ internal enum class SignupStep {
 
 internal enum class InputType {
     NAME, TEL, ID, PASSWORD, PWD_CHECK
+}
+
+internal enum class AgreementType {
+    ALL, SERVICE, PERSONAL,
 }

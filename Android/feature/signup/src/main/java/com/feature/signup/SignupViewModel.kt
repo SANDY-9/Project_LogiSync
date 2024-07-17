@@ -3,6 +3,7 @@ package com.feature.signup
 import androidx.lifecycle.ViewModel
 import com.core.firebase.AuthClient
 import com.core.model.Account
+import com.feature.signup.model.AgreementType
 import com.feature.signup.model.InputType
 import com.feature.signup.model.SignupStep
 import com.feature.signup.model.SignupUiEvent
@@ -28,17 +29,8 @@ class SignupViewModel @Inject constructor(
     internal fun onEvent(event: SignupUiEvent) {
         when (event) {
 
-            // change
-            is SignupUiEvent.ChangeAllChecked -> updateAllCheck(event.check)
-            is SignupUiEvent.ChangeServiceChecked -> updateServiceCheck(event.check)
-            is SignupUiEvent.ChangePersonalChecked -> updatePersonalCheck(event.check)
-            is SignupUiEvent.ChangeServiceExpanded -> updateServiceExpand()
-            is SignupUiEvent.ChangePersonalExpanded -> updatePersonalExpand()
-
             // check
             is SignupUiEvent.CheckId -> checkId()
-            //is SignupUiEvent.CheckSignup -> checkSignup()
-            is SignupUiEvent.CheckAgreement -> checkAgreement()
 
             // navigate
             is SignupUiEvent.RequestSignup -> requestSignup()
@@ -122,67 +114,57 @@ class SignupViewModel @Inject constructor(
         }
     }
 
-    private fun updateAllCheck(check: Boolean) {
-        _stateFlow.update {
-            val agreement = it.agreement
-            it.copy(
-                agreement = agreement.copy(
-                    isAllChecked = check,
-                    isServiceChecked = check,
-                    isPersonalChecked = check,
+    internal fun agree(checked: Boolean, type: AgreementType) {
+        _stateFlow.value = when (type) {
+            AgreementType.ALL -> state.copy(
+                agreement = state.agreement.copy(
+                    isAllChecked = checked,
+                    isServiceChecked = checked,
+                    isPersonalChecked = checked,
+                    isAgreeComplete = checked,
                 )
             )
-        }
-    }
 
-    private fun updateServiceCheck(check: Boolean) {
-        _stateFlow.update {
-            val agreement = it.agreement
-            it.copy(
-                agreement = agreement.copy(
+            AgreementType.SERVICE -> state.copy(
+                agreement = state.agreement.copy(
                     isAllChecked = false,
-                    isServiceChecked = check,
+                    isServiceChecked = checked,
+                    isAgreeComplete = state.agreement.isPersonalChecked && checked
                 )
             )
-        }
-    }
 
-    private fun updatePersonalCheck(check: Boolean) {
-        _stateFlow.update {
-            val agreement = it.agreement
-            it.copy(
-                agreement = agreement.copy(
+            AgreementType.PERSONAL -> state.copy(
+                agreement = state.agreement.copy(
                     isAllChecked = false,
-                    isPersonalChecked = check,
+                    isPersonalChecked = checked,
+                    isAgreeComplete = state.agreement.isServiceChecked && checked
                 )
             )
         }
     }
 
-    private fun updateServiceExpand() {
-        _stateFlow.update {
-            val agreement = it.agreement
-            it.copy(
-                agreement = agreement.copy(
-                    isServiceExpand = !agreement.isServiceExpand,
+    internal fun expandContent(type: AgreementType) {
+        _stateFlow.value = when (type) {
+            AgreementType.SERVICE -> state.copy(
+                agreement = state.agreement.copy(
+                    isServiceExpand = !state.agreement.isServiceExpand
                 )
             )
+
+            AgreementType.PERSONAL -> state.copy(
+                agreement = state.agreement.copy(
+                    isPersonalExpand = !state.agreement.isPersonalExpand
+                )
+            )
+
+            else -> state
         }
     }
 
-    private fun updatePersonalExpand() {
-        _stateFlow.update {
-            val agreement = it.agreement
-            it.copy(
-                agreement = agreement.copy(
-                    isPersonalExpand = !agreement.isPersonalExpand,
-                )
-            )
-        }
-    }
-
-    private fun checkAgreement() {
-        updatePhase(SignupStep.JOINING)
+    fun completeAgreement() {
+        _stateFlow.value = state.copy(
+            phase = SignupStep.JOINING
+        )
     }
 
     private fun checkId() {
