@@ -9,6 +9,8 @@ internal data class SignupUiState(
     val check: CheckState = CheckState(
         name = "",
         tel = "",
+        isInputComplete = false,
+        existedId = false,
     ),
     val agreement: AgreementState = AgreementState(
         isAllChecked = false,
@@ -32,6 +34,8 @@ internal data class SignupUiState(
 internal data class CheckState(
     val name: String,
     val tel: String,
+    val isInputComplete: Boolean,
+    val existedId: Boolean,
 )
 
 @Immutable
@@ -54,6 +58,10 @@ internal data class JoiningState(
     val pwdCheckError: Boolean,
 )
 
-enum class SignupStep {
+internal enum class SignupStep {
     CHECK, AGREEMENT, JOINING
+}
+
+internal enum class InputType {
+    NAME, TEL, ID, PASSWORD, PWD_CHECK
 }

@@ -3,9 +3,11 @@ package com.feature.signup
 import androidx.lifecycle.ViewModel
 import com.core.firebase.AuthClient
 import com.core.model.Account
+import com.feature.signup.model.InputType
 import com.feature.signup.model.SignupStep
 import com.feature.signup.model.SignupUiEvent
 import com.feature.signup.model.SignupUiState
+import com.feature.signup.utils.InputValidationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,12 +27,6 @@ class SignupViewModel @Inject constructor(
 
     internal fun onEvent(event: SignupUiEvent) {
         when (event) {
-            // update input
-            is SignupUiEvent.InputName -> updateInputName(event.input)
-            is SignupUiEvent.InputTel -> updateInputTel(event.input)
-            is SignupUiEvent.InputId -> updateInputId(event.input)
-            is SignupUiEvent.InputPwd -> updateInputPwd(event.input)
-            is SignupUiEvent.InputPwdCheck -> updateInputPwdCheck(event.input)
 
             // change
             is SignupUiEvent.ChangeAllChecked -> updateAllCheck(event.check)
@@ -41,65 +37,87 @@ class SignupViewModel @Inject constructor(
 
             // check
             is SignupUiEvent.CheckId -> checkId()
-            is SignupUiEvent.CheckSignup -> checkSignup()
+            //is SignupUiEvent.CheckSignup -> checkSignup()
             is SignupUiEvent.CheckAgreement -> checkAgreement()
 
             // navigate
             is SignupUiEvent.RequestSignup -> requestSignup()
+            else -> {}
         }
     }
 
-    private fun updateInputName(input: String) {
-        _stateFlow.update {
-            val check = it.check
-            it.copy(
-                check = check.copy(
-                    name = input
+    internal fun input(input: String, type: InputType) {
+        _stateFlow.value = when (type) {
+            InputType.NAME -> {
+                val check = state.check
+                state.copy(
+                    check = check.copy(
+                        name = input,
+                        isInputComplete = check.tel.isNotBlank() && input.isNotBlank(),
+                    )
                 )
-            )
+            }
+
+            InputType.TEL -> {
+                val check = state.check
+                val telInput = InputValidationHelper.getValidatedTel(input)
+                state.copy(
+                    check = check.copy(
+                        tel = telInput,
+                        isInputComplete = check.name.isNotBlank() && telInput.isNotBlank(),
+                    )
+                )
+            }
+
+            InputType.ID -> {
+                val joining = state.joining
+                state.copy(joining = joining.copy(id = input))
+            }
+
+            InputType.PASSWORD -> {
+                val joining = state.joining
+                state.copy(joining = joining.copy(pwd = input))
+            }
+
+            InputType.PWD_CHECK -> {
+                val joining = state.joining
+                state.copy(joining = joining.copy(pwdCheck = input))
+            }
         }
     }
 
-    private fun updateInputTel(input: String) {
-        _stateFlow.update {
-            val check = it.check
-            it.copy(
-                check = check.copy(
-                    tel = input
-                )
-            )
+    internal fun clear(type: InputType) {
+        _stateFlow.value = when (type) {
+            InputType.NAME -> {
+                state.copy(check = state.check.copy(name = ""))
+            }
+
+            InputType.TEL -> {
+                state.copy(check = state.check.copy(tel = ""))
+            }
+
+            InputType.ID -> {
+                state.copy(joining = state.joining.copy(id = ""))
+            }
+
+            InputType.PASSWORD -> {
+                state.copy(joining = state.joining.copy(pwd = ""))
+            }
+
+            InputType.PWD_CHECK -> {
+                state.copy(joining = state.joining.copy(pwdCheck = ""))
+            }
         }
     }
 
-    private fun updateInputId(input: String) {
-        _stateFlow.update {
-            val joining = it.joining
-            it.copy(
-                joining = joining.copy(
-                    id = input
-                )
-            )
-        }
-    }
-
-    private fun updateInputPwd(input: String) {
-        _stateFlow.update {
-            val joining = it.joining
-            it.copy(
-                joining = joining.copy(
-                    pwd = input
-                )
-            )
-        }
-    }
-
-    private fun updateInputPwdCheck(input: String) {
-        _stateFlow.update {
-            val joining = it.joining
-            it.copy(
-                joining = joining.copy(
-                    pwdCheck = input
-                )
+    internal fun checkSignup() {
+        _stateFlow.value = state.copy(
+            check = state.check.copy(existedId = false)
+        )
+        accountDataSource.checkTel(state.check.tel) { existed ->
+            _stateFlow.value = _stateFlow.value.copy(
+                phase = if (existed) state.phase else SignupStep.AGREEMENT,
+                check = state.check.copy(existedId = existed),
             )
         }
     }
@@ -163,12 +181,6 @@ class SignupViewModel @Inject constructor(
         }
     }
 
-    private fun checkSignup() {
-        accountDataSource.checkTel(state.check.tel) { existed ->
-            if (!existed) updatePhase(SignupStep.AGREEMENT)
-        }
-    }
-
     private fun checkAgreement() {
         updatePhase(SignupStep.JOINING)
     }
@@ -192,10 +204,8 @@ class SignupViewModel @Inject constructor(
     }
 
     private fun updatePhase(nextPhase: SignupStep) {
-        _stateFlow.update {
-            it.copy(
-                phase = nextPhase
-            )
-        }
+        _stateFlow.value = state.copy(
+            phase = nextPhase
+        )
     }
 }
