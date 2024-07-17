@@ -1,17 +1,19 @@
 package com.core.domain.usecases.wearable
 
+import com.core.domain.repository.AuthPrefsRepository
 import com.core.domain.repository.WearableRepository
+import com.core.model.Account
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class LoginWearableUseCase @Inject constructor(
+    private val authPrefsRepository: AuthPrefsRepository,
     private val wearableRepository: WearableRepository
 ) {
-    suspend fun invoke(id: String): Boolean {
-        try {
-            wearableRepository.sendLogin(id)
-            return true
-        } catch (e: Exception) {
-            return false
+    operator fun invoke(): Flow<Account> {
+        return authPrefsRepository.getAccount().onEach { account ->
+            wearableRepository.sendLogin(account)
         }
     }
 }

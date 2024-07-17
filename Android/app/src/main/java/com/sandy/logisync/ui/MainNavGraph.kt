@@ -6,10 +6,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.core.navigation.Route
+import com.feature.admin.AdminScreen
 import com.feature.home.HomeScreen
 import com.feature.login.loginscreen.LoginScreen
 import com.feature.onboard.OnboardingScreen
 import com.feature.signup.SignupScreen
+import com.sandy.statistics.StatisticsScreen
 
 @Composable
 fun MainNavGraph(
@@ -57,6 +59,22 @@ fun MainNavGraph(
             route = Route.Home.route,
         ) {
             HomeScreen(
+                navController = navController,
+            )
+        }
+
+        composable(
+            route = Route.Statistics.route,
+        ) {
+            StatisticsScreen(
+                navController = navController,
+            )
+        }
+
+        composable(
+            route = Route.Admin.route,
+        ) {
+            AdminScreen(
                 navController = navController,
             )
         }

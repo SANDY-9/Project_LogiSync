@@ -3,7 +3,7 @@ package com.feature.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.core.domain.usecases.prefs.GetPairedDeviceNameUseCase
+import com.core.domain.usecases.prefs.GetLastPairedDeviceUseCase
 import com.core.domain.usecases.wearable.CollectHeartRateUseCase
 import com.core.domain.usecases.wearable.GetWearableConnectStateUseCase
 import com.core.domain.usecases.wearable.LoginWearableUseCase
@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     getWearableConnectStateUseCase: GetWearableConnectStateUseCase,
-    getPairedDeviceNameUseCase: GetPairedDeviceNameUseCase,
+    getLastPairedDeviceUseCase: GetLastPairedDeviceUseCase,
     private val loginWearableUseCase: LoginWearableUseCase,
     private val collectHeartRateUseCase: CollectHeartRateUseCase,
 ) : ViewModel() {
@@ -36,11 +36,11 @@ class HomeViewModel @Inject constructor(
     init {
         combine(
             getWearableConnectStateUseCase(),
-            getPairedDeviceNameUseCase(),
-        ) { isPairedWatch, pairedDeviceName ->
+            getLastPairedDeviceUseCase(),
+        ) { pairedWatch, pairedDevice ->
             _stateFlow.value.copy(
-                isPairedWatch = isPairedWatch,
-                pairedDeviceName = pairedDeviceName
+                isPairedWatch = pairedWatch != null,
+                pairedDeviceName = pairedDevice.alias
             )
         }.onEach {
             _stateFlow.value = it
@@ -49,7 +49,7 @@ class HomeViewModel @Inject constructor(
         MyWearableListenerService.heartRate.onEach { rate ->
             _stateFlow.update {
                 it.copy(
-                    heartRate = HeartRate(rate = rate)
+                    heartRate = HeartRate(bpm = rate)
                 )
             }
         }.launchIn(viewModelScope)

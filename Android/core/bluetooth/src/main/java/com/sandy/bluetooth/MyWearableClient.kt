@@ -15,7 +15,7 @@ class MyWearableClient @Inject constructor(
 ) {
 
     // CapabilityClient는 Wear OS 네트워크의 어느 노드가 어떤 맞춤 앱 기능을 지원하는지에 관한 정보를 제공
-    fun isConnectWearable(): Boolean {
+    fun getConnectWearable(): Node? {
         val capabilityInfo = Tasks.await(
             capabilityClient.getCapability(
                 WEARABLE_CAPABILITY_NAME,
@@ -23,7 +23,7 @@ class MyWearableClient @Inject constructor(
             )
         )
         updateTranscriptionCapability(capabilityInfo)
-        return capabilityInfo.nodes.isNotEmpty()
+        return capabilityInfo.nodes.firstOrNull()
     }
 
     private var transcriptionNodeId: String? = null
@@ -35,17 +35,16 @@ class MyWearableClient @Inject constructor(
         return nodes.firstOrNull { it.isNearby }?.id ?: nodes.firstOrNull()?.id
     }
 
-    fun requestTranscription(data: String, transcription: Transcription) {
-        Log.e("확인", "updateTranscriptionCapability: $this")
+    fun requestTranscription(data: String, transcriptionPath: TranscriptionPath) {
         transcriptionNodeId?.also { nodeId ->
             Log.e("확인", "requestTranscription: $nodeId")
             messageClient.sendMessage(
                 nodeId,
-                transcription.path,
+                transcriptionPath.path,
                 data.toByteArray()
             ).apply {
                 addOnSuccessListener {
-                    Log.e("확인", "requestTranscription: 성공?")
+                    Log.e("확인", "requestTranscription: 앱->워치 메시지 전송 성공 $data")
                 }
                 addOnFailureListener {
                     throw WearableFailException()

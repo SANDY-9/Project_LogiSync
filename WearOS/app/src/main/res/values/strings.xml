@@ -1,8 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LogisyncWear</string>
-    <!--
-    This string is used for square devices and overridden by hello_world in
-    values-round/strings.xml for round devices.
-    -->
-    <string name="hello_world">From the Square world,\nHello, %1$s!</string>
+    <string name="app_name">로지싱크Wear</string>
+
+    <!-- auth -->
+    <string name="auth_error1">LogiSync 모바일 앱과\n최초 연동이 필요합니다.</string>
+    <string name="auth_error2">모바일 앱을 실행해주세요.</string>
+
+    <!-- heart rate -->
+    <string name="heart_rate_title">심박수</string>
+    <string name="heart_rate_error_body_off">워치를 손목에 착용해주세요.</string>
+    <string name="heart_rate_error_body_disabled">심박수 측정을\n지원하지 않는 기기입니다.</string>
+    <string name="heart_rate_collect">수집</string>
+
+    <string name="auth_error1">LogiSync 모바일 앱과\n최초 연동이 필요합니다.</string>
+    <string name="auth_error2">모바일 앱을 실행해주세요.</string>
+
+
 </resources>

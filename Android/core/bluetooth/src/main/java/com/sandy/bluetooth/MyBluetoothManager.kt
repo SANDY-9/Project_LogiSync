@@ -39,18 +39,22 @@ class MyBluetoothManager @Inject constructor(
     fun getBluetoothPairedWatch(): List<BluetoothDevice> {
         val adapter = bluetoothManager.adapter
         val devices = adapter.bondedDevices.filter {
-            it.type == BluetoothDevice.DEVICE_TYPE_DUAL// && it.name.contains("Watch")
+            it.type == BluetoothDevice.DEVICE_TYPE_DUAL // && it.name.contains("Watch")
         }
         return devices
     }
 
     @SuppressLint("MissingPermission")
-    fun getDeviceName(device: BluetoothDevice): String {
+    fun getDeviceAlias(): String? {
+        val adapter = bluetoothManager.adapter
+        val device = adapter.bondedDevices.filter {
+            it.type == BluetoothDevice.DEVICE_TYPE_DUAL // && it.name.contains("Watch")
+        }.firstOrNull()
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            device.alias ?: device.name
+            device?.alias ?: device?.name
         }
         else {
-            device.name
+            device?.name
         }
     }
 }
