@@ -35,7 +35,6 @@ class SignupViewModel @Inject constructor(
                     )
                 )
             }
-
             InputType.TEL -> {
                 val check = state.check
                 val telInput = InputValidationHelper.getValidatedTel(input)
@@ -46,7 +45,6 @@ class SignupViewModel @Inject constructor(
                     )
                 )
             }
-
             InputType.ID -> {
                 val joining = state.joining
                 state.copy(
@@ -57,7 +55,6 @@ class SignupViewModel @Inject constructor(
                     )
                 )
             }
-
             InputType.PASSWORD -> {
                 val joining = state.joining
                 state.copy(
@@ -67,7 +64,6 @@ class SignupViewModel @Inject constructor(
                     )
                 )
             }
-
             InputType.PWD_CHECK -> {
                 val joining = state.joining
                 val isNotValidPwdCheck = joining.pwd.isNotBlank() && input != joining.pwd
@@ -86,11 +82,9 @@ class SignupViewModel @Inject constructor(
             InputType.NAME -> {
                 state.copy(check = state.check.copy(name = ""))
             }
-
             InputType.TEL -> {
                 state.copy(check = state.check.copy(tel = ""))
             }
-
             else -> {  // InputType.ID
                 state.copy(
                     joining = state.joining.copy(
@@ -125,7 +119,6 @@ class SignupViewModel @Inject constructor(
                     isAgreeComplete = checked,
                 )
             )
-
             AgreementType.SERVICE -> state.copy(
                 agreement = state.agreement.copy(
                     isAllChecked = false,
@@ -133,7 +126,6 @@ class SignupViewModel @Inject constructor(
                     isAgreeComplete = state.agreement.isPersonalChecked && checked
                 )
             )
-
             AgreementType.PERSONAL -> state.copy(
                 agreement = state.agreement.copy(
                     isAllChecked = false,
@@ -151,13 +143,11 @@ class SignupViewModel @Inject constructor(
                     isServiceExpand = !state.agreement.isServiceExpand
                 )
             )
-
             AgreementType.PERSONAL -> state.copy(
                 agreement = state.agreement.copy(
                     isPersonalExpand = !state.agreement.isPersonalExpand
                 )
             )
-
             else -> state
         }
     }
@@ -204,9 +194,7 @@ class SignupViewModel @Inject constructor(
             tel = state.check.tel,
             duty = Account.Duty.NORMAL.name
         ) {
-            _stateFlow.value = state.copy(
-                signupComplete = true
-            )
+            _stateFlow.value = state.copy(signupComplete = true)
         }
     }
 }
