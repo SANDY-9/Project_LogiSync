@@ -1,4 +1,4 @@
-package com.sandy.logisync.data.network
+package com.sandy.logisync.data.network.utils
 
 import java.time.LocalDate
 import java.time.LocalDateTime

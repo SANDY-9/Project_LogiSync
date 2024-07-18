@@ -37,6 +37,11 @@ android {
             name = "FCM_REST_URL",
             value = localProperties["fcm"].toString()
         )
+        buildConfigField(
+            type = "String",
+            name = "MASSAGING_ADMIN",
+            value = localProperties["admin"].toString()
+        )
     }
 
     buildTypes {
