@@ -21,7 +21,8 @@ class AuthPrefsRepositoryImpl @Inject constructor(
                 id = account.id,
                 name = account.name,
                 tel = account.tel,
-                duty = account.duty.name
+                duty = account.duty.name,
+                team = account.team.name
             )
         }
     }

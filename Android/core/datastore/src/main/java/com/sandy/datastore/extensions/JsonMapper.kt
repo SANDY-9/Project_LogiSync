@@ -19,7 +19,8 @@ internal fun String.toAccountDTO(): AccountDTO {
         id = jsonObject.getString("id"),
         name = jsonObject.getString("name"),
         tel = jsonObject.getString("tel"),
-        duty = jsonObject.getString("duty")
+        duty = jsonObject.getString("duty"),
+        team = jsonObject.getString("team"),
     )
 }
 

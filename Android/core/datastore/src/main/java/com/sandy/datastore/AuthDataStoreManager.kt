@@ -21,8 +21,9 @@ class AuthDataStoreManager @Inject constructor(
         name: String,
         tel: String,
         duty: String,
+        team: String,
     ) {
-        val account = AccountDTO(id, name, tel, duty)
+        val account = AccountDTO(id, name, tel, duty, team)
         dataStore.editPrefs(
             key = PrefsKeys.ACCOUNT,
             value = account.toJson()

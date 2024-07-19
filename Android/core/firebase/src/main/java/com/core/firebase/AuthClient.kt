@@ -1,6 +1,5 @@
 package com.core.firebase
 
-import com.core.firebase.common.Constants.ADMIN
 import com.core.firebase.common.Constants.DUTY
 import com.core.firebase.common.Constants.TEL
 import com.core.firebase.common.Constants.USERS
@@ -45,20 +44,21 @@ class AuthClient @Inject constructor(
             object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     // 최초 가입의 경우
-                    val account = snapshot.getValue<AccountDTO>()
-                    account?.let {
+                    val accountDTO = snapshot.getValue<AccountDTO>()
+                    accountDTO?.let {
+                        var account = it.toAccount(id)
                         if (snapshot.children.count() == 1) {
-                            user.child(id).child(DUTY).setValue(ADMIN)
-                            onSuccess(it.copy(duty = Member.Duty.ADMIN.name).toAccount(id))
+                            user.child(id).child(DUTY).setValue(Member.Duty.ADMIN.name)
+                            account = account.copy(duty = Member.Duty.ADMIN)
                         }
-                        registerToken(id) {
-                            onError(NetworkError(NETWORK_ERROR_MESSAGE))
-                        }
-                        onSuccess(account.toAccount(id))
-                    } ?: onError(Exception())
+                        messagingClient.registerToken(
+                            id = id,
+                            onSuccess = { onSuccess(account) },
+                            onError = { e -> onError(e) },
+                        )
+                    }
+                    ?: onError(Exception())
                 }
-
-
                 override fun onCancelled(error: DatabaseError) {
                     onError(error.toException())
                 }
@@ -111,10 +111,11 @@ class AuthClient @Inject constructor(
             if (snapshot.exists()) {
                 val account = snapshot.getValue<AccountDTO>()
                 if (account?.pwd == pwd) {
-                    registerToken(id) {
-                        onError(NetworkError(NETWORK_ERROR_MESSAGE))
-                    }
-                    onLogin(account.toAccount(id))
+                    messagingClient.registerToken(
+                        id = id,
+                        onSuccess = { onLogin(account.toAccount(id)) },
+                        onError = { e -> onError(e) },
+                    )
                 }
                 else onError(LoginError(LOGIN_ERROR_MESSAGE))
             }
@@ -122,24 +123,6 @@ class AuthClient @Inject constructor(
         }.addOnFailureListener {
             onError(NetworkError(NETWORK_ERROR_MESSAGE))
         }
-    }
-
-    private fun registerToken(
-        id: String,
-        onError: (Throwable) -> Unit,
-    ) {
-        messagingClient.getToken(
-            onToken = { token ->
-                messagingClient.updateToken(
-                    id = id,
-                    token = token,
-                    onError = { onError(it) },
-                )
-            },
-            onError = {
-                onError(it ?: NetworkError(NETWORK_ERROR_MESSAGE))
-            },
-        )
     }
 
 }
