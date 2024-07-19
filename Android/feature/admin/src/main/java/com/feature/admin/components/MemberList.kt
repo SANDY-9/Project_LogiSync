@@ -210,7 +210,6 @@ private fun PreviewMemberList() {
                 lastBpmDateTime = LocalDateTime.now(),
                 minCriticalPoint = 20,
                 maxCriticalPoint = 130,
-                arrestList = emptyList(),
             )
         },
         Member.Team.물류2팀 to List(10) {
@@ -224,7 +223,6 @@ private fun PreviewMemberList() {
                 lastBpmDateTime = LocalDateTime.now(),
                 minCriticalPoint = 20,
                 maxCriticalPoint = 130,
-                arrestList = emptyList(),
             )
         },
         Member.Team.TES물류기술연구소 to List(10) {
@@ -238,7 +236,6 @@ private fun PreviewMemberList() {
                 lastBpmDateTime = LocalDateTime.now(),
                 minCriticalPoint = 20,
                 maxCriticalPoint = 130,
-                arrestList = emptyList(),
             )
         }
     )
