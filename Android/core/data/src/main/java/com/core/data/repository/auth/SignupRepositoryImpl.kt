@@ -2,6 +2,7 @@ package com.core.data.repository.auth
 
 import com.core.domain.repository.SignupRepository
 import com.core.firebase.AuthClient
+import com.core.model.Account
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -13,17 +14,17 @@ class SignupRepositoryImpl @Inject constructor(
     private val authClient: AuthClient,
 ) : SignupRepository {
 
-    override fun signup(id: String, pwd: String, name: String, tel: String): Flow<Boolean> = callbackFlow {
+    override fun signup(id: String, pwd: String, name: String, tel: String): Flow<Account> = callbackFlow {
         authClient.signup(
             id = id,
             pwd = pwd,
             name = name,
             tel = tel,
-            onSuccess = {
-                trySend(true)
+            onSuccess = { account ->
+                trySend(account)
             },
             onError = {
-                error(it)
+                close(it)
             }
         )
         awaitClose()

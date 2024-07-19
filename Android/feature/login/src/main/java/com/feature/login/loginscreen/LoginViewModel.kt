@@ -1,19 +1,18 @@
 package com.feature.login.loginscreen
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usecases.auth.RequestLoginUseCase
+import com.feature.login.loginscreen.model.LoginError
 import com.feature.login.loginscreen.model.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,39 +22,60 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<LoginUiState> = MutableStateFlow(LoginUiState())
+    internal val stateFlow: StateFlow<LoginUiState> get() = _stateFlow
 
-    val stateFlow: StateFlow<LoginUiState> = _stateFlow.asStateFlow()
+    private val state get() = stateFlow.value
 
-    fun inputId(input: String) {
-        _stateFlow.update {
-            it.copy(
-                id = input
-            )
-        }
+    internal fun inputId(input: String) {
+        _stateFlow.value = state.copy(
+            id = input
+        )
     }
 
-    fun inputPwd(input: String) {
-        _stateFlow.update {
-            it.copy(
-                pwd = input
-            )
-        }
+    internal fun clearInputId() {
+        _stateFlow.value = state.copy(
+            id = ""
+        )
     }
 
-    fun requestLogin() {
-        val state = stateFlow.value
+    internal fun inputPwd(input: String) {
+        _stateFlow.value = state.copy(
+            pwd = input
+        )
+    }
+
+    internal fun visiblePwd() {
+        _stateFlow.value = state.copy(
+            pwdVisible = !state.pwdVisible
+        )
+    }
+
+    internal fun requestLogin() {
         requestLoginUseCase(
             id = state.id,
             password = state.pwd
-        ).onEach { account ->
-            _stateFlow.update {
-                it.copy(
-                    account = account
-                )
+        ).onStart {
+            updateLoginState(isLoading = true, error = LoginError.NONE)
+        }.onEach { account ->
+            _stateFlow.value = state.copy(
+                account = account,
+                isLoading = false,
+                error = LoginError.NONE,
+            )
+        }.catch { e ->
+            when(e.message) {
+                LoginError.EMPTY_ID_OR_PWD.name -> updateLoginState(false, LoginError.EMPTY_ID_OR_PWD)
+                LoginError.WRONG_ID_OR_PWD.name -> updateLoginState(false, LoginError.WRONG_ID_OR_PWD)
+                else -> updateLoginState(false, LoginError.NETWORK_ERROR)
             }
-        }.catch {
-            Log.e("확인", "requestLogin: $it")
         }.launchIn(viewModelScope)
+    }
+
+    private fun updateLoginState(isLoading: Boolean, error: LoginError) {
+        _stateFlow.value = state.copy(
+            isLoading = isLoading,
+            error = error
+        )
     }
 
     fun requestBioLogin() {

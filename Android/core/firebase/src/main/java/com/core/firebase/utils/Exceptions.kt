@@ -5,7 +5,7 @@ internal class LoginError(message: String) : Exception(message)
 internal class EmptyValueError(message: String) : Exception(message)
 
 internal object ErrorMassage {
-    const val NETWORK_ERROR_MESSAGE = "네트워크 연결상태를 확인해주세요."
-    const val LOGIN_ERROR_MESSAGE = "아이디 혹은 비밀번호를 확인해주세요."
-    const val EMPTY_ERROR_MESSAGE = "아이디, 비밀번호를 입력해주세요."
+    const val NETWORK_ERROR_MESSAGE = "NETWORK_ERROR"
+    const val LOGIN_ERROR_MESSAGE = "WRONG_ID_OR_PWD"
+    const val EMPTY_ERROR_MESSAGE = "EMPTY_ID_OR_PWD"
 }

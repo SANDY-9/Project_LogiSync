@@ -6,8 +6,4 @@
     <string name="login_title_signup">회원가입</string>
     <string name="login_title_bio">생체인증로그인</string>
     <string name="login_desc_bio">지문을 입력해주세요.</string>
-    <string name="login_desc_warn_empty_id">아이디를 입력해주세요.</string>
-    <string name="login_desc_warn_empty_pwd">비밀번호를 입력해주세요.</string>
-    <string name="login_desc_warn_incorrect">아이디 혹은 비밀번호를 확인해주세요.</string>
-    <string name="login_desc_warn_network">로그인에 실패했습니다. 인터넷 연결상태를 확인해주세요.</string>
 </resources>

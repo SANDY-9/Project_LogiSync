@@ -104,10 +104,12 @@ private fun HomeContent(
             .verticalScroll(scrollState)
     ) {
         Spacer(modifier = modifier.height(8.dp))
-        Profile(
-            dateStr = state.date,
-            account = state.account,
-        )
+        state.member?.let {
+            Profile(
+                dateStr = state.date,
+                member = it,
+            )
+        }
         Spacer(modifier = modifier.height(30.dp))
         PairingInfo(
             deviceName = state.pairedDeviceName,

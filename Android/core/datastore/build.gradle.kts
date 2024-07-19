@@ -40,6 +40,7 @@ kapt {
 
 dependencies {
 
+    implementation(project(":core:model"))
     testImplementation(libs.bundles.test)
 
     implementation(libs.androidx.core.ktx)

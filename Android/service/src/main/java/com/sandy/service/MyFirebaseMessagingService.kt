@@ -6,7 +6,6 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.core.domain.repository.AuthPrefsRepository
@@ -68,7 +67,6 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
             Log.d("확인", "Message Notification Body: ${it.body}")
         }*/
 
-    }
         createNotification(message)
 
     }
