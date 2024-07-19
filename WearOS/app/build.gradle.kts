@@ -108,6 +108,9 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("androidx.hilt:hilt-work:1.0.0")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
+
+    // FusedLocation
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 }
 
 kapt {
