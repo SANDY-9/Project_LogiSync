@@ -12,7 +12,6 @@ data class Member(
     val lastBpmDateTime: LocalDateTime,
     val minCriticalPoint: Int,
     val maxCriticalPoint: Int,
-    val arrestList: List<Arrest>,
 ) {
     enum class Duty {
         ADMIN,

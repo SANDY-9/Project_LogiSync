@@ -12,6 +12,7 @@ import com.core.firebase.utils.ErrorMassage.NETWORK_ERROR_MESSAGE
 import com.core.firebase.utils.LoginError
 import com.core.firebase.utils.NetworkError
 import com.core.model.Account
+import com.core.model.Member
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -28,7 +29,7 @@ class AuthClient @Inject constructor(
         pwd: String,
         name: String,
         tel: String,
-        onSuccess: (Boolean) -> Unit,
+        onSuccess: (Account) -> Unit,
         onError: (Throwable) -> Unit,
     ) {
         val user = ref.child(USERS)
@@ -36,24 +37,35 @@ class AuthClient @Inject constructor(
             pwd = pwd,
             name = name,
             tel = tel,
-            duty = Account.Duty.NORMAL.name
         )
         user.child(id).setValue(account)
-
-        val signupListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                // 최초 가입의 경우
-                if (snapshot.children.count() == 1) {
-                    user.child(id).child(DUTY).setValue(ADMIN)
+        user.addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    // 최초 가입의 경우
+                    val account = snapshot.getValue<AccountDTO>()
+                    account?.let {
+                        if (snapshot.children.count() == 1) {
+                            user.child(id).child(DUTY).setValue(ADMIN)
+                            onSuccess(it.copy(duty = Member.Duty.ADMIN.name).toAccount(id))
+                        }
+                        onSuccess(account.toAccount(id))
+                    } ?: onError(Exception())
                 }
-                onSuccess(true)
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                onError(error.toException())
+                override fun onCancelled(error: DatabaseError) {
+                    onError(error.toException())
+                }
             }
-        }
-        user.addListenerForSingleValueEvent(signupListener)
+        )
+    }
+
+    fun updateDuty() {
+
+    }
+
+    fun updateCriticalPoint() {
+
     }
 
     fun checkTel(
