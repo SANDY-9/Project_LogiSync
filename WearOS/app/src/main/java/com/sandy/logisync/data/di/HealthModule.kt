@@ -1,4 +1,4 @@
-package com.sandy.logisync.wearable.di
+package com.sandy.logisync.data.di
 
 import android.content.Context
 import androidx.health.services.client.HealthServices

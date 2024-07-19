@@ -1,4 +1,4 @@
-package com.sandy.logisync.wearable.health
+package com.sandy.logisync.workmanager
 
 import android.content.Context
 import android.util.Log
@@ -8,16 +8,8 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.sandy.logisync.data.health.HealthMeasureRepository
-import com.sandy.logisync.data.network.NetworkRepository
-import com.sandy.logisync.model.MeasuredAvailability
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.awaitCancellation
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.onEach
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDateTime
@@ -32,39 +24,16 @@ import java.time.LocalDateTime
 class HeartRateMonitoringWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted params: WorkerParameters,
-    private val healthMeasureRepository: HealthMeasureRepository,
-    private val networkRepository: NetworkRepository,
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        Log.e("확인", "doWork: 워커 실행 ${LocalDateTime.now()}")
         monitorHeartRate()
-        //registerNextMonitoring()
+        registerNextMonitoring()
         return Result.success()
     }
 
-    private var num = 0
     private fun monitorHeartRate() {
-        suspend {
-            healthMeasureRepository.getMeasuredHeartRate().onEach {
-                // num++
-                if (it.availability == MeasuredAvailability.UNAVAILABLE_DEVICE_OFF_BODY ||
-                    it.availability == MeasuredAvailability.UNAVAILABLE
-                ) awaitCancellation()
-                Log.e("확인", "monitorHeartRate: 이거1 $num, ${it.availability}")
-            }.filter {
-                it.availability == MeasuredAvailability.AVAILABLE
-            }.collect {
-                val heartRate = it.heartRate
-                heartRate?.let { heartRate ->
-                    Log.e("확인", "monitorHeartRate: 이거2 $heartRate")
-                    networkRepository.updateHeartRate(heartRate.bpm, heartRate.time)
-                        .catch { error ->
-                            Log.e("확인", "monitorHeartRate: $error")
-                        }.collect()
-                }
-            }
-        }
+        HeartRateMeasureWorker.enqueueWorker(context)
     }
 
     private fun registerNextMonitoring() {
@@ -112,8 +81,8 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
                 LocalDateTime.of(
                     currentTime.year,
                     currentTime.month,
-                    currentTime.dayOfMonth,
-                    currentTime.hour + 1,
+                    if(currentTime.hour + 1 == 24) currentTime.dayOfMonth + 1 else currentTime.dayOfMonth,
+                    if(currentTime.hour + 1 == 24) 0 else currentTime.hour + 1,
                     0
                 )
             }

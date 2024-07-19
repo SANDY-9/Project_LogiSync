@@ -4,6 +4,8 @@ import com.sandy.logisync.data.datastore.WearableDataStoreRepository
 import com.sandy.logisync.data.datastore.WearableDataStoreRepositoryImpl
 import com.sandy.logisync.data.health.HealthMeasureRepository
 import com.sandy.logisync.data.health.HealthMeasureRepositoryImpl
+import com.sandy.logisync.data.location.LocationRepository
+import com.sandy.logisync.data.location.LocationRepositoryImpl
 import com.sandy.logisync.data.network.NetworkRepository
 import com.sandy.logisync.data.network.NetworkRepositoryImpl
 import dagger.Binds
@@ -29,4 +31,9 @@ abstract class DataModule {
     abstract fun bindsNetworkRepository(
         impl: NetworkRepositoryImpl
     ): NetworkRepository
+
+    @Binds
+    abstract fun bindsLocationRepository(
+        impl: LocationRepositoryImpl
+    ): LocationRepository
 }

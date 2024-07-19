@@ -1,6 +1,7 @@
 package com.sandy.logisync.wearable.di
 
 import android.content.Context
+import android.os.PowerManager
 import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
@@ -36,4 +37,5 @@ object WearableModule {
     ): MyWearableClient {
         return MyWearableClient(capabilityClient, messageClient)
     }
+
 }

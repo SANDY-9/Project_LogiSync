@@ -1,5 +1,7 @@
 package com.sandy.logisync.data.mapper
 
+import com.sandy.logisync.data.network.model.CriticalPointDTO
+import com.sandy.logisync.model.CriticalPoint
 import com.sandy.logisync.model.HeartRate
 import com.sandy.logisync.model.MeasuredAvailability
 import com.sandy.logisync.model.MeasuredHeartRate
@@ -24,5 +26,12 @@ private fun HeartRateDTO.toHeartRate(): HeartRate {
     return HeartRate(
         bpm = value.toInt(),
         time = date,
+    )
+}
+
+internal fun CriticalPointDTO.toCriticalPoint(): CriticalPoint {
+    return CriticalPoint(
+        min = min,
+        max = max,
     )
 }
