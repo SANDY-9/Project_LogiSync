@@ -45,7 +45,6 @@ class MyFirebaseClient @Inject constructor(
         onSuccess: (Boolean) -> Unit,
         onError: (Throwable) -> Unit,
     ) {
-        Log.e("확인", "updateHeartRate: $id, $bpm, $time")
         val bpmChild = ref.child(ChildName.HEART_RATE).child(id)
         bpmChild.child(IndexChildCreateUtil.getYearMonthIndexChild())
             .child(IndexChildCreateUtil.getDayIndexChild())
@@ -60,7 +59,6 @@ class MyFirebaseClient @Inject constructor(
                     onError(IOException())
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
                 onError(error.toException())
             }
@@ -74,17 +72,17 @@ class MyFirebaseClient @Inject constructor(
         lat: Double,
         lng: Double,
         time: LocalDateTime,
+        bpm: Int? = null,
         onSuccess: (Boolean) -> Unit,
         onError: (Throwable) -> Unit,
     ) {
-        val arrestDTO = ArrestDTO(arrestType, lat, lng)
+        val arrestDTO = ArrestDTO(arrestType, lat, lng, bpm)
         val arrestChild = ref.child(ChildName.ARREST).child(IndexChildCreateUtil.getDateIndexChild()).child(id)
-        arrestChild.child(IndexChildCreateUtil.getTimeSecondsIndexChild(time))
-            .setValue(arrestDTO)
+        arrestChild.child(IndexChildCreateUtil.getTimeSecondsIndexChild(time)).setValue(arrestDTO)
         val dataListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    Log.e("확인", "onDataChange: ${snapshot.value}", )
+                    Log.i("[UPDATE_ARREST]", "${snapshot.value}", )
                     onSuccess(true)
                 }
                 else {

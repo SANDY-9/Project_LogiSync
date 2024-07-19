@@ -38,9 +38,4 @@ object WearableModule {
         return MyWearableClient(capabilityClient, messageClient)
     }
 
-    @Singleton
-    @Provides
-    fun providePowerManager(@ApplicationContext context: Context): PowerManager {
-        return context.getSystemService(Context.POWER_SERVICE) as PowerManager
-    }
 }

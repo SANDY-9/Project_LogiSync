@@ -1,7 +1,6 @@
-package com.sandy.logisync.wearable.health
+package com.sandy.logisync.workmanager
 
 import android.content.Context
-import android.os.PowerManager
 import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
@@ -9,16 +8,8 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.sandy.logisync.data.health.HealthMeasureRepository
-import com.sandy.logisync.data.network.NetworkRepository
-import com.sandy.logisync.model.MeasuredAvailability
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.awaitCancellation
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.onEach
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalDateTime
@@ -33,47 +24,16 @@ import java.time.LocalDateTime
 class HeartRateMonitoringWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted params: WorkerParameters,
-    private val healthMeasureRepository: HealthMeasureRepository,
-    private val networkRepository: NetworkRepository,
-    private val powerManager: PowerManager,
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        Log.e("확인", "doWork: 워커 실행 ${LocalDateTime.now()}")
         monitorHeartRate()
         registerNextMonitoring()
         return Result.success()
     }
 
     private fun monitorHeartRate() {
-        suspend {
-            val wakeLock = powerManager.newWakeLock(
-                PowerManager.SCREEN_BRIGHT_WAKE_LOCK or
-                        PowerManager.ACQUIRE_CAUSES_WAKEUP or
-                        PowerManager.ON_AFTER_RELEASE,
-                "LogiSync::WAKELOCK"
-            )
-            wakeLock.acquire(1 * 60 * 1000L /*1 minutes*/)
-            healthMeasureRepository.getMeasuredHeartRate().onEach {
-                // num++
-                if (it.availability == MeasuredAvailability.UNAVAILABLE_DEVICE_OFF_BODY ||
-                    it.availability == MeasuredAvailability.UNAVAILABLE
-                ) awaitCancellation()
-                Log.e("확인", "monitorHeartRate: 이거1 ${it.availability}")
-            }.filter {
-                it.availability == MeasuredAvailability.AVAILABLE
-            }.collect {
-                val heartRate = it.heartRate
-                heartRate?.let { heartRate ->
-                    Log.e("확인", "monitorHeartRate: 이거2 $heartRate")
-                    wakeLock.release()
-                    networkRepository.updateHeartRate(heartRate.bpm, heartRate.time)
-                        .catch { error ->
-                            Log.e("확인", "monitorHeartRate: $error")
-                        }.collect()
-                }
-            }
-        }
+        HeartRateMeasureWorker.enqueueWorker(context)
     }
 
     private fun registerNextMonitoring() {
@@ -98,9 +58,9 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
         }
 
         private fun getNextMonitoringDelay(): Duration {
-            val nextMonitoringTime = getNextMonitoringTime()
+            //val nextMonitoringTime = getNextMonitoringTime()
             val currentTime = LocalDateTime.now()
-            //val nextMonitoringTime = currentTime.plusMinutes(1)
+            val nextMonitoringTime = currentTime.plusMinutes(1)
             val delay = Duration.between(currentTime, nextMonitoringTime)
             Log.e("확인", "getNextMonitoringDelay: $nextMonitoringTime")
             return delay

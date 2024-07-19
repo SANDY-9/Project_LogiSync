@@ -16,16 +16,19 @@ interface NetworkRepository {
         time: LocalDateTime,
     ): Flow<Boolean>
 
-    suspend fun updateArrest(
+    suspend fun updateNormalArrest(
         id: String,
         arrestType: ArrestType,
         location: Location,
-        token: String,
     ): Flow<Boolean>
 
-    suspend fun notifyArrest(
+    suspend fun updateHeartBeatArrest(
         id: String,
-        token: String,
-    ): Flow<String?>
+        arrestType: ArrestType,
+        location: Location,
+        bpm: Int,
+    ): Flow<Boolean>
+
+    suspend fun notifyArrest(id: String, token: String): Flow<String?>
 
 }

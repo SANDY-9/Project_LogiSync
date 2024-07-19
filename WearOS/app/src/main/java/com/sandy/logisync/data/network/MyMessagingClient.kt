@@ -1,7 +1,6 @@
 package com.sandy.logisync.data.network
 
 import android.content.Context
-import android.util.Log
 import com.google.auth.oauth2.GoogleCredentials
 import com.sandy.logisync.BuildConfig
 import com.sandy.logisync.data.network.utils.CreateBodyUtil
@@ -50,7 +49,6 @@ class MyMessagingClient @Inject constructor(
         newCall(request).enqueue(
             object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    Log.e("확인", "onFailure: ${e.message}", )
                     close(e)
                 }
                 override fun onResponse(call: Call, response: Response) {

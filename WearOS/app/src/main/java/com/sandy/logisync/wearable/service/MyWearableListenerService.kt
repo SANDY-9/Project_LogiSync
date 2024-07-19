@@ -12,7 +12,6 @@ import com.sandy.logisync.wearable.message.TranscriptionPath
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import javax.inject.Inject
@@ -41,7 +40,7 @@ class MyWearableListenerService : WearableListenerService() {
     private fun login(accountData: String) {
         Log.e("확인", "login: $accountData")
         CoroutineScope(Dispatchers.IO).launch {
-            val existAccount = wearableDataStoreRepository.getAccount().first()
+            val existAccount = wearableDataStoreRepository.getAccount()
             if (existAccount == null) {
                 wearableDataStoreRepository.registerAccount(accountData)
             }
