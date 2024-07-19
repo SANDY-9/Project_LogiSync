@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -76,11 +77,30 @@ class MainViewModel @Inject constructor(
     }
 
     private fun networkRequest(heartRate: HeartRate?) {
-        heartRate?.let {
-            networkRepository.updateHeartRate(it.bpm, it.time).onEach {
-                Log.i("[NETWORK]", "networkRequest: OK")
-            }.catch {
-                Log.e("[NETWORK]", "networkRequest: FAILED")
+        heartRate?.let { heartRate ->
+            wearableDataStoreRepository.getAccount().onEach { account ->
+                account?.let { account ->
+                    val id = account.id
+                    networkRepository.run {
+                        viewModelScope.launch {
+                            updateHeartRate(id, heartRate.bpm, heartRate.time).catch {
+                                Log.e("[NETWORK]", "networkRequest: FAILED")
+                            }.collectLatest {
+                                Log.i("[NETWORK]", "networkRequest: OK")
+                            }
+                        }
+                        viewModelScope.launch {
+                            val token = "fPJzCSEXQNWzZYXGGx_dk1:APA91bFI6IwtGwE19SLN5SBbJrPOXyqoZkUlWdF3jhiaNWbi1GXrIoC7H-4H3qh4uGYOtZftLZj3yJbPY0uEii7itVsWnn7T7oBDr237_VxnYl6xfxbr-dzPGi5cTOd-C--naeBpY_kp"
+                            getHeartRateCriticalPoint(id).catch {
+                                Log.e("[NETWORK]", "networkRequest: FAILED")
+                            }.collectLatest { criticalPoint ->
+                                Log.e("확인", "networkRequest: $criticalPoint", )
+                                if(heartRate.bpm <= criticalPoint.min) notifyArrest(id, token).collect()
+                                if(heartRate.bpm >= criticalPoint.max) notifyArrest(id, token).collect()
+                            }
+                        }
+                    }
+                }
             }.launchIn(viewModelScope)
         }
     }

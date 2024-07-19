@@ -28,7 +28,6 @@ class MyMessagingClient @Inject constructor(
         val asset = context.resources.assets.open(BuildConfig.MASSAGING_ADMIN)
         val googleCredential = GoogleCredentials.fromStream(asset)
             .createScoped(listOf(FIREBASE_MESSAGING_SCOPED))
-        Log.e("확인", "getAccessToken: ${googleCredential.refreshAccessToken()}", )
         return googleCredential.refreshAccessToken().tokenValue
     }
 
@@ -51,6 +50,7 @@ class MyMessagingClient @Inject constructor(
         newCall(request).enqueue(
             object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
+                    Log.e("확인", "onFailure: ${e.message}", )
                     close(e)
                 }
                 override fun onResponse(call: Call, response: Response) {
@@ -66,7 +66,6 @@ class MyMessagingClient @Inject constructor(
         id: String,
         time: LocalDateTime
     ) : Flow<Response> {
-        Log.e("확인", "sendArrestMessage: 확인", )
         val arrestMessageBody = CreateBodyUtil.createArrestRequestBody(token, id, time)
         val request = createArrestRequest(arrestMessageBody)
         return okHttpClient.createCallFlow(request)

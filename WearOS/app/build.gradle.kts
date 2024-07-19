@@ -124,6 +124,8 @@ dependencies {
 
     // OkHttp3
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
 
     // Google Oauth2 http
     implementation("com.google.auth:google-auth-library-oauth2-http:1.23.0")
