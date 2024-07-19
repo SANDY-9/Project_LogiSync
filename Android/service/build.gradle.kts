@@ -37,6 +37,11 @@ android {
 dependencies {
 
     implementation(project(":core:bluetooth"))
+    implementation(project(":core:firebase"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:model"))
+    implementation(project(":core:data"))
+    implementation(project(":core:designsystem"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)
@@ -50,4 +55,9 @@ dependencies {
 
     // Wearable
     implementation(libs.bundles.wearable)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
+
 }

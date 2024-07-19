@@ -6,6 +6,7 @@ internal object Constants {
     const val TEL = "tel"
     const val DUTY = "duty"
     const val ADMIN = "ADMIN"
+    const val TOKEN = "token"
 
     // main child
     const val USERS = "users"
