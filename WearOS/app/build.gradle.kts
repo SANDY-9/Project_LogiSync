@@ -22,6 +22,7 @@ android {
             useSupportLibrary = true
         }
 
+        // localProperties BuildConfig 생성
         val localProperties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
@@ -34,14 +35,15 @@ android {
         )
         buildConfigField(
             type = "String",
-            name = "FCM_REST_URL",
-            value = localProperties["fcm"].toString()
-        )
-        buildConfigField(
-            type = "String",
             name = "MASSAGING_ADMIN",
             value = localProperties["admin"].toString()
         )
+        buildConfigField(
+            type = "String",
+            name = "FCM_REST_URL",
+            value = localProperties["fcm"].toString()
+        )
+
     }
 
     buildTypes {
@@ -69,13 +71,13 @@ android {
     }
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "META-INF/*"
+            excludes += "**/*"
         }
     }
 }
 
 dependencies {
+
     implementation(libs.play.services.wearable)
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
@@ -111,17 +113,24 @@ dependencies {
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("com.google.firebase:firebase-database-ktx")
-    implementation("com.google.firebase:firebase-messaging-ktx")
-
-    // google-auth-library-oauth2
-    implementation("com.google.auth:google-auth-library-oauth2-http:1.24.0")
-    // Okhttp3
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     // Work Manager
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("androidx.hilt:hilt-work:1.0.0")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
+
+    // FusedLocation
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // OkHttp3
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+
+    // Google Oauth2 http
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.23.0")
+
+
 }
 
 kapt {

@@ -45,7 +45,7 @@ class MyMessagingClient @Inject constructor(
         return request
     }
 
-    private fun OkHttpClient.createCallFlow(request: Request) = callbackFlow {
+    private suspend fun OkHttpClient.createCallFlow(request: Request) = callbackFlow {
         newCall(request).enqueue(
             object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
@@ -59,7 +59,7 @@ class MyMessagingClient @Inject constructor(
         awaitClose()
     }
 
-    fun sendArrestMessage(
+    suspend fun sendArrestMessage(
         token: String,
         id: String,
         time: LocalDateTime
@@ -69,7 +69,7 @@ class MyMessagingClient @Inject constructor(
         return okHttpClient.createCallFlow(request)
     }
 
-    fun sendWarningMessage(
+    suspend fun sendWarningMessage(
         token: String,
         id: String,
         bpm: String,

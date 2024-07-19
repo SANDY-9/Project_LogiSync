@@ -31,7 +31,7 @@ import com.sandy.logisync.presentation.ui.theme.DeepRed
 import java.time.LocalDateTime
 
 @Composable
-fun HeartRateItem(
+fun HeartRateCard(
     heartRate: HeartRate,
     modifier: Modifier = Modifier,
 ) {
@@ -109,5 +109,5 @@ fun HeartRateItem(
 @Preview(device = WearDevices.SMALL_ROUND, uiMode = UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun PreviewHeartRateItem() {
-    HeartRateItem(HeartRate(70, LocalDateTime.now()))
+    HeartRateCard(HeartRate(70, LocalDateTime.now()))
 }

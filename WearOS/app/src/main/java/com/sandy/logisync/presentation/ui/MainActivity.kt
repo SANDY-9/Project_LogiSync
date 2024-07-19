@@ -26,8 +26,8 @@ import com.sandy.logisync.presentation.ui.screens.NotInitialPairedScreen
 import com.sandy.logisync.presentation.ui.screens.PermissionScreen
 import com.sandy.logisync.presentation.ui.screens.WatchScreen
 import com.sandy.logisync.presentation.ui.theme.LogisyncWearTheme
-import com.sandy.logisync.wearable.health.HeartRateMonitoringWorker
 import com.sandy.logisync.wearable.service.MyWearableListenerService
+import com.sandy.logisync.workmanager.HeartRateMonitoringWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -125,6 +125,7 @@ class MainActivity : ComponentActivity() {
                     WatchScreen(
                         measuredHeartRate = measuredHeartRate,
                         onCollect = mainViewModel::collectHeartRate,
+                        onArrest = mainViewModel::arrest,
                     )
                 }
                 else {
