@@ -28,6 +28,11 @@ android {
             name = "DATABASE_KEY",
             value = localProperties["database"].toString()
         )
+        buildConfigField(
+            type = "String",
+            name = "FCM_REST_URL",
+            value = localProperties["fcm"].toString()
+        )
 
     }
 
@@ -73,5 +78,12 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
+
+    // google-auth-library-oauth2
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.24.0")
+
+    // Okhttp3
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
 
 }

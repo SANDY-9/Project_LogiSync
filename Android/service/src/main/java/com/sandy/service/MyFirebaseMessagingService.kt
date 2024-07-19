@@ -1,6 +1,14 @@
 package com.sandy.service
 
+
 import android.util.Log
+import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+import android.util.Log
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.core.domain.repository.AuthPrefsRepository
 import com.core.firebase.MessagingClient
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -61,5 +69,43 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         }*/
 
     }
+        createNotification(message)
 
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun createNotification(message: RemoteMessage) {
+        val notificationManager = NotificationManagerCompat.from(applicationContext)
+
+        var builder : NotificationCompat.Builder
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            if(notificationManager.getNotificationChannel(CHANNEL_ID) == null){
+                val channel = NotificationChannel(
+                    CHANNEL_ID,
+                    CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_HIGH,
+                )
+                notificationManager.createNotificationChannel(channel)
+            }
+            builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+        }else{
+            builder = NotificationCompat.Builder(applicationContext)
+        }
+
+        val title = message.notification?.title
+        val body = message.notification?.body
+
+        builder.setContentTitle(title)
+            .setContentText(body)
+            .setSmallIcon(com.core.desinsystem.R.drawable.temp_logo)
+
+        val notification = builder.build()
+        notificationManager.notify(1, notification)
+    }
+
+    companion object {
+        private const val CHANNEL_ID = "channel_logisync"
+        private const val CHANNEL_NAME = "channel_logisync_arrest"
+    }
 }
