@@ -15,14 +15,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.Button
+import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.PositionIndicator
+import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.TimeText
+import androidx.wear.compose.material.scrollAway
 import androidx.wear.tooling.preview.devices.WearDevices
 import com.sandy.logisync.R
 import com.sandy.logisync.model.HeartRate
 import com.sandy.logisync.model.MeasuredAvailability
 import com.sandy.logisync.model.MeasuredHeartRate
-import com.sandy.logisync.presentation.ui.screens.component.HeartRateItem
+import com.sandy.logisync.presentation.ui.screens.component.HeartRateCard
 import java.time.LocalDateTime
 
 @Composable
@@ -32,36 +38,57 @@ fun WatchScreen(
     onArrest: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    ScalingLazyColumn(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+    val listState = rememberScalingLazyListState()
+    Scaffold(
+        timeText = {
+            TimeText(modifier = modifier.scrollAway(listState))
+        },
+        positionIndicator = {
+            PositionIndicator(
+                scalingLazyListState = listState,
+            )
+        }
     ) {
-        item {
-            Column {
-                Text(text = "최근 심박수")
-                HeartRateItem(measuredHeartRate = measuredHeartRate)
-                Spacer(modifier = modifier.height(8.dp))
+        ScalingLazyColumn(
+            modifier = modifier.fillMaxSize(),
+            state = listState,
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            item {
+                Column {
+                    Text(
+                        text = stringResource(id = R.string.app_name),
+                        style = MaterialTheme.typography.caption2,
+                    )
+                    Spacer(modifier = modifier.height(16.dp))
+                }
             }
-        }
-        item {
-            Button(
-                modifier = modifier
-                    .padding(4.dp)
-                    .size(70.dp, 40.dp),
-                onClick = onCollect,
-            ) {
-                Text(text = stringResource(id = R.string.heart_rate_collect))
+            item {
+                Column {
+                    HeartRateCard(heartRate = measuredHeartRate.heartRate!!)
+                    Spacer(modifier = modifier.height(8.dp))
+                }
             }
-        }
-        item {
-            Button(
-                modifier = modifier
-                    .padding(4.dp)
-                    .size(70.dp, 40.dp),
-                onClick = onArrest,
-            ) {
-                Text(text = stringResource(id = R.string.heart_rate_arrest))
+            item {
+                Button(
+                    modifier = modifier
+                        .padding(4.dp)
+                        .size(70.dp, 40.dp),
+                    onClick = onCollect,
+                ) {
+                    Text(text = stringResource(id = R.string.heart_rate_collect))
+                }
+            }
+            item {
+                Button(
+                    modifier = modifier
+                        .padding(4.dp)
+                        .size(70.dp, 40.dp),
+                    onClick = onArrest,
+                ) {
+                    Text(text = stringResource(id = R.string.heart_rate_arrest))
+                }
             }
         }
     }
