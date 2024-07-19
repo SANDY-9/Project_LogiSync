@@ -121,8 +121,8 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
                 LocalDateTime.of(
                     currentTime.year,
                     currentTime.month,
-                    currentTime.dayOfMonth,
-                    currentTime.hour + 1,
+                    if(currentTime.hour + 1 == 24) currentTime.dayOfMonth + 1 else currentTime.dayOfMonth,
+                    if(currentTime.hour + 1 == 24) 0 else currentTime.hour + 1,
                     0
                 )
             }
