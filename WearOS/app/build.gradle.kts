@@ -33,6 +33,16 @@ android {
             name = "DATABASE_KEY",
             value = localProperties["database"].toString()
         )
+        buildConfigField(
+            type = "String",
+            name = "MASSAGING_ADMIN",
+            value = localProperties["admin"].toString()
+        )
+        buildConfigField(
+            type = "String",
+            name = "FCM_REST_URL",
+            value = localProperties["fcm"].toString()
+        )
 
     }
 
@@ -61,7 +71,7 @@ android {
     }
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "**/*"
         }
     }
 }
@@ -111,6 +121,14 @@ dependencies {
 
     // FusedLocation
     implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // OkHttp3
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // Google Oauth2 http
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.23.0")
+
+
 }
 
 kapt {
