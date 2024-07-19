@@ -125,6 +125,7 @@ class MainActivity : ComponentActivity() {
                     WatchScreen(
                         measuredHeartRate = measuredHeartRate,
                         onCollect = mainViewModel::collectHeartRate,
+                        onArrest = mainViewModel::arrest,
                     )
                 }
                 else {

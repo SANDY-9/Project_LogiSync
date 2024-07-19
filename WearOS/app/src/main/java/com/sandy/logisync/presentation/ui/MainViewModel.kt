@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sandy.logisync.data.datastore.WearableDataStoreRepository
 import com.sandy.logisync.data.health.HealthMeasureRepository
+import com.sandy.logisync.data.location.LocationRepository
 import com.sandy.logisync.data.network.NetworkRepository
+import com.sandy.logisync.model.Arrest
 import com.sandy.logisync.model.HeartRate
 import com.sandy.logisync.model.MeasuredAvailability
 import com.sandy.logisync.model.MeasuredHeartRate
@@ -14,17 +16,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val healthMeasureRepository: HealthMeasureRepository,
     private val networkRepository: NetworkRepository,
-    wearableDataStoreRepository: WearableDataStoreRepository,
+    private val wearableDataStoreRepository: WearableDataStoreRepository,
+    private val locationRepository: LocationRepository,
 ) : ViewModel() {
 
     private val _initialPairedMobile = MutableStateFlow<Boolean>(false)
@@ -79,5 +83,26 @@ class MainViewModel @Inject constructor(
                 Log.e("[NETWORK]", "networkRequest: FAILED")
             }.launchIn(viewModelScope)
         }
+    }
+
+    fun arrest() {
+        wearableDataStoreRepository.getAccount().onEach { account ->
+            account?.let { account ->
+                val token = "fPJzCSEXQNWzZYXGGx_dk1:APA91bFI6IwtGwE19SLN5SBbJrPOXyqoZkUlWdF3jhiaNWbi1GXrIoC7H-4H3qh4uGYOtZftLZj3yJbPY0uEii7itVsWnn7T7oBDr237_VxnYl6xfxbr-dzPGi5cTOd-C--naeBpY_kp"
+                locationRepository.getLastLocation().collectLatest { location ->
+                    networkRepository.updateArrest(
+                        id = account.id,
+                        arrestType = Arrest.ArrestType.NORMAL,
+                        location = location,
+                        token = token
+                    ).collectLatest {
+                        networkRepository.notifyArrest(account.id, token).collect()
+                    }
+                }
+            }
+        }.catch {
+            Log.e("[NETWORK]", "networkRequest: FAILED")
+            Log.e("[NETWORK]", "networkRequest: $it")
+        }.launchIn(viewModelScope)
     }
 }

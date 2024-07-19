@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.Text
 import androidx.wear.tooling.preview.devices.WearDevices
@@ -28,23 +29,40 @@ import java.time.LocalDateTime
 fun WatchScreen(
     measuredHeartRate: MeasuredHeartRate,
     onCollect: () -> Unit,
+    onArrest: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    ScalingLazyColumn(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = "최근 심박수")
-        HeartRateItem(measuredHeartRate = measuredHeartRate)
-        Spacer(modifier = modifier.height(8.dp))
-        Button(
-            modifier = modifier
-                .padding(4.dp)
-                .size(70.dp, 40.dp),
-            onClick = onCollect,
-        ) {
-            Text(text = stringResource(id = R.string.heart_rate_collect))
+        item {
+            Column {
+                Text(text = "최근 심박수")
+                HeartRateItem(measuredHeartRate = measuredHeartRate)
+                Spacer(modifier = modifier.height(8.dp))
+            }
+        }
+        item {
+            Button(
+                modifier = modifier
+                    .padding(4.dp)
+                    .size(70.dp, 40.dp),
+                onClick = onCollect,
+            ) {
+                Text(text = stringResource(id = R.string.heart_rate_collect))
+            }
+        }
+        item {
+            Button(
+                modifier = modifier
+                    .padding(4.dp)
+                    .size(70.dp, 40.dp),
+                onClick = onArrest,
+            ) {
+                Text(text = stringResource(id = R.string.heart_rate_arrest))
+            }
         }
     }
 }
@@ -60,6 +78,7 @@ fun WatchScreenPreview() {
                 bpm = 60
             )
         ),
+        {},
         {}
     )
 }
