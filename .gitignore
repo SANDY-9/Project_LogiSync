@@ -31,4 +31,6 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+Android/core/firebase/src/main/assets/firebase-admin.json
 WearOS/app/src/main/assets/firebase-admin.json

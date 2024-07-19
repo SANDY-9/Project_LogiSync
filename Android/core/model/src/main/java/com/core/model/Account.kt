@@ -8,5 +8,5 @@ data class Account(
     val name: String = "홍길동",
     val tel: String = "",
     val duty: Duty = Duty.NORMAL,
-    val team: Team = Team.물류1팀,
+    val team: Team,
 )

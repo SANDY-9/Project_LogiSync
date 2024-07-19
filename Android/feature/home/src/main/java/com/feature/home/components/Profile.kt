@@ -23,12 +23,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.common.BasicOutlinedButton
 import com.core.model.Account
+import com.core.model.Member
 import com.feature.home.R
 
 @Composable
 fun Profile(
     dateStr: String,
-    account: Account,
+    member: Member,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -57,13 +58,13 @@ fun Profile(
                     modifier = modifier
                         .align(Alignment.Bottom)
                         .padding(horizontal = 8.dp),
-                    text = account.name,
+                    text = member.name,
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Text(
                     modifier = modifier
                         .align(Alignment.Bottom),
-                    text = "${account.duty.str()}  |  TES물류기술연구소",
+                    text = "${member.duty.str()}  |  ${member.team.name}",
                     style = MaterialTheme.typography.titleSmall
                 )
             }
@@ -83,10 +84,4 @@ private fun ProfileFixButton(
         title = stringResource(id = R.string.home_profile_fix),
         onClick = { /*TODO*/ }
     )
-}
-
-@Preview(name = "Profile")
-@Composable
-private fun PreviewProfile() {
-    Profile("2024년 12월 02일 수요일", Account())
 }
