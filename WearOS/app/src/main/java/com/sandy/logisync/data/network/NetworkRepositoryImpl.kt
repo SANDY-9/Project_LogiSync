@@ -46,6 +46,29 @@ class NetworkRepositoryImpl @Inject constructor(
             awaitClose()
         }.flowOn(Dispatchers.IO)
 
+    override fun updateArrest(
+        id: String,
+        arrestType: ArrestType,
+        location: Location,
+        token: String,
+    ) = callbackFlow {
+        val time = LocalDateTime.now()
+        firebaseClient.updateArrest(
+            id = id,
+            arrestType = arrestType.name,
+            lat = location.latitude,
+            lng = location.longitude,
+            time = time,
+            onSuccess = {
+                trySend(it)
+            },
+            onError = { error ->
+                close(error)
+            }
+        )
+        awaitClose()
+    }.flowOn(Dispatchers.IO)
+
     override suspend fun notifyArrest(id: String, token: String): Flow<String?> {
         val time = LocalDateTime.now()
         return withContext(Dispatchers.IO)  {
