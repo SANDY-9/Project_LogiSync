@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
-object DateUtils {
+internal object DateUtils {
 
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 ")
     fun getDate(): String {

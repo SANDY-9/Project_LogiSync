@@ -29,7 +29,7 @@ import com.core.model.Account
 import com.feature.home.R
 
 @Composable
-fun Profile(
+internal fun Profile(
     dateStr: String,
     account: Account,
     modifier: Modifier = Modifier,

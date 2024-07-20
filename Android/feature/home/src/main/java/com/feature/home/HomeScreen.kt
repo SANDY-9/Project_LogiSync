@@ -6,7 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,6 +36,7 @@ import com.feature.home.components.HeartRateInfo
 import com.feature.home.components.PairingInfo
 import com.feature.home.components.Profile
 import com.feature.home.components.ReportInfo
+import com.feature.home.components.ReportItem
 import com.feature.home.model.HomeUiState
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -97,6 +98,21 @@ fun HomeScreen(
                 Spacer(modifier = modifier.height(16.dp))
             }
         }
+
+        item {
+            BoxLayout {
+                ReportInfo(state.emptyReport)
+            }
+        }
+
+        items(count = 5) {
+            BoxLayout(
+                padding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 8.dp)
+            ) {
+                ReportItem()
+            }
+        }
+
     }
 }
 
@@ -106,6 +122,7 @@ private fun HomeAppBar(
 ) {
     Box(
         modifier = modifier.fillMaxWidth()
+            .background(color = Color.White)
     ) {
         Image(
             modifier = modifier
@@ -127,42 +144,6 @@ private fun HomeAppBar(
                 contentDescription = null,
             )
         }
-    }
-}
-
-@Composable
-private fun HomeContent(
-    state: HomeUiState,
-    onRequestCollect: () -> Unit,
-    onConnect: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-    ) {
-        Spacer(modifier = modifier.height(8.dp))
-        state.account?.let {
-            Profile(
-                dateStr = state.date,
-                account = it,
-            )
-        }
-        Spacer(modifier = modifier.height(30.dp))
-        PairingInfo(
-            deviceName = state.pairedDeviceName,
-            isPairedWatch = state.isPairedWatch,
-            onConnect = onConnect,
-        )
-        Spacer(modifier = modifier.height(30.dp))
-        HeartRateInfo(
-            heartRate = state.heartRate,
-            onRequestCollect = onRequestCollect,
-        )
-        Spacer(modifier = modifier.height(30.dp))
-        ReportInfo()
-        Spacer(modifier = modifier.height(16.dp))
     }
 }
 

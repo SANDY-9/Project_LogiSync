@@ -22,7 +22,7 @@ import com.core.model.HeartRate
 import com.feature.home.R
 
 @Composable
-fun NotEmptyHeartRateView(
+internal fun NotEmptyHeartRateView(
     heartRate: HeartRate,
     onRequestCollect: () -> Unit,
     modifier: Modifier = Modifier,

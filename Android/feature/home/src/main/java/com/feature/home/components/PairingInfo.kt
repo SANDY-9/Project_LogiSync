@@ -21,7 +21,7 @@ import com.core.desinsystem.icons.BluetoothOff
 import com.feature.home.R
 
 @Composable
-fun PairingInfo(
+internal fun PairingInfo(
     deviceName: String,
     isPairedWatch: Boolean,
     onConnect: () -> Unit,
