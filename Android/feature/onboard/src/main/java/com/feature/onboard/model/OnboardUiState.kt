@@ -10,17 +10,18 @@ internal data class OnboardUiState(
     val bluetoothState: BluetoothState = BluetoothState.NONE,
     val isBondedWatch: Boolean = false,
     val isConnectedApp: Boolean = false,
-    val isServiceStarted: Boolean = false,
+    val enableServiceStart: Boolean = false,
 )
 
 internal enum class OnboardPhase {
-    BLUETOOTH_CONNECT, WATCH_PAIRING_CHECK, APP_CONNECTION, SERVICE_STARTED;
+    BLUETOOTH_CONNECT, WATCH_PAIRING_CHECK, APP_CONNECTION, ENABLE_SERVICE_START, SERVICE_START;
 
     fun nextPhase(): OnboardPhase {
         val nextPhase = when (this) {
             BLUETOOTH_CONNECT -> WATCH_PAIRING_CHECK
             WATCH_PAIRING_CHECK -> APP_CONNECTION
-            else -> SERVICE_STARTED
+            APP_CONNECTION -> ENABLE_SERVICE_START
+            else -> SERVICE_START
         }
         return nextPhase
     }

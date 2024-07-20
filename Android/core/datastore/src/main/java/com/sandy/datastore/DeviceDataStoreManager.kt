@@ -28,12 +28,12 @@ class DeviceDataStoreManager @Inject constructor(
         )
     }
 
-    fun getLastConnectedDevice(): Flow<DeviceDTO> {
+    fun getLastConnectedDevice(): Flow<DeviceDTO?> {
         return dataStore.getPrefs(
             key = PrefsKeys.LAST_CONNECTED_DEVICE,
             defaultValue = ""
         ).map {
-            it.toDeviceDTO()
+            if(it.isBlank()) null else it.toDeviceDTO()
         }
     }
 
