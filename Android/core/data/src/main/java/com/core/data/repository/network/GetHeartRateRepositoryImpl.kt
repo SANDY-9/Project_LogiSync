@@ -27,3 +27,16 @@ class GetHeartRateRepositoryImpl @Inject constructor(
             it.toHeartRateList()
         }.flowOn(Dispatchers.IO)
     }
+    override fun getLastHeartRate(id: String): Flow<HeartRate?> = callbackFlow {
+        heartRateClient.getLastHeartRate(
+            id = id,
+            onSuccess = {
+                trySend(it?.toHeartRate())
+            },
+            onError = { e ->
+                close(e)
+            },
+        )
+        awaitClose()
+    }
+}

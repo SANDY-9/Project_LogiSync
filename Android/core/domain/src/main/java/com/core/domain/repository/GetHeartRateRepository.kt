@@ -11,4 +11,8 @@ interface GetHeartRateRepository {
         month: Int,
         day: Int,
     ): Flow<List<HeartRate>>
+
+    fun getLastHeartRate(
+        id: String,
+    ): Flow<HeartRate?>
 }

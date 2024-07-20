@@ -10,7 +10,9 @@ data class HomeUiState(
     val date: String = DateUtils.getDate(),
     val account: Account? = null,
     val heartRateLoading: Boolean = false,
-    val heartRate: HeartRate = HeartRate(),
+    val heartRate: HeartRate? = null,
     val pairedDeviceName: String = "",
     val isPairedWatch: Boolean = false,
+    val reportList: List<String> = emptyList(),
+    val emptyReport: Boolean = true,
 )

@@ -7,6 +7,7 @@ import com.core.firebase.common.Constants.MAX_HEART_RATE
 import com.core.firebase.common.Constants.MIN_CRITICAL_POINT
 import com.core.firebase.common.Constants.MIN_HEART_RATE
 import com.core.firebase.common.Constants.USERS
+import com.core.firebase.model.HeartRateDTO
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.getValue
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +33,26 @@ class HeartRateClient @Inject constructor(
                 error(it)
             }
         awaitClose()
+    }
+    fun getLastHeartRate(
+        id: String,
+        onSuccess: (HeartRateDTO?) -> Unit,
+        onError: (Throwable) -> Unit,
+    ) {
+        ref.child(HEART_RATE).child(id).orderByKey().limitToLast(1).get()
+            .addOnSuccessListener { snapshot ->
+                if (snapshot.exists()) {
+                    val heartRate = snapshot.children.last().children.last().children.first()
+                    val heartRateDTO = HeartRateDTO(
+                        bpm = heartRate.value.toString().toInt(),
+                        date = heartRate.key.toString(),
+                    )
+                    onSuccess(heartRateDTO)
+                }
+                else {
+                    onSuccess(null)
+                }
+            }.addOnFailureListener { onError(it) }
     }
 
     suspend fun updateHeartRateCriticalPoint(
