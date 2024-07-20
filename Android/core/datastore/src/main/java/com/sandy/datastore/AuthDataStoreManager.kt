@@ -30,11 +30,11 @@ class AuthDataStoreManager @Inject constructor(
         )
     }
 
-    fun getAccount(): Flow<AccountDTO> {
+    fun getAccount(): Flow<AccountDTO?> {
         return dataStore.getPrefs(
             key = PrefsKeys.ACCOUNT,
             defaultValue = ""
-        ).map { it.toAccountDTO() }
+        ).map { if(it.isEmpty()) null else it.toAccountDTO() }
     }
 
     private object PrefsKeys {

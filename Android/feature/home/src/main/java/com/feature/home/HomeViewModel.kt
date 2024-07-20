@@ -40,7 +40,7 @@ class HomeViewModel @Inject constructor(
         ) { pairedWatch, pairedDevice ->
             _stateFlow.value.copy(
                 isPairedWatch = pairedWatch != null,
-                pairedDeviceName = pairedDevice.alias
+                pairedDeviceName = pairedDevice!!.alias
             )
         }.onEach {
             _stateFlow.value = it
