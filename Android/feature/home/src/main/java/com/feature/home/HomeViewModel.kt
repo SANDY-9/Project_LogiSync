@@ -3,6 +3,7 @@ package com.feature.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.core.domain.usecases.prefs.GetAccountUseCase
 import com.core.domain.usecases.prefs.GetLastPairedDeviceUseCase
 import com.core.domain.usecases.wearable.CollectHeartRateUseCase
 import com.core.domain.usecases.wearable.GetWearableConnectStateUseCase
@@ -26,14 +27,22 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     getWearableConnectStateUseCase: GetWearableConnectStateUseCase,
     getLastPairedDeviceUseCase: GetLastPairedDeviceUseCase,
+    getAccountUseCase: GetAccountUseCase,
     private val loginWearableUseCase: LoginWearableUseCase,
     private val collectHeartRateUseCase: CollectHeartRateUseCase,
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
     internal val stateFlow: StateFlow<HomeUiState> = _stateFlow.asStateFlow()
+    private val state get() = stateFlow.value
 
     init {
+        getAccountUseCase().onEach { account ->
+            account?.let {
+                _stateFlow.value = state.copy( account = it )
+            }
+        }.launchIn(viewModelScope)
+
         combine(
             getWearableConnectStateUseCase(),
             getLastPairedDeviceUseCase(),
