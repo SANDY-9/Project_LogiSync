@@ -12,4 +12,11 @@ internal object Constants {
     const val HEART_RATE = "heart_rate"
     const val TOKEN = "token"
 
+    // CRITICAL_POINT
+    const val CRITICAL_POINT = "critical_point"
+    const val MAX_CRITICAL_POINT = "max_heart_rate"
+    const val MIN_CRITICAL_POINT = "min_heart_rate"
+    const val MAX_HEART_RATE = 160
+    const val MIN_HEART_RATE = 30
+
 }
