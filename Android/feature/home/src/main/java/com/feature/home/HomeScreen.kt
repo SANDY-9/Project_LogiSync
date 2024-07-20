@@ -88,6 +88,15 @@ fun HomeScreen(
             }
         }
 
+        item {
+            BoxLayout {
+                HeartRateInfo(
+                    heartRate = state.heartRate,
+                    onRequestCollect = {},
+                )
+                Spacer(modifier = modifier.height(16.dp))
+            }
+        }
     }
 }
 

@@ -20,5 +20,11 @@ val LogiOrange = Color(0xFFf79200)
 val LogiOrange50 = Color(0xffffc26a)
 val LogiRed = Color(0xFFe8141d)
 val LogiLightGray = Color(0xffefefef)
+val LogiDarkGray = Color(0xff4c4c4c)
 
 val HeartRed = Color(0xFFa7416c)
+val DarkRed = Color(0xffa74141)
+val LightRed = Color(0xffdcadad)
+
+val DarkGreen = Color(0xff117c2f)
+val LightGreen = Color(0xff6fa67e)

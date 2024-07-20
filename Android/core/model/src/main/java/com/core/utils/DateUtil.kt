@@ -20,10 +20,10 @@ object DateUtil {
 
     fun convertTime(dateStr: String): String {
         if (dateStr.isNotBlank()) {
-            val time = dateStr.split("-").last()
-            val hour = time.split(":").first().toInt()
+            val split = dateStr.split("-")
+            val hour = split.last().split(":").first().toInt()
             val suffix = if (hour >= 12) "오후" else "오전"
-            return "$suffix $time"
+            return "${split.first()}년 ${split[1]}월 ${split[2]}일 $suffix ${split.last()}"
         }
         else {
             return ""
