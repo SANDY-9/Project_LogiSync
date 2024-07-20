@@ -3,6 +3,7 @@ package com.core.data.di
 import com.core.data.repository.auth.LoginRepositoryImpl
 import com.core.data.repository.auth.SignupRepositoryImpl
 import com.core.data.repository.bluetooth.BluetoothRepositoryImpl
+import com.core.data.repository.network.GetArrestRepositoryImpl
 import com.core.data.repository.network.GetHeartRateRepositoryImpl
 import com.core.data.repository.prefs.AuthPrefsRepositoryImpl
 import com.core.data.repository.prefs.DevicePrefsRepositoryImpl
@@ -10,6 +11,7 @@ import com.core.data.repository.wearable.WearableRepositoryImpl
 import com.core.domain.repository.AuthPrefsRepository
 import com.core.domain.repository.BluetoothRepository
 import com.core.domain.repository.DevicePrefsRepository
+import com.core.domain.repository.GetArrestRepository
 import com.core.domain.repository.GetHeartRateRepository
 import com.core.domain.repository.LoginRepository
 import com.core.domain.repository.SignupRepository
@@ -57,5 +59,10 @@ internal abstract class DataModule {
     abstract fun bindsGetHeartRateRepository(
         impl: GetHeartRateRepositoryImpl
     ): GetHeartRateRepository
+
+    @Binds
+    abstract fun bindsGetArrestRepository(
+        impl: GetArrestRepositoryImpl
+    ): GetArrestRepository
 
 }

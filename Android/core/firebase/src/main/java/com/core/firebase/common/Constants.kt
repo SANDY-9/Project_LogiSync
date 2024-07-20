@@ -11,6 +11,8 @@ internal object Constants {
     const val USERS = "users"
     const val HEART_RATE = "heart_rate"
     const val TOKEN = "token"
+    const val ARREST = "arrest"
+    const val ID = "id"
 
     // CRITICAL_POINT
     const val CRITICAL_POINT = "critical_point"
