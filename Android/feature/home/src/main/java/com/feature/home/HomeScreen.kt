@@ -2,7 +2,9 @@ package com.feature.home
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,8 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material3.Icon
@@ -20,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,12 +31,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.core.desinsystem.common.BoxLayout
 import com.feature.home.components.HeartRateInfo
 import com.feature.home.components.PairingInfo
 import com.feature.home.components.Profile
 import com.feature.home.components.ReportInfo
 import com.feature.home.model.HomeUiState
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -50,14 +55,39 @@ fun HomeScreen(
 
     // Ui
     val state: HomeUiState by viewModel.stateFlow.collectAsStateWithLifecycle()
-    Column(
-        modifier = Modifier.fillMaxSize()
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
     ) {
-        HomeAppBar()
-        HomeContent(
-            state = state,
-            onRequestCollect = viewModel::requestCollectHeartBeat,
-        )
+
+        stickyHeader {
+            HomeAppBar()
+        }
+
+        state.account?.let {
+            item {
+                BoxLayout {
+                    Profile(
+                        dateStr = state.date,
+                        account = it,
+                    )
+                    Spacer(modifier = modifier.height(16.dp))
+                }
+            }
+        }
+
+        item {
+            BoxLayout {
+                PairingInfo(
+                    deviceName = state.pairedDeviceName,
+                    isPairedWatch = state.isPairedWatch,
+                    onConnect = {}
+                )
+                Spacer(modifier = modifier.height(16.dp))
+            }
+        }
+
     }
 }
 
@@ -70,6 +100,7 @@ private fun HomeAppBar(
     ) {
         Image(
             modifier = modifier
+                .size(width = 230.dp, height = 80.dp)
                 .padding(16.dp)
                 .align(Alignment.CenterStart),
             painter = painterResource(id = com.core.desinsystem.R.drawable.temp_logo_wide),
@@ -84,7 +115,7 @@ private fun HomeAppBar(
         ) {
             Icon(
                 imageVector = Icons.Rounded.Notifications,
-                contentDescription = null
+                contentDescription = null,
             )
         }
     }
@@ -94,26 +125,26 @@ private fun HomeAppBar(
 private fun HomeContent(
     state: HomeUiState,
     onRequestCollect: () -> Unit,
+    onConnect: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val scrollState = rememberScrollState()
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
-            .verticalScroll(scrollState)
     ) {
         Spacer(modifier = modifier.height(8.dp))
-        state.member?.let {
+        state.account?.let {
             Profile(
                 dateStr = state.date,
-                member = it,
+                account = it,
             )
         }
         Spacer(modifier = modifier.height(30.dp))
         PairingInfo(
             deviceName = state.pairedDeviceName,
             isPairedWatch = state.isPairedWatch,
+            onConnect = onConnect,
         )
         Spacer(modifier = modifier.height(30.dp))
         HeartRateInfo(

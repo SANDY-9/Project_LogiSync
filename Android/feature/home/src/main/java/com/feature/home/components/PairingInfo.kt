@@ -1,15 +1,11 @@
 package com.feature.home.components
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.common.BasicOutlinedButton
+import com.core.desinsystem.common.LogiCard
 import com.core.desinsystem.icons.Bluetooth
 import com.core.desinsystem.icons.BluetoothOff
 import com.feature.home.R
@@ -27,37 +24,32 @@ import com.feature.home.R
 fun PairingInfo(
     deviceName: String,
     isPairedWatch: Boolean,
+    onConnect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column {
         Text(
             text = stringResource(id = R.string.home_device_pairing_title),
             style = MaterialTheme.typography.headlineSmall,
+           // color = Color.White,
         )
         Spacer(modifier = modifier.size(12.dp))
-        Card(
-            modifier = modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-        ) {
+        LogiCard{
             Text(
                 modifier = modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(vertical = 12.dp, horizontal = 16.dp),
+                    .align(Alignment.CenterHorizontally),
                 text = deviceName,
                 style = MaterialTheme.typography.titleLarge
             )
-
-            val connectModifier = modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 12.dp)
+            Spacer(modifier = modifier.size(8.dp))
+            val connectModifier = modifier.align(Alignment.CenterHorizontally)
             if (isPairedWatch) {
-                ConnectedWatch(
-                    modifier = connectModifier
-                )
+                ConnectedWatch(modifier = connectModifier)
             }
             else {
                 DisConnectedDevice(
-                    modifier = connectModifier
+                    modifier = connectModifier,
+                    onConnect = onConnect,
                 )
             }
         }
@@ -72,7 +64,11 @@ private fun ConnectedWatch(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(imageVector = Icons.Bluetooth, contentDescription = null)
+        Icon(
+            modifier = modifier.size(18.dp),
+            imageVector = Icons.Bluetooth,
+            contentDescription = null
+        )
         Text(
             text = stringResource(id = R.string.home_device_pairing_connect),
             style = MaterialTheme.typography.titleSmall
@@ -82,6 +78,7 @@ private fun ConnectedWatch(
 
 @Composable
 private fun DisConnectedDevice(
+    onConnect: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -89,7 +86,12 @@ private fun DisConnectedDevice(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row {
-            Icon(imageVector = Icons.BluetoothOff, contentDescription = null)
+            Icon(
+                modifier = modifier.size(18.dp),
+                imageVector = Icons.BluetoothOff,
+                contentDescription = null,
+            )
+            Spacer(modifier = modifier.width(4.dp))
             Text(
                 text = stringResource(id = R.string.home_device_pairing_deconnect),
                 style = MaterialTheme.typography.titleSmall
@@ -97,7 +99,7 @@ private fun DisConnectedDevice(
         }
         BasicOutlinedButton(
             title = stringResource(id = R.string.home_device_pairing_connect_title),
-            onClick = { /*TODO*/ }
+            onClick = onConnect,
         )
     }
 }
