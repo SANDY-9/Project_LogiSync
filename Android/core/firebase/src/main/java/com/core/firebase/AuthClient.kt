@@ -18,11 +18,16 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.getValue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.suspendCoroutine
 
 class AuthClient @Inject constructor(
     private val ref: DatabaseReference,
     private val messagingClient: MessagingClient,
+    private val heartRateClient: HeartRateClient,
 ) {
 
     fun signup(
@@ -51,11 +56,21 @@ class AuthClient @Inject constructor(
                             user.child(id).child(DUTY).setValue(Member.Duty.ADMIN.name)
                             account = account.copy(duty = Member.Duty.ADMIN)
                         }
-                        messagingClient.registerToken(
-                            id = id,
-                            onSuccess = { onSuccess(account) },
-                            onError = { e -> onError(e) },
-                        )
+
+                        // FCM토큰 등록
+                        CoroutineScope(Dispatchers.IO).launch {
+                            messagingClient.registerToken(
+                                id = id,
+                                onSuccess = { },
+                                onError = { },
+                            )
+                        }
+
+                        // 심박수 임계치 등록
+                        CoroutineScope(Dispatchers.IO).launch {
+                            heartRateClient.updateHeartRateCriticalPoint(id)
+                        }
+                        onSuccess(account)
                     }
                     ?: onError(Exception())
                 }
@@ -67,10 +82,6 @@ class AuthClient @Inject constructor(
     }
 
     fun updateDuty() {
-
-    }
-
-    fun updateCriticalPoint() {
 
     }
 
@@ -111,11 +122,15 @@ class AuthClient @Inject constructor(
             if (snapshot.exists()) {
                 val account = snapshot.getValue<AccountDTO>()
                 if (account?.pwd == pwd) {
-                    messagingClient.registerToken(
-                        id = id,
-                        onSuccess = { onLogin(account.toAccount(id)) },
-                        onError = { e -> onError(e) },
-                    )
+                    CoroutineScope(Dispatchers.IO).launch {
+                        // FCM 토큰 등록
+                        messagingClient.registerToken(
+                            id = id,
+                            onSuccess = { onLogin(account.toAccount(id)) },
+                            onError = { e -> onError(e) },
+                        )
+                    }
+                    onLogin(account.toAccount(id))
                 }
                 else onError(LoginError(LOGIN_ERROR_MESSAGE))
             }
