@@ -67,6 +67,79 @@ fun MyTextField(
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
     OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier.addFocusCleaner(focusManager),
+        enabled = enabled,
+        readOnly = readOnly,
+        textStyle = textStyle,
+        label = label,
+        placeholder = placeholder,
+        leadingIcon = leadingIcon,
+        trailingIcon = {
+            if (value.isNotBlank()) {
+                IconButton(
+                    onClick = {
+                        focusManager.moveFocus(FocusDirection.Previous)
+                        onValueClear()
+                    }) {
+                    Icon(
+                        imageVector = Icons.Clear,
+                        tint = Color.Gray,
+                        contentDescription = null
+                    )
+                }
+            }
+        },
+        prefix = prefix,
+        suffix = suffix,
+        supportingText = supportingText,
+        isError = isError,
+        visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = KeyboardActions(
+            onDone = {
+                if (keyboardActions == null) {
+                    focusManager.moveFocus(FocusDirection.Next)
+                }
+                else {
+                    keyboardActions.invoke()
+                }
+            }
+        ),
+        singleLine = true,
+        maxLines = 1,
+        minLines = 1,
+        interactionSource = interactionSource,
+        shape = RoundedCornerShape(8.dp),
+        colors = colors,
+    )
+}
+
+@Composable
+fun MyTelTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    onValueClear: () -> Unit,
+    focusManager: FocusManager,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    textStyle: TextStyle = LocalTextStyle.current,
+    label: @Composable (() -> Unit)? = null,
+    placeholder: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    prefix: @Composable (() -> Unit)? = null,
+    suffix: @Composable (() -> Unit)? = null,
+    supportingText: @Composable (() -> Unit)? = null,
+    isError: Boolean = false,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardActions: (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
+) {
+    OutlinedTextField(
         value = TextFieldValue(
             text = value,
             selection = TextRange(value.length)
@@ -120,6 +193,7 @@ fun MyTextField(
         colors = colors,
     )
 }
+
 @Composable
 fun MyPwdTextField(
     value: String,
@@ -146,13 +220,8 @@ fun MyPwdTextField(
     val visualIcon = if (inputVisible) Icons.Visibility else Icons.Visibilityoff
     val visualTransformation = if (inputVisible) VisualTransformation.None else PasswordVisualTransformation()
     OutlinedTextField(
-        value = TextFieldValue(
-            text = value,
-            selection = TextRange(value.length)
-        ),
-        onValueChange = {
-            onValueChange(it.text)
-        },
+        value = value,
+        onValueChange = onValueChange,
         modifier = modifier.addFocusCleaner(focusManager),
         enabled = enabled,
         readOnly = readOnly,

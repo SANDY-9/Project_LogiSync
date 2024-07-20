@@ -78,7 +78,7 @@ internal fun IdInput(
                     minWidth = 1.dp,
                     minHeight = 1.dp
                 ),
-            contentPadding = PaddingValues(horizontal = 24.dp),
+            contentPadding = PaddingValues(horizontal = 12.dp),
             shape = RoundedCornerShape(10.dp),
             enabled = isValidId && existId == null,
             onClick = onIdCheckClick,
