@@ -10,6 +10,7 @@ internal fun AccountDTO.toJson(): String {
     jsonObject.put("name", name)
     jsonObject.put("tel", tel)
     jsonObject.put("duty", duty)
+    jsonObject.put("team", team)
     return jsonObject.toString()
 }
 

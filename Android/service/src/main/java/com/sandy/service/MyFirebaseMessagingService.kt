@@ -34,9 +34,18 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
     private fun sendRegistrationToServer(token: String) {
         CoroutineScope(Dispatchers.IO).launch {
             authPrefsRepository.getAccount().collect { account ->
-                val id = account.id
-                client.updateToken(id, token) {
-                    Log.e("[TOKEN]", "sendRegistrationToServer: $it", )
+                account?.let {
+                    val id = it.id
+                    client.updateToken(
+                        id = id,
+                        token = token,
+                        onSuccess = {
+                            Log.i("[TOKEN]", "sendRegistrationToServer: $it", )
+                        },
+                        onError = {
+                            Log.e("[TOKEN]", "sendRegistrationToServer: $it", )
+                        }
+                    )
                 }
             }
         }

@@ -49,6 +49,21 @@ class MessagingClient @Inject constructor(
         )
     }
 
+    fun updateToken(
+        id: String,
+        token: String,
+        onSuccess: (Boolean) -> Unit,
+        onError: (Throwable) -> Unit,
+    ) {
+        ref.child(TOKEN).child(id).setValue(token)
+            .addOnSuccessListener {
+                onSuccess(true)
+            }
+            .addOnFailureListener {
+                onError(it)
+            }
+    }
+
     fun getToken(
         id: String,
         onSuccess: (String) -> Unit,

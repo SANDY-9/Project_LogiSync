@@ -22,14 +22,14 @@ class AuthPrefsRepositoryImpl @Inject constructor(
                 name = account.name,
                 tel = account.tel,
                 duty = account.duty.name,
-                team = account.team.name
+                team = account.team.name,
             )
         }
     }
 
-    override fun getAccount(): Flow<Account> {
+    override fun getAccount(): Flow<Account?> {
         return authDataStoreManager.getAccount().map {
-            it.toAccount()
+            it?.toAccount()
         }.flowOn(Dispatchers.IO)
     }
 

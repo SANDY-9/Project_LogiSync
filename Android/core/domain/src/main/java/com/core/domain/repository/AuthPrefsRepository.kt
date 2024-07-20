@@ -6,6 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface AuthPrefsRepository {
 
     suspend fun updateAccount(account: Account)
-    fun getAccount(): Flow<Account>
+    fun getAccount(): Flow<Account?>
     suspend fun logoutAccount()
 }

@@ -11,9 +11,11 @@ class LoginWearableUseCase @Inject constructor(
     private val authPrefsRepository: AuthPrefsRepository,
     private val wearableRepository: WearableRepository
 ) {
-    operator fun invoke(): Flow<Account> {
+    operator fun invoke(): Flow<Account?> {
         return authPrefsRepository.getAccount().onEach { account ->
-            wearableRepository.sendLogin(account)
+            account?.let {
+                wearableRepository.sendLogin(it)
+            }
         }
     }
 }

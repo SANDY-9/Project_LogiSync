@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetAccountUseCase @Inject constructor(
     private val authPrefsRepository: AuthPrefsRepository,
 ) {
-    operator fun invoke(): Flow<Account> {
+    operator fun invoke(): Flow<Account?> {
         return authPrefsRepository.getAccount()
     }
 }

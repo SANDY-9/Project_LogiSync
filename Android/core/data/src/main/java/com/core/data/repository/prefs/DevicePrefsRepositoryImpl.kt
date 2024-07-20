@@ -15,9 +15,9 @@ import javax.inject.Inject
 class DevicePrefsRepositoryImpl @Inject constructor(
     private val deviceDataStoreManager: DeviceDataStoreManager,
 ) : DevicePrefsRepository {
-    override fun getPairedDeviceName(): Flow<Device> {
+    override fun getLastPairedDevice(): Flow<Device?> {
         return deviceDataStoreManager.getLastConnectedDevice().map {
-            it.toDevice()
+            it?.toDevice()
         }.flowOn(Dispatchers.IO)
     }
 

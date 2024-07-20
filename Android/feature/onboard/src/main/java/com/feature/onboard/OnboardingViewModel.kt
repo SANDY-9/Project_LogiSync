@@ -5,16 +5,19 @@ import androidx.lifecycle.viewModelScope
 import com.core.domain.enums.BluetoothState
 import com.core.domain.usecases.bluetooth.GetBluetoothStateUseCase
 import com.core.domain.usecases.bluetooth.GetIsPairedDeviceUseCase
+import com.core.domain.usecases.prefs.GetLastPairedDeviceUseCase
 import com.core.domain.usecases.wearable.GetWearableConnectStateUseCase
 import com.core.domain.usecases.wearable.LoginWearableUseCase
 import com.feature.onboard.model.OnboardPhase
 import com.feature.onboard.model.OnboardUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,29 +28,42 @@ class OnboardingViewModel @Inject constructor(
     private val getIsPairedDeviceUseCase: GetIsPairedDeviceUseCase,
     private val getWearableConnectStateUseCase: GetWearableConnectStateUseCase,
     private val loginWearableUseCase: LoginWearableUseCase,
+    getLastPairedDeviceUseCase: GetLastPairedDeviceUseCase,
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<OnboardUiState> = MutableStateFlow(OnboardUiState())
     internal val stateFlow: StateFlow<OnboardUiState> = _stateFlow.asStateFlow()
+    private val state get() =  stateFlow.value
 
     private val phaseFlow = MutableStateFlow(OnboardPhase.BLUETOOTH_CONNECT)
 
     init {
+
+        getLastPairedDeviceUseCase().shareIn(
+            viewModelScope,
+            started = SharingStarted.Lazily
+        ).onEach { device ->
+            _stateFlow.value = state.copy(
+                phase = if(device == null) OnboardPhase.BLUETOOTH_CONNECT else OnboardPhase.SERVICE_START
+            )
+        }.launchIn(viewModelScope)
+
         phaseFlow.onEach { phase ->
-            _stateFlow.value = _stateFlow.value.copy(
+            _stateFlow.value = state.copy(
                 phase = phase,
             )
             when (phase) {
                 OnboardPhase.BLUETOOTH_CONNECT -> updateBluetoothState()
                 OnboardPhase.WATCH_PAIRING_CHECK -> updateBondedWatchState()
                 OnboardPhase.APP_CONNECTION -> updateIsConnectedAppState()
-                OnboardPhase.SERVICE_STARTED -> updateIsServiceStartedState()
+                OnboardPhase.ENABLE_SERVICE_START -> updateServiceStartEnableState()
+                else -> {}
             }
         }.launchIn(viewModelScope)
     }
 
     fun updatePhase() {
-        phaseFlow.update { it.nextPhase() }
+        phaseFlow.value = phaseFlow.value.nextPhase()
     }
 
     private fun updateBluetoothState() {
@@ -63,8 +79,8 @@ class OnboardingViewModel @Inject constructor(
 
     private fun updateBondedWatchState() {
         viewModelScope.launch {
+            val isPairedDevice = getIsPairedDeviceUseCase()
             _stateFlow.update {
-                val isPairedDevice = getIsPairedDeviceUseCase()
                 it.copy(
                     isBondedWatch = isPairedDevice,
                     enabledNextButton = isPairedDevice,
@@ -82,17 +98,17 @@ class OnboardingViewModel @Inject constructor(
                     enabledNextButton = isConnected,
                 )
             }
-            if (isConnected) phaseFlow.value = OnboardPhase.SERVICE_STARTED
+            if (isConnected) {
+                phaseFlow.value = OnboardPhase.ENABLE_SERVICE_START
+            }
         }.launchIn(viewModelScope)
     }
 
-    private fun updateIsServiceStartedState() {
+    private fun updateServiceStartEnableState() {
         loginWearableUseCase().onEach {
-            _stateFlow.update {
-                it.copy(
-                    isServiceStarted = true
-                )
-            }
+            _stateFlow.value = state.copy(
+                enableServiceStart = true
+            )
         }.launchIn(viewModelScope)
     }
 }

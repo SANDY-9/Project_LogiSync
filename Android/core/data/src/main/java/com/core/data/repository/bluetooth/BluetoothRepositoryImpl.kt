@@ -43,8 +43,8 @@ class BluetoothRepositoryImpl @Inject constructor(
     override suspend fun isPairedDevice(): Boolean {
         return withContext(Dispatchers.IO) {
             val device = bluetoothManager.getBluetoothPairedWatch()
-            Log.e("확인", "isPairedDevice: $device")
-            return@withContext true //device.isNotEmpty()
+            Log.i("[PAIRED_DEVICE]", "pairedDevice: $device")
+            return@withContext device.isNotEmpty()
         }
     }
 }

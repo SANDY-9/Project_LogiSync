@@ -14,6 +14,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +38,11 @@ fun OnboardingScreen(
 ) {
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
     val context = LocalContext.current as? Activity?
+    LaunchedEffect(state.phase) {
+        if(state.phase == OnboardPhase.SERVICE_START) {
+            onNavigate()
+        }
+    }
     Column(
         modifier = modifier.fillMaxSize()
     ) {
@@ -45,7 +51,6 @@ fun OnboardingScreen(
         )
         OnboardingContent(
             state = state,
-            onNavigate = onNavigate,
             onNext = viewModel::updatePhase,
             modifier = modifier.weight(1f)
         )
@@ -79,7 +84,6 @@ private fun OnboardingAppBar(
 @Composable
 private fun OnboardingContent(
     state: OnboardUiState,
-    onNavigate: () -> Unit,
     onNext: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -102,10 +106,10 @@ private fun OnboardingContent(
         }
     }
 
-    if (state.isServiceStarted) {
+    if (state.enableServiceStart) {
         NextButton(
             title = stringResource(id = R.string.onboard_button_complete),
-            onClick = onNavigate,
+            onClick = onNext,
         )
     }
     else {

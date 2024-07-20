@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetLastPairedDeviceUseCase @Inject constructor(
     private val devicePrefsRepository: DevicePrefsRepository
 ) {
-    operator fun invoke(): Flow<Device> {
-        return devicePrefsRepository.getPairedDeviceName()
+    operator fun invoke(): Flow<Device?> {
+        return devicePrefsRepository.getLastPairedDevice()
     }
 }

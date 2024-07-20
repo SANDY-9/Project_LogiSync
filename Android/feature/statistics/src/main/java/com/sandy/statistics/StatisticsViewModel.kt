@@ -32,15 +32,17 @@ class StatisticsViewModel @Inject constructor(
 
     init {
         getAccountUseCase().onEach { account ->
-            val id = account.id
-            LocalDate.now().run {
-                _stateFlow.update { state ->
-                    state.copy(
-                        id = id,
-                        pickedDate = this
-                    )
+            account?.let {
+                val id = it.id
+                LocalDate.now().run {
+                    _stateFlow.update { state ->
+                        state.copy(
+                            id = id,
+                            pickedDate = this
+                        )
+                    }
+                    requestDailyHeartRates(year, monthValue, dayOfMonth, id)
                 }
-                requestDailyHeartRates(year, monthValue, dayOfMonth, id)
             }
         }.launchIn(viewModelScope)
     }
