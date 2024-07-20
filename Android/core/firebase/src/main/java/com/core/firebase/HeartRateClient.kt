@@ -1,10 +1,18 @@
 package com.core.firebase
 
+import com.core.firebase.common.Constants.CRITICAL_POINT
 import com.core.firebase.common.Constants.HEART_RATE
+import com.core.firebase.common.Constants.MAX_CRITICAL_POINT
+import com.core.firebase.common.Constants.MAX_HEART_RATE
+import com.core.firebase.common.Constants.MIN_CRITICAL_POINT
+import com.core.firebase.common.Constants.MIN_HEART_RATE
+import com.core.firebase.common.Constants.USERS
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.getValue
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class HeartRateClient @Inject constructor(
@@ -24,5 +32,17 @@ class HeartRateClient @Inject constructor(
                 error(it)
             }
         awaitClose()
+    }
+
+    suspend fun updateHeartRateCriticalPoint(
+        id: String,
+        min: Int = MIN_HEART_RATE,
+        max: Int = MAX_HEART_RATE,
+    ) = withContext(Dispatchers.IO) {
+        val map = mapOf(
+            MAX_CRITICAL_POINT to max,
+            MIN_CRITICAL_POINT to min,
+        )
+        ref.child(USERS).child(id).child(CRITICAL_POINT).setValue(map)
     }
 }

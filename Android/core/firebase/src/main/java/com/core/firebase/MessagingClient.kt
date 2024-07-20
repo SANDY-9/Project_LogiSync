@@ -28,7 +28,7 @@ class MessagingClient @Inject constructor(
         }
     }
 
-    fun registerToken(
+    suspend fun registerToken(
         id: String,
         onSuccess: (Boolean) -> Unit,
         onError: (Throwable) -> Unit,
