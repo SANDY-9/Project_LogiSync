@@ -81,4 +81,16 @@ class HomeViewModel @Inject constructor(
             Log.e("확인", "requestCollectHeartBeat: $it")
         }.launchIn(viewModelScope)
     }
+
+    fun stopWearableConnectMonitoring() {
+        scope?.cancel()
+        scope = null
+    }
+
+    fun restartWearableConnectMonitoring() {
+        if(scope == null) {
+            scope = CoroutineScope(Dispatchers.IO)
+            monitorWearableConnectState()
+        }
+    }
 }

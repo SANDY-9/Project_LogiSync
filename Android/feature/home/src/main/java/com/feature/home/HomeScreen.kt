@@ -28,6 +28,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -56,6 +58,15 @@ fun HomeScreen(
 
     // Ui
     val state: HomeUiState by viewModel.stateFlow.collectAsStateWithLifecycle()
+
+    LifecycleEventEffect(event = Lifecycle.Event.ON_PAUSE) {
+        viewModel.stopWearableConnectMonitoring()
+    }
+
+    LifecycleEventEffect(event = Lifecycle.Event.ON_RESUME) {
+        viewModel.restartWearableConnectMonitoring()
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -83,7 +94,6 @@ fun HomeScreen(
                 PairingInfo(
                     deviceName = state.pairedDeviceName,
                     isPairedWatch = state.isPairedWatch,
-                    onConnect = {}
                 )
                 Spacer(modifier = modifier.height(16.dp))
             }
@@ -121,7 +131,8 @@ private fun HomeAppBar(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
             .background(color = Color.White)
     ) {
         Image(

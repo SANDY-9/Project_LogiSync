@@ -1,5 +1,6 @@
 package com.core.data.repository.wearable
 
+import android.util.Log
 import com.core.data.mapper.toDevice
 import com.core.domain.repository.WearableRepository
 import com.core.model.Account
@@ -8,6 +9,7 @@ import com.sandy.bluetooth.MyBluetoothManager
 import com.sandy.bluetooth.MyWearableClient
 import com.sandy.bluetooth.TranscriptionPath
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
@@ -26,24 +28,27 @@ class WearableRepositoryImpl @Inject constructor(
     // 테스트용
     override fun getWearableConnectState(): Flow<Device?> = flow {
         val node = wearableClient.getConnectWearable()
-        if (node == null) {
+        /*if (node == null) {
             emit(null)
         }
         else {
             val alias = bluetoothManager.getDeviceAlias()
             emit(node.toDevice(alias))
-        }
-        /*while (true) {
+        }*/
+        var start = true
+        while (start) {
             val node = wearableClient.getConnectWearable()
+            Log.e("확인", "getWearableConnectState: $node", )
             if(node == null) {
                 emit(null)
             }
             else {
                 val alias = bluetoothManager.getDeviceAlias()
                 emit(node.toDevice(alias))
+                start = false
             }
             delay(INTERVAL)
-        }*/
+        }
     }.flowOn(Dispatchers.IO).distinctUntilChanged()
 
     override suspend fun sendLogin(account: Account) = withContext(Dispatchers.IO) {
@@ -58,6 +63,7 @@ class WearableRepositoryImpl @Inject constructor(
         jsonObject.put("id", id)
         jsonObject.put("name", name)
         jsonObject.put("tel", tel)
+        jsonObject.put("team", team)
         return jsonObject.toString()
     }
 
