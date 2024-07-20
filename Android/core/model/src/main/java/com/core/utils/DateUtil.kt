@@ -46,4 +46,5 @@ object DateUtil {
         val suffix = if (hour >= 12) "오후" else "오전"
         return "$date $suffix $time"
     }
+
 }

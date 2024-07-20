@@ -2,6 +2,7 @@ package com.feature.home.model
 
 import androidx.compose.runtime.Stable
 import com.core.model.Account
+import com.core.model.Arrest
 import com.core.model.HeartRate
 import com.feature.home.utils.DateUtils
 
@@ -13,6 +14,6 @@ data class HomeUiState(
     val heartRate: HeartRate? = null,
     val pairedDeviceName: String = "",
     val isPairedWatch: Boolean = false,
-    val reportList: List<String> = emptyList(),
+    val reportList: List<Arrest> = emptyList(),
     val emptyReport: Boolean = true,
 )

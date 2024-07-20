@@ -9,10 +9,11 @@ internal fun Map<String, ArrestDTO>.toArrestList(): List<Arrest> {
     return this.map { (date, dto) ->
         Arrest(
             id = dto.id,
+            arrestType = Arrest.ArrestType.valueOf(dto.arrestType),
             time = LocalDateTime.parse(date, formatter),
             lat = dto.lat,
             lng = dto.lng,
-            arrestType = Arrest.ArrestType.valueOf(dto.arrestType),
+            bpm = dto.bpm,
         )
     }
 }

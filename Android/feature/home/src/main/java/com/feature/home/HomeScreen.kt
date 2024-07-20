@@ -111,16 +111,24 @@ fun HomeScreen(
 
         item {
             BoxLayout {
-                ReportInfo(state.emptyReport)
+                ReportInfo(
+                    emptyReport = state.emptyReport,
+                )
             }
         }
 
-        items(count = 5) {
+        items(count = state.reportList.size) { index ->
             BoxLayout(
                 padding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 8.dp)
             ) {
-                ReportItem()
+                ReportItem(
+                    arrestItem = state.reportList[index],
+                )
             }
+        }
+
+        item {
+            Spacer(modifier = modifier.height(16.dp))
         }
 
     }

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usecases.network.GetLastHeartRateUseCase
+import com.core.domain.usecases.network.GetLastMyArrestUseCase
 import com.core.domain.usecases.prefs.GetAccountUseCase
 import com.core.domain.usecases.prefs.GetLastPairedDeviceUseCase
 import com.core.domain.usecases.wearable.CollectHeartRateUseCase
@@ -35,6 +36,7 @@ class HomeViewModel @Inject constructor(
     private val loginWearableUseCase: LoginWearableUseCase,
     private val collectHeartRateUseCase: CollectHeartRateUseCase,
     private val getLastHeartRateUseCase: GetLastHeartRateUseCase,
+    private val getLastMyArrestUseCase: GetLastMyArrestUseCase,
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
@@ -44,15 +46,28 @@ class HomeViewModel @Inject constructor(
     private var scope: CoroutineScope? = CoroutineScope(Dispatchers.IO)
 
     init {
+        @Suppress("OPT_IN_USAGE")
         getAccountUseCase().flatMapLatest{ account ->
             account?.let {
                 _stateFlow.update { state -> state.copy(account = it) }
-                getLastHeartRateUseCase(it.id)
+                combine(
+                    getLastHeartRateUseCase(it.id),
+                    getLastMyArrestUseCase(it.id)
+                ) { heartRate, arrest ->
+                    Log.e("확인", "$heartRate: $arrest", )
+                    state.copy(
+                        heartRate = heartRate,
+                        reportList = arrest,
+                        emptyReport = arrest.isEmpty(),
+                    )
+                }
             }
             ?: flowOf(null)
         }
-            .onEach { heartRate ->
-                _stateFlow.update { state -> state.copy(heartRate = heartRate) }
+            .onEach { state ->
+                state?.let {
+                    _stateFlow.value = it
+                }
             }
             .launchIn(viewModelScope)
 
@@ -64,7 +79,6 @@ class HomeViewModel @Inject constructor(
             getWearableConnectStateUseCase(),
             getLastPairedDeviceUseCase(),
         ) { pairedWatch, pairedDevice ->
-            Log.e("확인", "$pairedWatch: $pairedDevice", )
             _stateFlow.value.copy(
                 isPairedWatch = pairedWatch != null,
                 pairedDeviceName = pairedDevice?.alias ?: ""
