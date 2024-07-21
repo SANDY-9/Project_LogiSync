@@ -14,10 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Notifications
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -103,7 +99,7 @@ fun HomeScreen(
             BoxLayout {
                 HeartRateInfo(
                     heartRate = state.heartRate,
-                    onRequestCollect = {},
+                    onRequestCollect = viewModel::requestCollectHeartBeat,
                 )
                 Spacer(modifier = modifier.height(16.dp))
             }
@@ -152,17 +148,6 @@ private fun HomeAppBar(
             contentDescription = null,
         )
 
-        IconButton(
-            modifier = modifier
-                .padding(end = 4.dp, top = 8.dp)
-                .align(Alignment.TopEnd),
-            onClick = {}
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.Notifications,
-                contentDescription = null,
-            )
-        }
     }
 }
 

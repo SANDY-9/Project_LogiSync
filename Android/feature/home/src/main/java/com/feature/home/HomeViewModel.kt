@@ -9,7 +9,6 @@ import com.core.domain.usecases.prefs.GetAccountUseCase
 import com.core.domain.usecases.prefs.GetLastPairedDeviceUseCase
 import com.core.domain.usecases.wearable.CollectHeartRateUseCase
 import com.core.domain.usecases.wearable.GetWearableConnectStateUseCase
-import com.core.domain.usecases.wearable.LoginWearableUseCase
 import com.feature.home.model.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +32,6 @@ class HomeViewModel @Inject constructor(
     private val getWearableConnectStateUseCase: GetWearableConnectStateUseCase,
     private val getLastPairedDeviceUseCase: GetLastPairedDeviceUseCase,
     getAccountUseCase: GetAccountUseCase,
-    private val loginWearableUseCase: LoginWearableUseCase,
     private val collectHeartRateUseCase: CollectHeartRateUseCase,
     private val getLastHeartRateUseCase: GetLastHeartRateUseCase,
     private val getLastMyArrestUseCase: GetLastMyArrestUseCase,
@@ -89,11 +87,13 @@ class HomeViewModel @Inject constructor(
     }
 
     fun requestCollectHeartBeat() {
-        flow {
-            emit(collectHeartRateUseCase(""))
-        }.catch {
-            Log.e("확인", "requestCollectHeartBeat: $it")
-        }.launchIn(viewModelScope)
+        state.account?.let {
+            flow {
+                emit(collectHeartRateUseCase(it.id))
+            }.catch {
+                Log.e("확인", "requestCollectHeartBeat: $it")
+            }.launchIn(viewModelScope)
+        }
     }
 
     fun stopWearableConnectMonitoring() {
