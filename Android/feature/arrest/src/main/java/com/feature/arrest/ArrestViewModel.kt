@@ -36,7 +36,6 @@ class ArrestViewModel @Inject constructor(
                     filteredList = data,
                 )
             }
-            Log.e("확인", "$data: ", )
         }.catch {
             Log.e("[MY_ARREST]", "$it")
         }.launchIn(viewModelScope)
@@ -83,13 +82,13 @@ class ArrestViewModel @Inject constructor(
         )
     }
 
-    fun setDatePickerVisible() {
+    internal fun setDatePickerVisible() {
         _stateFlow.value = state.copy(
             datePickerVisible = !state.datePickerVisible
         )
     }
 
-    fun selectedStartDate(date: Long?) {
+    internal fun selectedStartDate(date: Long?) {
         _stateFlow.update {
             val str = date?.let { date -> DateUtil.convertDate(date) } ?: "시작 날짜"
             it.copy(
@@ -99,7 +98,7 @@ class ArrestViewModel @Inject constructor(
         }
     }
 
-    fun selectedEndDate(date: Long?) {
+    internal fun selectedEndDate(date: Long?) {
         _stateFlow.update {
             val str = date?.let { date -> DateUtil.convertDate(date) } ?: "마지막 날짜"
             it.copy(
@@ -109,7 +108,7 @@ class ArrestViewModel @Inject constructor(
         }
     }
 
-    fun completeDatePicker() {
+    internal fun completeDatePicker() {
         val startDate = state.selectedStartDate.localDate() ?: return
         val endDate = state.selectedEndDate.localDate() ?: return
         filterByDate(startDate, endDate)
