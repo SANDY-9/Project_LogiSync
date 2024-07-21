@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
@@ -18,16 +19,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.common.BasicOutlinedButton
+import com.core.desinsystem.common.HeartRateLabel
+import com.core.desinsystem.common.LinearHeartRateGraph
+import com.core.desinsystem.common.LogiCard
+import com.core.desinsystem.theme.DarkGreen
+import com.core.desinsystem.theme.DarkRed
 import com.core.model.HeartRate
 import com.feature.home.R
 
 @Composable
 internal fun HeartRateInfo(
-    heartRate: HeartRate,
+    heartRate: HeartRate?,
     onRequestCollect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -37,27 +45,17 @@ internal fun HeartRateInfo(
             style = MaterialTheme.typography.headlineSmall,
         )
         Spacer(modifier = modifier.size(12.dp))
-        Card(
-            modifier = modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Row(
-                modifier = modifier.padding(
-                    start = 24.dp, end = 24.dp, top = 16.dp, bottom = 24.dp
+        LogiCard{
+            if (heartRate != null) {
+                NotEmptyHeartRateView(
+                    heartRate = heartRate,
+                    onRequestCollect = onRequestCollect,
                 )
-            ) {
-                Column(
-                    modifier = modifier
-                        .weight(1f)
-                        .padding(end = 24.dp)
-                ) {
-                    HeartRateRecord(heartRate.bpm)
-                    HeartRateAnalysis()
-                    Spacer(modifier = modifier.height(16.dp))
-                    HeartRateGraph()
-                }
-                HeartRateCollectButton(
-                    onClick = onRequestCollect,
+            }
+            else {
+                EmptyMeasuredHeartRateView(
+                    modifier = modifier.fillMaxWidth(),
+                    onRequestCollect = onRequestCollect,
                 )
             }
         }
@@ -65,63 +63,23 @@ internal fun HeartRateInfo(
 }
 
 @Composable
-private fun HeartRateRecord(
-    rate: Int,
+private fun EmptyMeasuredHeartRateView(
+    onRequestCollect: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    Column(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Icon(
-            modifier = Modifier.size(20.dp),
-            imageVector = Icons.Rounded.Favorite,
-            contentDescription = null
-        )
         Text(
-            modifier = Modifier.padding(horizontal = 8.dp),
-            text = "$rate",
-            style = MaterialTheme.typography.headlineMedium,
-        )
-        Text(
-            modifier = Modifier
-                .align(Alignment.Bottom)
-                .padding(bottom = 2.dp),
-            text = "bpm",
+            text = stringResource(id = R.string.home_heart_rate_empty),
             style = MaterialTheme.typography.titleSmall,
         )
-        Text(
-            modifier = Modifier
-                .align(Alignment.Bottom)
-                .padding(start = 8.dp, bottom = 4.dp),
-            text = "오후 14:00",
-            style = MaterialTheme.typography.labelSmall,
+        Spacer(modifier = modifier.width(8.dp))
+        HeartRateCollectButton(
+            onClick = onRequestCollect,
         )
     }
-}
-
-@Composable
-private fun HeartRateAnalysis(
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-    ) {
-        Text(
-            text = stringResource(id = R.string.home_heart_rate_avg_normal),
-            style = MaterialTheme.typography.labelSmall,
-        )
-    }
-}
-
-@Composable
-private fun HeartRateGraph(
-    modifier: Modifier = Modifier,
-) {
-    LinearProgressIndicator(
-        modifier = modifier.fillMaxWidth(),
-        progress = { 1f }
-    )
 }
 
 @Composable
@@ -131,10 +89,11 @@ private fun HeartRateCollectButton(
 ) {
     BasicOutlinedButton(
         modifier = modifier,
-        title = stringResource(id = R.string.home_heart_rate_collect),
+        title = stringResource(id = R.string.home_heart_rate_collect_title),
         onClick = onClick,
     )
 }
+
 
 @Preview(name = "HeartRateInfo")
 @Composable

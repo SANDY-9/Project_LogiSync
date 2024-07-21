@@ -29,6 +29,7 @@ interface NetworkRepository {
         bpm: Int,
     ): Flow<Boolean>
 
-    suspend fun notifyArrest(id: String, token: String): Flow<String?>
+    suspend fun notifyArrest(id: String): Flow<String?>
+
 
 }

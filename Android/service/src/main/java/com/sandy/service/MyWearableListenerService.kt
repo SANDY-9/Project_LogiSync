@@ -20,13 +20,14 @@ class MyWearableListenerService : WearableListenerService() {
 
     override fun onMessageReceived(p0: MessageEvent) {
         val data = p0.data.toString(Charsets.UTF_8)
+        Log.e("확인", "onMessageReceived: $data", )
         when (p0.path) {
             MessagePath.GET_LOGIN_RESPONSE.path -> {
                 Log.e("확인", "onMessageReceived: $data")
             }
 
             MessagePath.GET_HEART_RATE.path -> {
-                _heartRate.value = data.toInt()
+                Log.e("확인", "onMessageReceived: 무사히 도착 $data", )
             }
 
             MessagePath.GET_ARREST.path -> {

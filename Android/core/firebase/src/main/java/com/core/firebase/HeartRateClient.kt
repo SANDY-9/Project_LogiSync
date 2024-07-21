@@ -7,7 +7,11 @@ import com.core.firebase.common.Constants.MAX_HEART_RATE
 import com.core.firebase.common.Constants.MIN_CRITICAL_POINT
 import com.core.firebase.common.Constants.MIN_HEART_RATE
 import com.core.firebase.common.Constants.USERS
+import com.core.firebase.model.HeartRateDTO
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.getValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -18,6 +22,33 @@ import javax.inject.Inject
 class HeartRateClient @Inject constructor(
     private val ref: DatabaseReference,
 ) {
+
+    fun getLastHeartRate(
+        id: String,
+        onSuccess: (HeartRateDTO?) -> Unit,
+        onError: (Throwable) -> Unit,
+    ) {
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val heartRate = snapshot.children.last().children.last().children.last()
+                    val heartRateDTO = HeartRateDTO(
+                        bpm = heartRate.value.toString().toInt(),
+                        date = heartRate.key.toString(),
+                    )
+                    onSuccess(heartRateDTO)
+                }
+                else {
+                    onSuccess(null)
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                onError(error.toException())
+            }
+        }
+        ref.child(HEART_RATE).child(id).orderByValue().limitToLast(1).addValueEventListener(listener)
+    }
+
     fun getHeartRateByDate(
         id: String,
         yearMonth: String,

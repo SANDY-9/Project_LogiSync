@@ -9,6 +9,7 @@ import com.google.firebase.database.ktx.getValue
 import com.sandy.logisync.data.network.model.ArrestDTO
 import com.sandy.logisync.data.network.model.CriticalPointDTO
 import com.sandy.logisync.data.network.utils.ChildName
+import com.sandy.logisync.data.network.utils.ChildName.TOKEN
 import com.sandy.logisync.data.network.utils.IndexChildCreateUtil
 import java.io.IOException
 import java.time.LocalDateTime
@@ -76,8 +77,8 @@ class MyFirebaseClient @Inject constructor(
         onSuccess: (Boolean) -> Unit,
         onError: (Throwable) -> Unit,
     ) {
-        val arrestDTO = ArrestDTO(arrestType, lat, lng, bpm)
-        val arrestChild = ref.child(ChildName.ARREST).child(IndexChildCreateUtil.getDateIndexChild()).child(id)
+        val arrestDTO = ArrestDTO(id, arrestType, lat, lng, bpm)
+        val arrestChild = ref.child(ChildName.ARREST)
         arrestChild.child(IndexChildCreateUtil.getTimeSecondsIndexChild(time)).setValue(arrestDTO)
         val dataListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -95,5 +96,20 @@ class MyFirebaseClient @Inject constructor(
             }
         }
        arrestChild.addListenerForSingleValueEvent(dataListener)
+    }
+
+    fun getToken(
+        id: String,
+        onSuccess: (String) -> Unit,
+        onError: (Throwable) -> Unit,
+    ) {
+        ref.child(TOKEN).child(id).get().addOnSuccessListener {
+            val token = it.getValue<String>()
+            token?.let { token ->
+                onSuccess(token)
+            } ?: onError(Exception())
+        }.addOnFailureListener {
+            onError(it)
+        }
     }
 }

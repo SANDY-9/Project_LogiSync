@@ -1,30 +1,30 @@
 package com.feature.home.components
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Card
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.core.desinsystem.common.BasicOutlinedButton
+import com.core.desinsystem.common.LogiCard
 import com.core.desinsystem.icons.Bluetooth
 import com.core.desinsystem.icons.BluetoothOff
+import com.core.desinsystem.theme.LogiBlue
 import com.feature.home.R
 
 @Composable
-fun PairingInfo(
+internal fun PairingInfo(
     deviceName: String,
     isPairedWatch: Boolean,
     modifier: Modifier = Modifier
@@ -35,30 +35,20 @@ fun PairingInfo(
             style = MaterialTheme.typography.headlineSmall,
         )
         Spacer(modifier = modifier.size(12.dp))
-        Card(
-            modifier = modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-        ) {
+        LogiCard{
             Text(
                 modifier = modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(vertical = 12.dp, horizontal = 16.dp),
+                    .align(Alignment.CenterHorizontally),
                 text = deviceName,
                 style = MaterialTheme.typography.titleLarge
             )
-
-            val connectModifier = modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 12.dp)
+            Spacer(modifier = modifier.size(8.dp))
+            val connectModifier = modifier.align(Alignment.CenterHorizontally)
             if (isPairedWatch) {
-                ConnectedWatch(
-                    modifier = connectModifier
-                )
+                ConnectedWatch(modifier = connectModifier)
             }
             else {
-                DisConnectedDevice(
-                    modifier = connectModifier
-                )
+                DisConnectedDevice(modifier = connectModifier,)
             }
         }
     }
@@ -72,7 +62,12 @@ private fun ConnectedWatch(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(imageVector = Icons.Bluetooth, contentDescription = null)
+        Icon(
+            modifier = modifier.size(18.dp),
+            imageVector = Icons.Bluetooth,
+            tint = LogiBlue,
+            contentDescription = null
+        )
         Text(
             text = stringResource(id = R.string.home_device_pairing_connect),
             style = MaterialTheme.typography.titleSmall
@@ -89,15 +84,33 @@ private fun DisConnectedDevice(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row {
-            Icon(imageVector = Icons.BluetoothOff, contentDescription = null)
+            Icon(
+                modifier = modifier.size(18.dp),
+                imageVector = Icons.BluetoothOff,
+                contentDescription = null,
+            )
+            Spacer(modifier = modifier.width(4.dp))
             Text(
                 text = stringResource(id = R.string.home_device_pairing_deconnect),
                 style = MaterialTheme.typography.titleSmall
             )
         }
-        BasicOutlinedButton(
-            title = stringResource(id = R.string.home_device_pairing_connect_title),
-            onClick = { /*TODO*/ }
-        )
+        Spacer(modifier = modifier.height(16.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                modifier = modifier.size(15.dp),
+                imageVector = Icons.Rounded.Info,
+                contentDescription = null,
+                tint = Color.Gray,
+            )
+            Spacer(modifier = modifier.width(4.dp))
+            Text(
+                text = stringResource(id = R.string.home_device_pairing_connect_title),
+                style = MaterialTheme.typography.titleSmall,
+                color = Color.Gray,
+            )
+        }
     }
 }

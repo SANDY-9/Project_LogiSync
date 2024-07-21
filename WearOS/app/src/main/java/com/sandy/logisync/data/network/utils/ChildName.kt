@@ -7,4 +7,5 @@ object ChildName {
     const val CRITICAL_POINT = "critical_point"
     const val CRITICAL_POINT_MAX_HEART_RATE = "max_heart_rate"
     const val CRITICAL_POINT_MIN_HEART_RATE = "min_heart_rate"
+    const val TOKEN = "token"
 }

@@ -1,4 +1,4 @@
-package com.core.domain.usecases.statistics
+package com.core.domain.usecases.network
 
 import com.core.domain.repository.GetHeartRateRepository
 import com.core.model.HeartRate

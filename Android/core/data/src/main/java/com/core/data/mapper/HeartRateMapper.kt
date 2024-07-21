@@ -1,5 +1,6 @@
 package com.core.data.mapper
 
+import com.core.firebase.model.HeartRateDTO
 import com.core.model.HeartRate
 
 internal fun Map<String, Int>.toHeartRateList(): List<HeartRate> {
@@ -9,4 +10,11 @@ internal fun Map<String, Int>.toHeartRateList(): List<HeartRate> {
             date = key
         )
     }.sortedByDescending { it.date }
+}
+
+internal fun HeartRateDTO.toHeartRate(): HeartRate {
+    return HeartRate(
+        bpm = bpm,
+        date = date,
+    )
 }
