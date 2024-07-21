@@ -10,6 +10,6 @@ data class Arrest(
     val arrestType: ArrestType,
 ) {
     enum class ArrestType {
-        HEART_RATE_HIGH, HEART_RATE_LOW, NORMAL, NONE
+        HEART_RATE_HIGH, HEART_RATE_LOW, NORMAL,
     }
 }

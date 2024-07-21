@@ -72,22 +72,15 @@ class MainViewModel @Inject constructor(
     }
 
     fun arrest() {
-        /*wearableDataStoreRepository.getAccount().onEach { account ->
-            account?.let { account ->
-                val token = "fPJzCSEXQNWzZYXGGx_dk1:APA91bFI6IwtGwE19SLN5SBbJrPOXyqoZkUlWdF3jhiaNWbi1GXrIoC7H-4H3qh4uGYOtZftLZj3yJbPY0uEii7itVsWnn7T7oBDr237_VxnYl6xfxbr-dzPGi5cTOd-C--naeBpY_kp"
-                locationRepository.getLastLocation().collectLatest { location ->
-                    networkRepository.updateArrest(
-                        id = account.id,
-                        arrestType = Arrest.ArrestType.NORMAL,
-                        location = location,
-                    ).collectLatest {
-                        networkRepository.notifyArrest(account.id, token).collect()
-                    }
+        viewModelScope.launch {
+            val account = wearableDataStoreRepository.getAccount()
+            account?.let {
+                requestNormalArrestUseCase(it.id).catch {
+                    Log.e("[REQUEST_ARREST]", "$it : ${it.message}")
+                }.collectLatest {
+                    Log.i("[REQUEST_ARREST]", "$it")
                 }
             }
-        }.catch {
-            Log.e("[NETWORK]", "networkRequest: FAILED")
-            Log.e("[NETWORK]", "networkRequest: $it")
-        }.launchIn(viewModelScope)*/
+        }
     }
 }
