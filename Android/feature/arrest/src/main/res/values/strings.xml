@@ -4,4 +4,5 @@
     <string name="arrest_filter_all">전체보기</string>
     <string name="arrest_filter_danger">위험 신고</string>
     <string name="arrest_filter_warning">심박수 경고</string>
+    <string name="arrest_empty">신고 내역이 없습니다.</string>
 </resources>

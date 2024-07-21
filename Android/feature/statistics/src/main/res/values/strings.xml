@@ -19,8 +19,4 @@
 
     <string name="heart_rate_empty">수집된 심박수 데이터가 없습니다.</string>
 
-    <!-- data picker -->
-    <string name="date_picker_title">통계를 확인하고 싶은 날짜를 선택해주세요.</string>
-    <string name="date_picker_complete">적용하기</string>
-
 </resources>

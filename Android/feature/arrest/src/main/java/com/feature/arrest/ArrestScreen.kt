@@ -30,10 +30,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.core.desinsystem.common.MyDateRangePickerBottomSheet
 import com.core.utils.DateUtil
 import com.feature.arrest.components.ArrestFilter
 import com.feature.arrest.components.ArrestItem
 import com.feature.arrest.components.ArrestStickyHeader
+import com.feature.arrest.components.EmptyArrestItem
 import com.feature.arrest.model.ArrestUiState
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -48,7 +50,8 @@ fun ArrestScreen(
     val lazyListState = rememberLazyListState()
 
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .background(color = Color.White)
     ) {
 
@@ -57,27 +60,44 @@ fun ArrestScreen(
             dangerFilterSelected = state.dangerFilterSelected,
             heartRateFilterSelected = state.heartRateFilterSelected,
             onSelectFilter = viewModel::filterArrestList,
+            onOpenDatePicker = viewModel::setDatePickerVisible,
             onNavigateUp = navController::navigateUp,
         )
 
-        LazyColumn(
-            state = lazyListState
-        ){
-            state.filteredList.forEach { (date, items) ->
-                stickyHeader {
-                    ArrestStickyHeader(
-                        date = DateUtil.convertDate(date),
-                        count = items.size
-                    )
-                }
-                items(
-                    items = items,
-                    key = { it.time }
-                ) {
-                    ArrestItem(arrest = it)
+        if(state.filteredList.isEmpty()) {
+            EmptyArrestItem()
+        }
+        else {
+            LazyColumn(
+                state = lazyListState
+            ) {
+                state.filteredList.forEach { (date, items) ->
+                    stickyHeader {
+                        ArrestStickyHeader(
+                            date = DateUtil.convertDate(date),
+                            count = items.size
+                        )
+                    }
+                    items(
+                        items = items,
+                        key = { it.time }
+                    ) {
+                        ArrestItem(arrest = it)
+                    }
                 }
             }
         }
+    }
+
+    if (state.datePickerVisible) {
+        MyDateRangePickerBottomSheet(
+            selectedStartDateStr = state.selectedStartDateStr,
+            selectedEndDateStr = state.selectedEndDateStr,
+            onSelectedStartDate = viewModel::selectedStartDate,
+            onSelectedEndDate = viewModel::selectedEndDate,
+            onComplete = viewModel::completeDatePicker,
+            onDismissRequest = viewModel::setDatePickerVisible,
+        )
     }
 }
 
@@ -88,6 +108,7 @@ private fun ArrestAppBar(
     heartRateFilterSelected: Boolean,
     onSelectFilter: (ArrestUiState.FilterType) -> Unit,
     onNavigateUp: () -> Unit,
+    onOpenDatePicker: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -107,7 +128,7 @@ private fun ArrestAppBar(
                 style = MaterialTheme.typography.headlineSmall,
             )
             Spacer(modifier = modifier.weight(1f))
-            IconButton(onClick = onNavigateUp) {
+            IconButton(onClick = onOpenDatePicker) {
                 Icon(imageVector = Icons.Rounded.DateRange, contentDescription = null)
             }
         }

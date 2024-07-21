@@ -12,8 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.core.desinsystem.common.minDate
 import com.core.utils.DateUtil
-import com.sandy.statistics.utils.minDate
 import java.time.LocalDate
 
 private val today = LocalDate.now()
