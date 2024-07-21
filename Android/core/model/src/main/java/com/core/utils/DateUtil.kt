@@ -19,16 +19,10 @@ object DateUtil {
     }
 
     private val dateTimeformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm")
-    fun convertTime(dateStr: String): String {
-        if (dateStr.isNotBlank()) {
-            val date = LocalDateTime.parse(dateStr, dateTimeformatter)
-            val suffix = if (date.hour >= 12) "오후" else "오전"
-            val time = dateTimeTimeFormatter.format(date)
-            return "${date.year}년 ${date.monthValue}월 ${date.dayOfMonth}일 $suffix $time"
-        }
-        else {
-            return ""
-        }
+    fun convertTime(date: LocalDateTime): String {
+        val suffix = if (date.hour >= 12) "오후" else "오전"
+        val time = dateTimeTimeFormatter.format(date)
+        return "${date.year}년 ${date.monthValue}월 ${date.dayOfMonth}일 $suffix $time"
     }
 
     // 2024-07-19-19:48

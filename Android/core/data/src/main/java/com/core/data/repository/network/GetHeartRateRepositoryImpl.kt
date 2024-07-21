@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import java.time.LocalDate
 import javax.inject.Inject
 
 class GetHeartRateRepositoryImpl @Inject constructor(
@@ -41,5 +42,13 @@ class GetHeartRateRepositoryImpl @Inject constructor(
             it.toHeartRateList()
         }.flowOn(Dispatchers.IO)
     }
-
+    override fun getHeartRateByPeriod(
+        id: String,
+        startDate: LocalDate,
+        endDate: LocalDate
+    ): Flow<List<HeartRate>> {
+        return heartRateClient.getHeartRateByPeriod(id, startDate, endDate).map {
+            it.toHeartRateList()
+        }.flowOn(Dispatchers.IO)
+    }
 }

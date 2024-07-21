@@ -8,6 +8,8 @@ import com.core.firebase.common.Constants.MIN_CRITICAL_POINT
 import com.core.firebase.common.Constants.MIN_HEART_RATE
 import com.core.firebase.common.Constants.USERS
 import com.core.firebase.model.HeartRateDTO
+import com.core.firebase.utils.child
+import com.core.firebase.utils.dateStr
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -17,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import javax.inject.Inject
 
 class HeartRateClient @Inject constructor(
@@ -58,6 +61,42 @@ class HeartRateClient @Inject constructor(
             .addOnSuccessListener { snapshot ->
                 val measuredHeartRate = snapshot.getValue<Map<String, Int>>()
                 trySend(measuredHeartRate ?: emptyMap())
+            }
+            .addOnFailureListener {
+                close(it)
+            }
+        awaitClose()
+    }
+
+    fun getHeartRateByPeriod(
+        id: String,
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ) = callbackFlow {
+        val startChild = startDate.child()
+        val endChild = endDate.child()
+        val start = startDate.dateStr().toInt()
+        val end = endDate.dateStr().toInt()
+        ref.child(HEART_RATE).child(id).orderByKey().startAt(startChild).endAt(endChild).get()
+            .addOnSuccessListener { snapshot ->
+                val measuredHeartRate = mutableListOf<HeartRateDTO>()
+                snapshot.children.forEach { yearChild ->
+                    val month = yearChild.key ?: return@forEach
+                    yearChild.children.forEach { dayChild ->
+                        val day = dayChild.key ?: return@forEach
+                        val date = (month + day).toInt()
+                        if(date in start..end) {
+                            dayChild.children.forEach {
+                                val heartRateDTO = HeartRateDTO(
+                                    date = it.key ?: return@forEach,
+                                    bpm = it.value.toString().toInt(),
+                                )
+                                measuredHeartRate.add(heartRateDTO)
+                            }
+                        }
+                    }
+                }
+                trySend(measuredHeartRate.toList())
             }
             .addOnFailureListener {
                 close(it)
