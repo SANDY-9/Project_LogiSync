@@ -8,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -80,6 +79,7 @@ fun StatisticsScreen(
                 EmptyRecordView(modifier = modifier.fillMaxWidth().fillParentMaxHeight(0.3f))
             }
         }
+
         else {
             stickyHeader {
                 HeartRateRecordAppBar()
@@ -96,7 +96,7 @@ fun StatisticsScreen(
             selectedEndDateStr = state.selectedEndDateStr,
             onSelectedStartDate = viewModel::selectedStartDate,
             onSelectedEndDate = viewModel::selectedEndDate,
-            onComplete = viewModel::requestHeartRates,
+            onComplete = viewModel::completeDatePicker,
             onDismissRequest = viewModel::setDatePickerVisible,
         )
     }
@@ -153,11 +153,10 @@ private fun HeartRateRecordAppBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = Color.White)
-            .height(56.dp),
+            .height(56.dp)
+            .background(color = Color.White),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-
         Text(
             modifier = modifier.padding(start = 16.dp),
             text = stringResource(id = R.string.heart_rate_record_title),
@@ -182,20 +181,21 @@ private fun StatisticsContent(
             .padding(horizontal = 16.dp)
     ) {
         HeartRateChart(
+            type = state.chartType,
             date = state.pickedDate,
             onPrevClick = onPrevClick,
             onNextClick = onNextClick,
             chartItem = state.chartItem,
             selectPosition = state.selectPosition,
             onItemClick = onItemClick,
+            periodTitle = state.selectDateTitle
         )
+        Spacer(modifier = modifier.height(30.dp))
         if(!state.isSelectItemEmpty) {
-            Spacer(modifier = modifier.height(30.dp))
             HeartRateDescriptionCard(
                 minBPM = state.minBPM,
                 maxBPM = state.maxBPM,
             )
-            Spacer(modifier = modifier.height(30.dp))
         }
 
     }

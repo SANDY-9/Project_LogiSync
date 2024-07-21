@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -27,9 +27,11 @@ import com.core.desinsystem.theme.LogiBlue
 import com.core.desinsystem.theme.LogiLightGray
 import com.core.desinsystem.theme.TransparentWhiteDeem
 import com.sandy.statistics.model.HeartRateChartItem
+import com.sandy.statistics.model.StatisticsUiState
 
 @Composable
 fun HeartRateGraph(
+    type: StatisticsUiState.ChartType,
     chartItem: List<HeartRateChartItem>,
     selectPosition: Int?,
     onItemClick: (Int) -> Unit,
@@ -47,7 +49,8 @@ fun HeartRateGraph(
     ) {
         itemsIndexed(items = chartItem) { position, item ->
             ChartItem(
-                time = item.hour,
+                type = type,
+                date = item.date,
                 minBpm = item.minBpm,
                 maxBpm = item.maxBpm,
                 clickItem = position == selectPosition,
@@ -56,17 +59,6 @@ fun HeartRateGraph(
         }
     }
 }
-
-private val selectTextStyle = TextStyle(
-    color = LogiBlue,
-    fontSize = 12.sp,
-    fontWeight = FontWeight.Bold
-)
-
-private val unSelectTextStyle = TextStyle(
-    fontSize = 12.sp,
-    fontWeight = FontWeight.Normal
-)
 
 private val selectModifier = Modifier
     .border(
@@ -81,7 +73,8 @@ private val selectModifier = Modifier
 
 @Composable
 private fun ChartItem(
-    time: Int,
+    type: StatisticsUiState.ChartType,
+    date: String,
     maxBpm: Int?,
     minBpm: Int?,
     clickItem: Boolean,
@@ -90,7 +83,7 @@ private fun ChartItem(
 ) {
     Column(
         modifier = modifier
-            .width(30.dp)
+            .width(40.dp)
             .noRippleClickable(onClick = onItemClick)
             .then(
                 if (clickItem) selectModifier else modifier
@@ -99,13 +92,26 @@ private fun ChartItem(
     ) {
         HeartRateBpmChartItem(maxBpm = maxBpm, minBpm = minBpm)
         Box(
-            modifier = modifier.size(20.dp)
+            modifier = modifier.height(20.dp)
         ) {
             Text(
                 modifier = modifier.align(Alignment.TopCenter),
-                text = "$time",
+                text = date,
                 style = if(clickItem) selectTextStyle else unSelectTextStyle,
             )
         }
     }
 }
+
+private val selectTextStyle = TextStyle(
+    color = LogiBlue,
+    fontSize = 12.sp,
+    letterSpacing = (-0.5).sp,
+    fontWeight = FontWeight.Bold
+)
+
+private val unSelectTextStyle = TextStyle(
+    fontSize = 12.sp,
+    letterSpacing = (-0.5).sp,
+    fontWeight = FontWeight.Normal
+)

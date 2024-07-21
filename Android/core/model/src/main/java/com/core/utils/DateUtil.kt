@@ -18,6 +18,12 @@ object DateUtil {
         return dateStr + dayOfWeekStr
     }
 
+    fun convertDate(date: LocalDate): String {
+        val set = LocalDate.of(date.year, date.month, date.dayOfMonth)
+        val dateStr = set.format(dateFormatter)
+        return dateStr
+    }
+
     private val dateTimeformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm")
     fun convertTime(date: LocalDateTime): String {
         val suffix = if (date.hour >= 12) "오후" else "오전"

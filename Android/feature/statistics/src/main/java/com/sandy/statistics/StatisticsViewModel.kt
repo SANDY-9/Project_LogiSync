@@ -4,14 +4,17 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usecases.network.GetDailyHeartRateListUseCase
+import com.core.domain.usecases.network.GetPeriodHearRateListUseCase
 import com.core.domain.usecases.prefs.GetAccountUseCase
 import com.core.utils.DateUtil
 import com.sandy.statistics.model.StatisticsUiState
 import com.sandy.statistics.utils.lastNotNullIndex
+import com.sandy.statistics.utils.localDate
 import com.sandy.statistics.utils.maxBPM
 import com.sandy.statistics.utils.minBPM
 import com.sandy.statistics.utils.selectRecordItem
-import com.sandy.statistics.utils.toChartItem
+import com.sandy.statistics.utils.toDailyChartItem
+import com.sandy.statistics.utils.toPeriodChartItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +32,7 @@ import javax.inject.Inject
 class StatisticsViewModel @Inject constructor(
     getAccountUseCase: GetAccountUseCase,
     private val getDailyHeartRateListUseCase: GetDailyHeartRateListUseCase,
+    private val getPeriodHearRateListUseCase: GetPeriodHearRateListUseCase,
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<StatisticsUiState> =
@@ -53,7 +57,7 @@ class StatisticsViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun requestDailyHeartRates(
+    private fun requestDailyHeartRates(
         year: Int,
         month: Int,
         day: Int,
@@ -68,9 +72,8 @@ class StatisticsViewModel @Inject constructor(
             ).catch {
                 Log.e("[HEART_RATE_RECORD_DAILY]", "requestDailyHeartRates: $it")
             }.collectLatest { data ->
-                Log.e("확인", "requestDailyHeartRates: $data", )
                 _stateFlow.update {
-                    val chartItem = data.toChartItem()
+                    val chartItem = data.toDailyChartItem()
                     val selectPosition = chartItem.lastNotNullIndex()
                     val selectRecordItem = if(selectPosition == null && data.isNotEmpty()) data else data.selectRecordItem(selectPosition)
                     it.copy(
@@ -88,16 +91,23 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
-
     fun selectItem(position: Int) {
-        val selectRecordItem = state.recordItem.selectRecordItem(position)
-        _stateFlow.value = state.copy(
-            selectPosition = position,
-            minBPM = state.chartItem[position].minBpm,
-            maxBPM = state.chartItem[position].maxBpm,
-            selectRecordItem = selectRecordItem,
-            isSelectItemEmpty = selectRecordItem.isEmpty(),
-        )
+        state.run {
+            val selectRecordItem = if(chartType == StatisticsUiState.ChartType.DAILY) {
+                recordItem.selectRecordItem(position)
+            }
+            else {
+                val selectDate = chartItem[position].date
+                recordItem.selectRecordItem(selectDate)
+            }
+            _stateFlow.value = copy(
+                selectPosition = position,
+                minBPM = state.chartItem[position].minBpm,
+                maxBPM = state.chartItem[position].maxBpm,
+                selectRecordItem = selectRecordItem,
+                isSelectItemEmpty = selectRecordItem.isEmpty(),
+            )
+        }
     }
 
     fun getPrevDateChart() {
@@ -129,11 +139,9 @@ class StatisticsViewModel @Inject constructor(
     }
 
     fun setDatePickerVisible() {
-        _stateFlow.update {
-            it.copy(
-                datePickerVisible = !it.datePickerVisible
-            )
-        }
+        _stateFlow.value = state.copy(
+            datePickerVisible = !state.datePickerVisible
+        )
     }
 
     fun selectedStartDate(date: Long?) {
@@ -156,11 +164,47 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
-    fun requestHeartRates() {
-        _stateFlow.update {
-            it.copy(
-                chartType = StatisticsUiState.ChartType.RANGE,
+    fun completeDatePicker() {
+        val startDate = state.selectedStartDate
+        val endDate = state.selectedEndDate
+        if (startDate == endDate || startDate == null || endDate == null) {
+            val localDate = startDate.localDate() ?: endDate.localDate()
+            localDate?.let { date ->
+                requestDailyHeartRates(date.year, date.monthValue, date.dayOfMonth)
+            }
+        } else {
+            requestHeartRateByPeriod(
+                startDate = startDate.localDate(),
+                endDate = endDate.localDate()
             )
         }
     }
+
+    private fun requestHeartRateByPeriod(startDate: LocalDate?, endDate: LocalDate?) {
+        if(startDate == null || endDate == null) return
+        viewModelScope.launch {
+            getPeriodHearRateListUseCase(state.id, startDate, endDate).catch {
+                Log.e("[HEART_RATE_RECORD_PERIOD]", "requestHeartRateByPeriod: $it")
+            }.collectLatest { data ->
+                _stateFlow.update {
+                    val chartItem = data.toPeriodChartItem(startDate, endDate)
+                    val selectPosition = chartItem.lastNotNullIndex()
+                    val selectDate = if(selectPosition != null) chartItem[selectPosition].date else null
+                    val selectRecordItem = data.selectRecordItem(selectDate)
+                    it.copy(
+                        chartType = StatisticsUiState.ChartType.PERIOD,
+                        minBPM = selectPosition.minBPM(chartItem),
+                        maxBPM = selectPosition.maxBPM(chartItem),
+                        recordItem = data,
+                        selectRecordItem = selectRecordItem,
+                        chartItem = chartItem,
+                        selectPosition = selectPosition,
+                        isSelectItemEmpty = selectRecordItem.isEmpty(),
+                        selectDateTitle = "${DateUtil.convertDate(startDate)} - ${DateUtil.convertDate(endDate)}"
+                    )
+                }
+            }
+        }
+    }
+
 }

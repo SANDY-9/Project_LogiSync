@@ -24,9 +24,10 @@ data class StatisticsUiState(
     val selectedEndDate: Long? = null,
     val selectedStartDateStr: String = "시작 날짜",
     val selectedEndDateStr: String = "마지막 날짜",
+    val selectDateTitle: String = "",
 
     ) {
     enum class ChartType {
-        DAILY, RANGE,
+        DAILY, PERIOD,
     }
 }

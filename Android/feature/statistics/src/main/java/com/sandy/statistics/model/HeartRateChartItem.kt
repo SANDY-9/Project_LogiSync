@@ -1,7 +1,7 @@
 package com.sandy.statistics.model
 
 data class HeartRateChartItem(
-    val hour: Int,
+    val date: String,
     val minBpm: Int?,
     val maxBpm: Int?,
 )

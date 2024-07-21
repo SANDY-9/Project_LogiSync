@@ -1,22 +1,23 @@
 package com.sandy.statistics.utils
 
-import android.util.Log
 import com.core.model.HeartRate
 import com.sandy.statistics.model.HeartRateChartItem
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
-internal fun List<HeartRate>.toChartItem(
+internal fun List<HeartRate>.toDailyChartItem(
     minHour: Int = 8,
     maxHour: Int = 19
 ): List<HeartRateChartItem> {
-    val groupedByHour = groupBy { it.date.substring(11, 13).toInt() }
-    val heartRateChartItems = (minHour..maxHour).map { hour ->
+    val groupedByHour = groupBy { it.date.hour }
+    return (minHour..maxHour).map { hour ->
         groupedByHour[hour]?.run {
             val minBpm = minOf { it.bpm }
             val maxBpm = maxOf { it.bpm }
-            HeartRateChartItem(hour, minBpm, maxBpm)
-        } ?: HeartRateChartItem(hour, null, null)
-    }.sortedBy { it.hour }
-    return heartRateChartItems
+            HeartRateChartItem(hour.toString(), minBpm, maxBpm)
+        } ?: HeartRateChartItem(hour.toString(), null, null)
+    }.sortedBy { it.date.toInt() }
 }
 
 internal fun List<HeartRateChartItem>.lastNotNullIndex(): Int? {
@@ -39,7 +40,41 @@ internal fun Int?.maxBPM(chartItem: List<HeartRateChartItem>): Int? {
 internal fun List<HeartRate>.selectRecordItem(position: Int?) : List<HeartRate> {
     return position?.let {
         filter {
-            it.hour() == position + 8
+            it.date.hour == position + 8
         }
     } ?: emptyList()
+}
+
+internal fun List<HeartRate>.selectRecordItem(selectDate: String?) : List<HeartRate> {
+    return selectDate?.let {
+        val date = it.split(".").map { it.toInt() }
+        filter { data ->
+            data.date.monthValue == date.first() && data.date.dayOfMonth == date.last()
+        }
+    } ?: emptyList()
+}
+
+internal fun Long?.localDate() : LocalDate? {
+    return this?.let {
+        Instant.ofEpochMilli(it)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate()
+    }
+}
+
+internal fun List<HeartRate>.toPeriodChartItem(startDate: LocalDate, endDate: LocalDate): List<HeartRateChartItem> {
+    val allDates = generateSequence(startDate) { it.plusDays(1) }
+        .takeWhile { !it.isAfter(endDate) }
+        .toList()
+    val groupedByDate = groupBy { it.date.toLocalDate() }
+    return allDates.map { date ->
+        val heartRates = groupedByDate[date]
+        val minBpm = heartRates?.minOfOrNull { it.bpm }
+        val maxBpm = heartRates?.maxOfOrNull { it.bpm }
+        HeartRateChartItem(
+            date = "${date.monthValue}.${date.dayOfMonth}",
+            minBpm = minBpm,
+            maxBpm = maxBpm,
+        )
+    }.sortedBy { it.date }
 }

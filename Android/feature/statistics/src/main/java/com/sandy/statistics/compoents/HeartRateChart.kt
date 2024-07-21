@@ -2,17 +2,11 @@ package com.sandy.statistics.compoents
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,31 +22,40 @@ import androidx.compose.ui.unit.dp
 import com.core.desinsystem.common.DottedLine
 import com.core.desinsystem.theme.DarkGreen
 import com.core.desinsystem.theme.LightGreen
-import com.core.utils.DateUtil
 import com.sandy.statistics.model.HeartRateChartItem
-import com.sandy.statistics.utils.minDate
+import com.sandy.statistics.model.StatisticsUiState
 import java.time.LocalDate
 
 @Composable
 fun HeartRateChart(
+    type: StatisticsUiState.ChartType,
     date: LocalDate,
     onPrevClick: () -> Unit,
     onNextClick: () -> Unit,
     chartItem: List<HeartRateChartItem>,
     selectPosition: Int?,
     onItemClick: (Int) -> Unit,
+    periodTitle: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ChartTitle(
-            date = date,
-            onPrevClick = onPrevClick,
-            onNextClick = onNextClick,
-        )
+        if(type == StatisticsUiState.ChartType.DAILY) {
+            DailyChartTitle(
+                date = date,
+                onPrevClick = onPrevClick,
+                onNextClick = onNextClick,
+            )
+        }
+        else {
+            PeriodChartTitle(
+                periodTitle = periodTitle,
+            )
+        }
         Chart(
+            type = type,
             item = chartItem,
             selectPosition = selectPosition,
             onItemClick = onItemClick,
@@ -60,45 +63,10 @@ fun HeartRateChart(
     }
 }
 
-private val today = LocalDate.now()
-@Composable
-private fun ChartTitle(
-    date: LocalDate,
-    onPrevClick: () -> Unit,
-    onNextClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(
-            onClick = onPrevClick,
-            enabled = !date.isEqual(minDate)
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
-                contentDescription = null
-            )
-        }
-        Text(
-            text = DateUtil.convertFullDate(date),
-        )
-        IconButton(
-            onClick = onNextClick,
-            enabled = !date.isEqual(today)
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                contentDescription = null
-            )
-        }
-    }
-}
-
 private val stroke = Stroke(width = 2f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f))
 @Composable
 private fun Chart(
+    type: StatisticsUiState.ChartType,
     item: List<HeartRateChartItem>,
     selectPosition: Int?,
     onItemClick: (Int) -> Unit,
@@ -174,6 +142,7 @@ private fun Chart(
         )
 
         HeartRateGraph(
+            type = type,
             chartItem = item,
             selectPosition = selectPosition,
             onItemClick = onItemClick,
