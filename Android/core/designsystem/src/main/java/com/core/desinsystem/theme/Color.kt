@@ -29,3 +29,4 @@ val LightRed = Color(0xffdcadad)
 
 val DarkGreen = Color(0xff117c2f)
 val LightGreen = Color(0xff6fa67e)
+val PastelGreen = Color(0xffe0efe2)

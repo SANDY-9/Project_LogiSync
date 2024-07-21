@@ -14,11 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,10 +25,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.core.desinsystem.common.DottedLine
+import com.core.desinsystem.common.HeartRateBpmChartItem
+import com.core.desinsystem.theme.LightGreen
+import com.core.desinsystem.theme.PastelGreen
 import com.core.utils.DateUtil
 import com.sandy.statistics.model.HeartRateChartItem
 import com.sandy.statistics.utils.minDate
@@ -94,11 +94,6 @@ private fun ChartTitle(
     }
 }
 
-private val stroke = Stroke(
-    width = 2f,
-    pathEffect = PathEffect.dashPathEffect(intervals = floatArrayOf(10f, 10f), phase = 10f)
-)
-
 @Composable
 private fun Chart(
     item: List<HeartRateChartItem>,
@@ -109,7 +104,7 @@ private fun Chart(
     ) {
 
         // 180 bpm
-        HorizontalDivider(
+        DottedLine(
             modifier = modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 20.dp, end = 25.dp),
@@ -122,11 +117,12 @@ private fun Chart(
                 .padding(top = 12.dp),
             text = "180",
             style = MaterialTheme.typography.labelSmall,
+            color = Color.Gray,
             textAlign = TextAlign.Center,
         )
 
         // 30 bpm
-        HorizontalDivider(
+        DottedLine(
             modifier = modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 50.dp, end = 25.dp)
@@ -139,29 +135,34 @@ private fun Chart(
                 .padding(bottom = 43.dp),
             text = "30",
             style = MaterialTheme.typography.labelSmall,
+            color = Color.Gray,
             textAlign = TextAlign.Center,
         )
 
         // 정상범위
-        Spacer(
+        Column (
             modifier = modifier
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)
                 .height(200.dp)
                 .padding(
-                    top = 120.dp,
+                    top = 100.dp,
                     bottom = 60.dp,
                     end = 25.dp
                 )
-                .background(Color.Yellow)
-
-        )
+                .background(color = PastelGreen)
+        ){
+            DottedLine(color = LightGreen)
+            Spacer(modifier = modifier.weight(1f))
+            DottedLine(color = LightGreen)
+        }
 
         Text(
             modifier = modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 112.dp),
+                .padding(top = 103.dp),
             text = "정상\n범위",
+            color = LightGreen,
             style = MaterialTheme.typography.labelSmall,
         )
 
@@ -176,8 +177,8 @@ private fun Chart(
             items(items = item) { item ->
                 ChartItem(
                     time = item.hour,
-                    minBpm = item.minBpm,
-                    maxBpm = item.maxBpm,
+                    minBpm = item.minBpm ?: (50..90).random(),
+                    maxBpm = item.maxBpm ?: (80..120).random(),
                 )
             }
         }
@@ -187,30 +188,17 @@ private fun Chart(
 @Composable
 private fun ChartItem(
     time: Int,
-    maxBpm: Int?,
-    minBpm: Int?,
+    maxBpm: Int,
+    minBpm: Int,
     modifier: Modifier = Modifier,
 ) {
-    val graphPadding = PaddingValues(
-        top = (maxBpm?.let { 200 - it } ?: 200).dp,
-        bottom = (minBpm ?: 200).dp
-    )
     Column(
         modifier = modifier
             .width(30.dp)
             .clickable { },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(
-            modifier = modifier
-                .height(200.dp)
-                .width(12.dp)
-                .padding(graphPadding)
-                .background(
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(100.dp)
-                )
-        )
+        HeartRateBpmChartItem(maxBpm = maxBpm, minBpm = minBpm)
         Box(
             modifier = modifier.height(20.dp),
         ) {
