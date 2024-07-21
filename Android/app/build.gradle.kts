@@ -70,6 +70,7 @@ dependencies {
     implementation(project(":feature:home"))
     implementation(project(":feature:statistics"))
     implementation(project(":feature:admin"))
+    implementation(project(":feature:arrest"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)
