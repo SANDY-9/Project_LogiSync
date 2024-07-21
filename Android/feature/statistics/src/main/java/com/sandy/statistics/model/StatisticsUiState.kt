@@ -10,10 +10,13 @@ data class StatisticsUiState(
     // chart
     val chartType: ChartType = ChartType.DAILY,
     val pickedDate: LocalDate = LocalDate.now(),
-    val minBPM: Int = 0,
-    val maxBPM: Int = 0,
+    val minBPM: Int? = null,
+    val maxBPM: Int? = null,
     val recordItem: List<HeartRate> = emptyList(),
+    val selectRecordItem: List<HeartRate> = emptyList(),
     val chartItem: List<HeartRateChartItem> = emptyList(),
+    val isSelectItemEmpty: Boolean = true,
+    val selectPosition: Int? = null,
 
     // DatePicker
     val datePickerVisible: Boolean = false,
@@ -21,9 +24,10 @@ data class StatisticsUiState(
     val selectedEndDate: Long? = null,
     val selectedStartDateStr: String = "시작 날짜",
     val selectedEndDateStr: String = "마지막 날짜",
+    val selectDateTitle: String = "",
 
     ) {
     enum class ChartType {
-        DAILY, RANGE,
+        DAILY, PERIOD,
     }
 }

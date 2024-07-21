@@ -5,13 +5,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material3.Card
+import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,39 +19,36 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.core.desinsystem.common.HeartRateRangeLabel
+import com.core.desinsystem.common.LinearHeartRateRangeGraph
+import com.core.desinsystem.common.LogiCard
 import com.sandy.statistics.R
 
 @Composable
 fun HeartRateDescriptionCard(
-    minBPM: Int = 0,
-    maxBPM: Int = 0,
+    minBPM: Int?,
+    maxBPM: Int?,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-    ) {
+    if(minBPM == null || maxBPM == null) return
+    LogiCard{
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            HeartRateRange(
-                minBPM = minBPM,
-                maxBPM = maxBPM,
-            )
+            HeartRateRangeLabel(minBPM, maxBPM)
+            Spacer(modifier = modifier.height(12.dp))
+            LinearHeartRateRangeGraph(minBPM, maxBPM)
             Spacer(modifier = modifier.height(8.dp))
-            HeartRateDescription()
             HeartRateAvg()
         }
     }
+    Spacer(modifier = modifier.height(30.dp))
 }
 
+
 @Composable
-private fun HeartRateRange(
-    minBPM: Int,
-    maxBPM: Int,
+private fun HeartRateAvg(
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -62,54 +56,15 @@ private fun HeartRateRange(
     ) {
         Icon(
             modifier = modifier.size(15.dp),
-            imageVector = Icons.Rounded.Favorite,
-            tint = Color.Red,
-            contentDescription = null
-        )
-        Spacer(modifier = modifier.width(8.dp))
-        Text(
-            text = "$minBPM",
-            style = MaterialTheme.typography.headlineSmall,
-        )
-        Text(
-            modifier = modifier.padding(horizontal = 8.dp),
-            text = stringResource(id = R.string.heart_rate_avg_unit),
-        )
-        Text(
-            text = "$maxBPM",
-            style = MaterialTheme.typography.headlineSmall,
-        )
-    }
-}
-
-@Composable
-private fun HeartRateDescription(
-    modifier: Modifier = Modifier,
-) {
-    Row {
-        Text(
-            text = stringResource(id = R.string.heart_rate_desc_title),
+            imageVector = Icons.Rounded.CheckCircle,
+            tint = Color.Gray,
+            contentDescription = null,
         )
         Spacer(modifier = modifier.width(4.dp))
-        Text(text = stringResource(id = R.string.heart_rate_desc_lower))
-    }
-}
-
-@Composable
-private fun HeartRateAvg(
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        verticalAlignment = Alignment.Bottom,
-    ) {
         Text(
             text = stringResource(id = R.string.heart_rate_desc_avg),
-            style = MaterialTheme.typography.labelLarge,
-        )
-        Spacer(modifier = modifier.width(4.dp))
-        Text(
-            text = stringResource(id = R.string.heart_rate_unit),
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.labelMedium,
+            color = Color.Gray,
         )
     }
 }
@@ -117,5 +72,5 @@ private fun HeartRateAvg(
 @Preview(name = "HeartRateDescription")
 @Composable
 private fun PreviewHeartRateDescription() {
-    HeartRateDescriptionCard()
+    HeartRateDescriptionCard(100, 50)
 }
