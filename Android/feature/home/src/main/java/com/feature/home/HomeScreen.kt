@@ -30,6 +30,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.BoxLayout
+import com.core.navigation.Args
+import com.core.navigation.Route
 import com.feature.home.components.HeartRateInfo
 import com.feature.home.components.PairingInfo
 import com.feature.home.components.Profile
@@ -109,6 +111,12 @@ fun HomeScreen(
             BoxLayout {
                 ReportInfo(
                     emptyReport = state.emptyReport,
+                    onAllReport = {
+                        navController.run {
+                            previousBackStackEntry?.savedStateHandle?.set(Args.ID, state.account?.id)
+                            navigate(Route.Arrest.route)
+                        }
+                    }
                 )
             }
         }

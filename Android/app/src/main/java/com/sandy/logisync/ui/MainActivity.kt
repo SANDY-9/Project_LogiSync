@@ -43,10 +43,10 @@ class MainActivity : ComponentActivity() {
                         //startDestination = Route.Signup.route
                         //startDestination = Route.Login.route
                         //startDestination = Route.Onboarding.route
-                        //startDestination = Route.Home.route
+                        startDestination = Route.Home.route
                         //startDestination = Route.Statistics.route
                         //startDestination = Route.Admin.route
-                        startDestination = Route.Arrest.route
+                        //startDestination = Route.Arrest.route
                     )
                 }
             }
