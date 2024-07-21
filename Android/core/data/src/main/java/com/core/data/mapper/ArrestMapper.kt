@@ -15,7 +15,7 @@ internal fun Map<String, ArrestDTO>.toArrestList(): List<Arrest> {
             lng = dto.lng,
             bpm = dto.bpm,
         )
-    }
+    }.sortedByDescending { it.time }
 }
 
 private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
