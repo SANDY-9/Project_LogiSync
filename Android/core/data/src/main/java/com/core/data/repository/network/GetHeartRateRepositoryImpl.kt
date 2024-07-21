@@ -38,5 +38,5 @@ class GetHeartRateRepositoryImpl @Inject constructor(
             },
         )
         awaitClose()
-    }
+    }.flowOn(Dispatchers.IO)
 }
