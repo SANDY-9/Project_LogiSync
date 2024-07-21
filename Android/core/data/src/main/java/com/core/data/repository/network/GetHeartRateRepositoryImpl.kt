@@ -16,17 +16,7 @@ import javax.inject.Inject
 class GetHeartRateRepositoryImpl @Inject constructor(
     private val heartRateClient: HeartRateClient,
 ) : GetHeartRateRepository {
-    override fun getHeartRateByDate(
-        id: String,
-        year: Int,
-        month: Int,
-        day: Int,
-    ): Flow<List<HeartRate>> {
-        val yearMonth = "$year${String.format("%02d", month)}"
-        return heartRateClient.getHeartRateByDate(id, yearMonth, day).map {
-            it.toHeartRateList()
-        }.flowOn(Dispatchers.IO)
-    }
+
     override fun getLastHeartRate(id: String): Flow<HeartRate?> = callbackFlow {
         heartRateClient.getLastHeartRate(
             id = id,
@@ -39,4 +29,17 @@ class GetHeartRateRepositoryImpl @Inject constructor(
         )
         awaitClose()
     }.flowOn(Dispatchers.IO)
+
+    override fun getHeartRateByDate(
+        id: String,
+        year: Int,
+        month: Int,
+        day: Int,
+    ): Flow<List<HeartRate>> {
+        val yearMonth = "$year${String.format("%02d", month)}"
+        return heartRateClient.getHeartRateByDate(id, yearMonth, day).map {
+            it.toHeartRateList()
+        }.flowOn(Dispatchers.IO)
+    }
+
 }

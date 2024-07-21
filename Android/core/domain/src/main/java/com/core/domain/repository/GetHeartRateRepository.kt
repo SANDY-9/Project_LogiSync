@@ -5,6 +5,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface GetHeartRateRepository {
 
+    fun getLastHeartRate(
+        id: String,
+    ): Flow<HeartRate?>
+
     fun getHeartRateByDate(
         id: String,
         year: Int,
@@ -12,7 +16,4 @@ interface GetHeartRateRepository {
         day: Int,
     ): Flow<List<HeartRate>>
 
-    fun getLastHeartRate(
-        id: String,
-    ): Flow<HeartRate?>
 }
