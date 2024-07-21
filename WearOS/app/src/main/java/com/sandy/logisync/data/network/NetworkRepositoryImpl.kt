@@ -5,9 +5,11 @@ import com.sandy.logisync.data.mapper.toCriticalPoint
 import com.sandy.logisync.model.Arrest.ArrestType
 import com.sandy.logisync.model.CriticalPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -52,15 +54,31 @@ class NetworkRepositoryImpl @Inject constructor(
                 }
             )
             awaitClose()
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     override suspend fun updateNormalArrest(
         id: String,
         arrestType: ArrestType,
         location: Location
-    ): Flow<Boolean> {
-        TODO("Not yet implemented")
+    ): Flow<Boolean> = withContext(Dispatchers.IO) {
+        callbackFlow {
+            val time = LocalDateTime.now()
+            firebaseClient.updateArrest(
+                id = id,
+                arrestType = arrestType.name,
+                lat = location.latitude,
+                lng = location.longitude,
+                time = time,
+                onSuccess = { isSuccessful ->
+                    trySend(isSuccessful)
+                },
+                onError = { error ->
+                    close(error)
+                }
+            )
+            awaitClose()
+        }.flowOn(Dispatchers.IO)
     }
 
     override suspend fun updateHeartBeatArrest(
@@ -89,13 +107,29 @@ class NetworkRepositoryImpl @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
-    override suspend fun notifyArrest(id: String, token: String): Flow<String?> {
+    private fun getToken(id: String): Flow<String> = callbackFlow {
+        firebaseClient.getToken(
+            id = id,
+            onSuccess = { token ->
+                trySend(token)
+            },
+            onError = { error ->
+                close(error)
+            }
+        )
+        awaitClose()
+    }.flowOn(Dispatchers.IO)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override suspend fun notifyArrest(id: String): Flow<String?> {
         val time = LocalDateTime.now()
         return withContext(Dispatchers.IO)  {
-            messagingClient.sendArrestMessage(token, id, time).map {
-                it.body?.string()
-            }
-        }.flowOn(Dispatchers.IO)
+            getToken(id).flatMapLatest { token ->
+                messagingClient.sendArrestMessage(token, id, time).map {
+                    it.body?.string()
+                }
+            }.flowOn(Dispatchers.IO)
+        }
     }
 
 }

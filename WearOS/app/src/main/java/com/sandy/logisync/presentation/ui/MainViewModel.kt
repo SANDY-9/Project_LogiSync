@@ -5,8 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sandy.logisync.data.datastore.WearableDataStoreRepository
-import com.sandy.logisync.data.network.NetworkRepository
-import com.sandy.logisync.domain.MeasureHeatRateUseCase
+import com.sandy.logisync.domain.RequestNormalArrestUseCase
 import com.sandy.logisync.model.MeasuredAvailability
 import com.sandy.logisync.model.MeasuredHeartRate
 import com.sandy.logisync.workmanager.HeartRateMeasureWorker
@@ -14,6 +13,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
@@ -22,9 +23,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val networkRepository: NetworkRepository,
     private val wearableDataStoreRepository: WearableDataStoreRepository,
-    private val measureHeatRateUseCase: MeasureHeatRateUseCase,
+    private val requestNormalArrestUseCase: RequestNormalArrestUseCase,
     application: Application,
 ) : AndroidViewModel(application) {
 
@@ -69,19 +69,6 @@ class MainViewModel @Inject constructor(
     fun collectHeartRate() {
         val context = getApplication<Application>().applicationContext
         HeartRateMeasureWorker.enqueueWorker(context)
-        /*flow {
-            val account = wearableDataStoreRepository.getAccount()
-            account?.let {
-                Log.e("확인", "collectHeartRate: 이거는요?", )
-                val token = "fPJzCSEXQNWzZYXGGx_dk1:APA91bFI6IwtGwE19SLN5SBbJrPOXyqoZkUlWdF3jhiaNWbi1GXrIoC7H-4H3qh4uGYOtZftLZj3yJbPY0uEii7itVsWnn7T7oBDr237_VxnYl6xfxbr-dzPGi5cTOd-C--naeBpY_kp"
-                measureHeatRateUseCase(it.id, token).catch { e ->
-                    Log.e("확인", "collectHeartRate: $e", )
-                    emit(e)
-                }.collectLatest {
-                    Log.e("확인", "collectHeartRate: 흠?", )
-                }
-            }
-        }.launchIn(viewModelScope)*/
     }
 
     fun arrest() {
