@@ -43,6 +43,7 @@ fun HeartRateDescriptionCard(
             HeartRateAvg()
         }
     }
+    Spacer(modifier = modifier.height(30.dp))
 }
 
 
