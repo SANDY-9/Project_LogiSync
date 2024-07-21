@@ -55,6 +55,42 @@ fun HeartRateLabel(
 }
 
 @Composable
+fun HeartRateRangeLabel(
+    minBpm: Int,
+    maxBpm: Int,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            modifier = modifier.size(15.dp),
+            imageVector = Icons.Rounded.Favorite,
+            tint = HeartRed,
+            contentDescription = null
+        )
+        Spacer(modifier = modifier.width(8.dp))
+        Text(
+            text = "$minBpm - $maxBpm",
+            style = TextStyle(
+                fontSize = 24.sp,
+                fontWeight = FontWeight(500)
+            )
+        )
+        Spacer(modifier = modifier.width(4.dp))
+        Text(
+            modifier = modifier.padding(top = 6.dp),
+            text = "bpm",
+            style = TextStyle(
+                fontSize = 10.sp,
+                fontWeight = FontWeight(500)
+            )
+        )
+    }
+}
+
+@Composable
 @Preview
 private fun Preview() {
     HeartRateLabel("40")

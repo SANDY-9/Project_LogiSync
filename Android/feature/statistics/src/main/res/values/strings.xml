@@ -3,10 +3,7 @@
 
     <!-- 심박수 차트 -->
     <string name="heart_rate_statistics_title">심박수 통계</string>
-    <string name="heart_rate_desc_title">안정시 심박수 평균보다 </string>
-    <string name="heart_rate_desc_upper">높습니다</string>
-    <string name="heart_rate_desc_lower">낮습니다</string>
-    <string name="heart_rate_desc_avg">안정시 심박수 평균 : 60 - 76</string>
+    <string name="heart_rate_desc_avg">안정시 심박수 평균 : 60 - 100 bpm</string>
     <string name="heart_rate_avg_unit">-</string>
 
     <!-- 심박수 기록 -->
