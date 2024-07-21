@@ -63,7 +63,7 @@ fun ArrestScreen(
         LazyColumn(
             state = lazyListState
         ){
-            state.arrestList.forEach { (date, items) ->
+            state.filteredList.forEach { (date, items) ->
                 stickyHeader {
                     ArrestStickyHeader(
                         date = DateUtil.convertDate(date),

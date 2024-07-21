@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usecases.network.GetMyArrestListUseCase
-import com.core.model.Arrest
 import com.feature.arrest.model.ArrestUiState
+import com.feature.arrest.utils.filter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
-import javax.security.auth.login.LoginException
 
 @HiltViewModel
 class ArrestViewModel @Inject constructor(
@@ -54,6 +53,7 @@ class ArrestViewModel @Inject constructor(
             allFilterSelected = true,
             dangerFilterSelected = false,
             heartRateFilterSelected = false,
+            filteredList = state.arrestList,
         )
     }
 
@@ -63,6 +63,7 @@ class ArrestViewModel @Inject constructor(
             allFilterSelected = false,
             dangerFilterSelected = true,
             heartRateFilterSelected = false,
+            filteredList = state.arrestList.filter(ArrestUiState.FilterType.FILTER_DANGER)
         )
     }
 
@@ -72,6 +73,7 @@ class ArrestViewModel @Inject constructor(
             allFilterSelected = false,
             dangerFilterSelected = false,
             heartRateFilterSelected = true,
+            filteredList = state.arrestList.filter(ArrestUiState.FilterType.FILTER_HEART_RATE)
         )
     }
 
