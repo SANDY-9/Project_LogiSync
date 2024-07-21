@@ -8,6 +8,8 @@ import com.sandy.logisync.data.location.LocationRepository
 import com.sandy.logisync.data.location.LocationRepositoryImpl
 import com.sandy.logisync.data.network.NetworkRepository
 import com.sandy.logisync.data.network.NetworkRepositoryImpl
+import com.sandy.logisync.data.wearable.WearableTranscriptionRepository
+import com.sandy.logisync.data.wearable.WearableTranscriptionRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -36,4 +38,9 @@ abstract class DataModule {
     abstract fun bindsLocationRepository(
         impl: LocationRepositoryImpl
     ): LocationRepository
+
+    @Binds
+    abstract fun bindsWearableRepository(
+        impl: WearableTranscriptionRepositoryImpl
+    ): WearableTranscriptionRepository
 }

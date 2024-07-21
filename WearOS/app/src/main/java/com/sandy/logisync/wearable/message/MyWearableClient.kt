@@ -6,9 +6,6 @@ import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Node
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MyWearableClient @Inject constructor(
@@ -17,16 +14,14 @@ class MyWearableClient @Inject constructor(
 ) {
 
     // CapabilityClient는 Wear OS 네트워크의 어느 노드가 어떤 맞춤 앱 기능을 지원하는지에 관한 정보를 제공
-    fun setupConnectApp() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val capabilityInfo = Tasks.await(
-                capabilityClient.getCapability(
-                    WEARABLE_CAPABILITY_NAME,
-                    CapabilityClient.FILTER_REACHABLE
-                )
+    private fun setupConnectApp() {
+        val capabilityInfo = Tasks.await(
+            capabilityClient.getCapability(
+                WEARABLE_CAPABILITY_NAME,
+                CapabilityClient.FILTER_REACHABLE
             )
-            updateTranscriptionCapability(capabilityInfo)
-        }
+        )
+        updateTranscriptionCapability(capabilityInfo)
     }
 
     private var transcriptionNodeId: String? = null
@@ -41,18 +36,23 @@ class MyWearableClient @Inject constructor(
 
     // 메세지는 무조건 ByteArray형태
     fun requestTranscription(data: String, transcriptionPath: TranscriptionPath) {
+        setupConnectApp()
         transcriptionNodeId?.also { nodeId ->
-            messageClient.sendMessage(
-                nodeId,
-                transcriptionPath.path,
-                data.toByteArray(Charsets.UTF_8)
-            ).apply {
-                addOnSuccessListener {
-                    Log.e("확인", "requestTranscription: 앱->워치 메시지 전송 성공 $data")
-                }
-                addOnFailureListener {
-                    Log.e("확인", "requestTranscription 실패: $it")
-                }
+            sendMessage(nodeId, transcriptionPath, data)
+        }
+    }
+
+    private fun sendMessage(nodeId: String, transcriptionPath: TranscriptionPath, data: String) {
+        messageClient.sendMessage(
+            nodeId,
+            transcriptionPath.path,
+            data.toByteArray(Charsets.UTF_8)
+        ).apply {
+            addOnSuccessListener {
+                Log.i("[WEARABLE-MOBILE]", "requestTranscription: 앱->워치 메시지 전송 성공 $data")
+            }
+            addOnFailureListener {
+                Log.e("[WEARABLE-MOBILE]", "requestTranscription 실패: $it")
             }
         }
     }
