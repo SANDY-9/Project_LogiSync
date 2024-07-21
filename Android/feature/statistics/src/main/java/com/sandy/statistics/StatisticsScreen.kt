@@ -2,10 +2,13 @@ package com.sandy.statistics
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,12 +34,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.core.desinsystem.common.RecordItemHeartRate
+import com.sandy.statistics.compoents.EmptyRecordView
 import com.sandy.statistics.compoents.HeartRateChart
 import com.sandy.statistics.compoents.HeartRateDescriptionCard
-import com.sandy.statistics.compoents.HeartRateRecordItem
 import com.sandy.statistics.compoents.MyDateRangePickerBottomSheet
 import com.sandy.statistics.model.StatisticsUiState
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StatisticsScreen(
     navController: NavController,
@@ -49,43 +55,54 @@ fun StatisticsScreen(
     }
 
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
-    Column(
-        modifier = Modifier.fillMaxSize()
+
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
     ) {
-        StatisticsAppBar(
-            onReset = viewModel::resetChart,
-            onDatePickerClick = viewModel::setDatePickerVisible,
-        )
-        LazyColumn(
-            modifier = modifier.weight(1f),
-        ) {
-            item {
-                StatisticsContent(
-                    state = state,
-                    onPrevClick = viewModel::getPrevDateChart,
-                    onNextClick = viewModel::getNextDateChart,
-                    modifier = Modifier,
-                )
-            }
-            items(state.recordItem.size) { index ->
-                HeartRateRecordItem(state.recordItem[index])
-            }
-        }
-        if (state.datePickerVisible) {
-            MyDateRangePickerBottomSheet(
-                selectedStartDateStr = state.selectedStartDateStr,
-                selectedEndDateStr = state.selectedEndDateStr,
-                onSelectedStartDate = viewModel::selectedStartDate,
-                onSelectedEndDate = viewModel::selectedEndDate,
-                onComplete = viewModel::requestHeartRates,
-                onDismissRequest = viewModel::setDatePickerVisible,
+        stickyHeader {
+            HeartRateStatisticsAppBar(
+                onReset = viewModel::resetChart,
+                onDatePickerClick = viewModel::setDatePickerVisible,
             )
         }
+        item {
+            StatisticsContent(
+                state = state,
+                onPrevClick = viewModel::getPrevDateChart,
+                onNextClick = viewModel::getNextDateChart,
+                modifier = Modifier,
+            )
+        }
+
+        if(state.isItemEmpty) {
+            item {
+                EmptyRecordView(modifier = modifier.fillMaxWidth().fillParentMaxHeight(0.3f))
+            }
+        } else {
+            stickyHeader {
+                HeartRateRecordAppBar()
+            }
+
+            items(state.recordItem.size) { index ->
+                val item = state.recordItem[index]
+                RecordItemHeartRate(item.bpm, item.time())
+            }
+        }
+    }
+    if (state.datePickerVisible) {
+        MyDateRangePickerBottomSheet(
+            selectedStartDateStr = state.selectedStartDateStr,
+            selectedEndDateStr = state.selectedEndDateStr,
+            onSelectedStartDate = viewModel::selectedStartDate,
+            onSelectedEndDate = viewModel::selectedEndDate,
+            onComplete = viewModel::requestHeartRates,
+            onDismissRequest = viewModel::setDatePickerVisible,
+        )
     }
 }
 
 @Composable
-private fun StatisticsAppBar(
+private fun HeartRateStatisticsAppBar(
     onReset: () -> Unit,
     onDatePickerClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -93,6 +110,7 @@ private fun StatisticsAppBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .background(color = Color.White)
             .height(56.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -128,10 +146,32 @@ private fun StatisticsAppBar(
 }
 
 @Composable
+private fun HeartRateRecordAppBar(
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(color = Color.White)
+            .height(56.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+
+        Text(
+            modifier = modifier.padding(start = 16.dp),
+            text = stringResource(id = R.string.heart_rate_record_title),
+            style = MaterialTheme.typography.headlineSmall,
+        )
+        Spacer(modifier = modifier.size(12.dp))
+    }
+}
+
+
+@Composable
 private fun StatisticsContent(
     state: StatisticsUiState,
-    onPrevClick: () -> Unit,
-    onNextClick: () -> Unit,
+    onPrevClick:() -> Unit,
+    onNextClick:() -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -145,17 +185,15 @@ private fun StatisticsContent(
             onNextClick = onNextClick,
             chartItem = state.chartItem,
         )
-        Spacer(modifier = modifier.height(30.dp))
-        HeartRateDescriptionCard(
-            minBPM = state.minBPM,
-            maxBPM = state.maxBPM,
-        )
-        Spacer(modifier = modifier.height(30.dp))
-        Text(
-            text = stringResource(id = R.string.heart_rate_record_title),
-            style = MaterialTheme.typography.headlineSmall,
-        )
-        Spacer(modifier = modifier.size(12.dp))
+        if(!state.isItemEmpty) {
+            Spacer(modifier = modifier.height(30.dp))
+            HeartRateDescriptionCard(
+                minBPM = state.minBPM,
+                maxBPM = state.maxBPM,
+            )
+            Spacer(modifier = modifier.height(30.dp))
+        }
+
     }
 }
 

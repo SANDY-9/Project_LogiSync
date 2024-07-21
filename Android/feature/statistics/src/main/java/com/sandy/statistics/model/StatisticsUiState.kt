@@ -14,6 +14,7 @@ data class StatisticsUiState(
     val maxBPM: Int = 0,
     val recordItem: List<HeartRate> = emptyList(),
     val chartItem: List<HeartRateChartItem> = emptyList(),
+    val isItemEmpty: Boolean = true,
 
     // DatePicker
     val datePickerVisible: Boolean = false,
