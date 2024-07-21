@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material.icons.rounded.Refresh
@@ -70,21 +71,21 @@ fun StatisticsScreen(
                 state = state,
                 onPrevClick = viewModel::getPrevDateChart,
                 onNextClick = viewModel::getNextDateChart,
-                modifier = Modifier,
+                onItemClick = viewModel::selectItem,
             )
         }
 
-        if(state.isItemEmpty) {
+        if(state.isSelectItemEmpty) {
             item {
                 EmptyRecordView(modifier = modifier.fillMaxWidth().fillParentMaxHeight(0.3f))
             }
-        } else {
+        }
+        else {
             stickyHeader {
                 HeartRateRecordAppBar()
             }
 
-            items(state.recordItem.size) { index ->
-                val item = state.recordItem[index]
+            items(items = state.selectRecordItem){ item ->
                 RecordItemHeartRate(item.bpm, item.time())
             }
         }
@@ -170,8 +171,9 @@ private fun HeartRateRecordAppBar(
 @Composable
 private fun StatisticsContent(
     state: StatisticsUiState,
-    onPrevClick:() -> Unit,
-    onNextClick:() -> Unit,
+    onPrevClick: () -> Unit,
+    onNextClick: () -> Unit,
+    onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -184,8 +186,10 @@ private fun StatisticsContent(
             onPrevClick = onPrevClick,
             onNextClick = onNextClick,
             chartItem = state.chartItem,
+            selectPosition = state.selectPosition,
+            onItemClick = onItemClick,
         )
-        if(!state.isItemEmpty) {
+        if(!state.isSelectItemEmpty) {
             Spacer(modifier = modifier.height(30.dp))
             HeartRateDescriptionCard(
                 minBPM = state.minBPM,

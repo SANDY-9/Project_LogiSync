@@ -12,8 +12,8 @@ import com.core.desinsystem.theme.LogiBlue
 
 @Composable
 fun HeartRateBpmChartItem(
-    maxBpm: Int,
-    minBpm: Int,
+    maxBpm: Int?,
+    minBpm: Int?,
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
@@ -23,6 +23,9 @@ fun HeartRateBpmChartItem(
             height = 200.dp
         )
     ) {
+
+        if(maxBpm == null || minBpm == null) return@Canvas
+
         with(density) {
             val canvasWidth = size.width
             val maxPosition = (200-maxBpm).dp.toPx()

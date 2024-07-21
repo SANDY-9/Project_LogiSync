@@ -60,7 +60,7 @@ class HeartRateClient @Inject constructor(
                 trySend(measuredHeartRate ?: emptyMap())
             }
             .addOnFailureListener {
-                error(it)
+                close(it)
             }
         awaitClose()
     }

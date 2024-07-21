@@ -1,19 +1,13 @@
 package com.sandy.statistics.compoents
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
@@ -24,13 +18,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.common.DottedLine
-import com.core.desinsystem.common.HeartRateBpmChartItem
+import com.core.desinsystem.theme.DarkGreen
 import com.core.desinsystem.theme.LightGreen
-import com.core.desinsystem.theme.PastelGreen
 import com.core.utils.DateUtil
 import com.sandy.statistics.model.HeartRateChartItem
 import com.sandy.statistics.utils.minDate
@@ -42,6 +39,8 @@ fun HeartRateChart(
     onPrevClick: () -> Unit,
     onNextClick: () -> Unit,
     chartItem: List<HeartRateChartItem>,
+    selectPosition: Int?,
+    onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -53,12 +52,15 @@ fun HeartRateChart(
             onPrevClick = onPrevClick,
             onNextClick = onNextClick,
         )
-        Chart(chartItem)
+        Chart(
+            item = chartItem,
+            selectPosition = selectPosition,
+            onItemClick = onItemClick,
+        )
     }
 }
 
 private val today = LocalDate.now()
-
 @Composable
 private fun ChartTitle(
     date: LocalDate,
@@ -94,9 +96,12 @@ private fun ChartTitle(
     }
 }
 
+private val stroke = Stroke(width = 2f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f))
 @Composable
 private fun Chart(
     item: List<HeartRateChartItem>,
+    selectPosition: Int?,
+    onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -140,7 +145,7 @@ private fun Chart(
         )
 
         // 정상범위
-        Column (
+        Spacer (
             modifier = modifier
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)
@@ -150,12 +155,14 @@ private fun Chart(
                     bottom = 60.dp,
                     end = 25.dp
                 )
-                .background(color = PastelGreen)
-        ){
-            DottedLine(color = LightGreen)
-            Spacer(modifier = modifier.weight(1f))
-            DottedLine(color = LightGreen)
-        }
+                .drawBehind {
+                    drawRoundRect(
+                        color = DarkGreen,
+                        style = stroke,
+                        cornerRadius = CornerRadius(8.dp.toPx())
+                    )
+                }
+        )
 
         Text(
             modifier = modifier
@@ -166,47 +173,14 @@ private fun Chart(
             style = MaterialTheme.typography.labelSmall,
         )
 
-        LazyRow(
+        HeartRateGraph(
+            chartItem = item,
+            selectPosition = selectPosition,
+            onItemClick = onItemClick,
             modifier = modifier
                 .fillMaxWidth()
                 .align(Alignment.CenterStart)
                 .padding(end = 30.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            items(items = item) { item ->
-                ChartItem(
-                    time = item.hour,
-                    minBpm = item.minBpm ?: (50..90).random(),
-                    maxBpm = item.maxBpm ?: (80..120).random(),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ChartItem(
-    time: Int,
-    maxBpm: Int,
-    minBpm: Int,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .width(30.dp)
-            .clickable { },
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        HeartRateBpmChartItem(maxBpm = maxBpm, minBpm = minBpm)
-        Box(
-            modifier = modifier.height(20.dp),
-        ) {
-            Text(
-                modifier = modifier.align(Alignment.TopCenter),
-                text = "$time",
-                style = MaterialTheme.typography.labelLarge,
-            )
-        }
+        )
     }
 }

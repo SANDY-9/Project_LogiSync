@@ -10,11 +10,13 @@ data class StatisticsUiState(
     // chart
     val chartType: ChartType = ChartType.DAILY,
     val pickedDate: LocalDate = LocalDate.now(),
-    val minBPM: Int = 0,
-    val maxBPM: Int = 0,
+    val minBPM: Int? = null,
+    val maxBPM: Int? = null,
     val recordItem: List<HeartRate> = emptyList(),
+    val selectRecordItem: List<HeartRate> = emptyList(),
     val chartItem: List<HeartRateChartItem> = emptyList(),
-    val isItemEmpty: Boolean = true,
+    val isSelectItemEmpty: Boolean = true,
+    val selectPosition: Int? = null,
 
     // DatePicker
     val datePickerVisible: Boolean = false,

@@ -18,16 +18,23 @@ object DateUtil {
         return dateStr + dayOfWeekStr
     }
 
+    private val dateTimeformatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm")
     fun convertTime(dateStr: String): String {
         if (dateStr.isNotBlank()) {
-            val split = dateStr.split("-")
-            val hour = split.last().split(":").first().toInt()
-            val suffix = if (hour >= 12) "오후" else "오전"
-            return "${split.first()}년 ${split[1]}월 ${split[2]}일 $suffix ${split.last()}"
+            val date = LocalDateTime.parse(dateStr, dateTimeformatter)
+            val suffix = if (date.hour >= 12) "오후" else "오전"
+            val time = dateTimeTimeFormatter.format(date)
+            return "${date.year}년 ${date.monthValue}월 ${date.dayOfMonth}일 $suffix $time"
         }
         else {
             return ""
         }
+    }
+
+    // 2024-07-19-19:48
+    fun getHour(dateStr: String): Int {
+        val time = LocalDateTime.parse(dateStr, dateTimeformatter)
+        return time.hour
     }
 
     private val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.KOREA)

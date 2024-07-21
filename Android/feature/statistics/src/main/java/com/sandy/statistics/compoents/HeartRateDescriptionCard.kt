@@ -26,10 +26,11 @@ import com.sandy.statistics.R
 
 @Composable
 fun HeartRateDescriptionCard(
-    minBPM: Int = 0,
-    maxBPM: Int = 0,
+    minBPM: Int?,
+    maxBPM: Int?,
     modifier: Modifier = Modifier
 ) {
+    if(minBPM == null || maxBPM == null) return
     LogiCard{
         Column(
             modifier = modifier.fillMaxWidth(),
@@ -70,5 +71,5 @@ private fun HeartRateAvg(
 @Preview(name = "HeartRateDescription")
 @Composable
 private fun PreviewHeartRateDescription() {
-    HeartRateDescriptionCard()
+    HeartRateDescriptionCard(100, 50)
 }

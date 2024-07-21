@@ -14,6 +14,9 @@ data class HeartRate(
     fun time(): String {
         return DateUtil.convertTime(date)
     }
+    fun hour(): Int {
+        return DateUtil.getHour(date)
+    }
     enum class AvgRange {
         HIGH, LOW, NORMAL,
     }
