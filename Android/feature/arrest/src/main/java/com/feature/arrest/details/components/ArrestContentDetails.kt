@@ -32,7 +32,11 @@ fun ArrestContentDetails(
             style = MaterialTheme.typography.headlineSmall,
         )
         Spacer(modifier = modifier.height(12.dp))
-        ArrestItem(arrest = arrest)
+        ArrestItem(
+            arrest = arrest,
+            onItemClick = {}
+        )
+
     }
 }
 @Preview(name = "ArrestContent")

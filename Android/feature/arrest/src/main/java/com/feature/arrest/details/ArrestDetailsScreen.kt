@@ -1,5 +1,6 @@
 package com.feature.arrest.details
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -17,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.core.model.Arrest
+import com.core.navigation.Args
 import com.feature.arrest.R
 import com.feature.arrest.details.components.ArrestContentDetails
 import com.feature.arrest.details.components.ArrestLocationDetails
@@ -38,6 +41,12 @@ fun ArrestDetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: ArrestDetailsViewModel = hiltViewModel()
 ) {
+     LaunchedEffect(navController.previousBackStackEntry) {
+        navController.previousBackStackEntry?.savedStateHandle?.get<Arrest>(Args.ARREST)?.let { arrest ->
+            viewModel.getArrestDetails(arrest)
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -81,7 +90,9 @@ private fun ArrestContent(
 ) {
     val scrollState = rememberScrollState()
     Column(
-        modifier = modifier.fillMaxSize().verticalScroll(scrollState)
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
     ) {
         ArrestUserProfile()
         Spacer(modifier = modifier.height(30.dp))

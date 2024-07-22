@@ -1,11 +1,9 @@
 package com.feature.arrest
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usecases.network.GetMyArrestListUseCase
-import com.core.navigation.Args
 import com.core.utils.DateUtil
 import com.feature.arrest.model.ArrestUiState
 import com.feature.arrest.utils.filter
@@ -15,7 +13,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -24,19 +21,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ArrestViewModel @Inject constructor(
-    getMyArrestListUseCase: GetMyArrestListUseCase,
-    savedStateHandle: SavedStateHandle,
+    private val getMyArrestListUseCase: GetMyArrestListUseCase,
 ): ViewModel() {
 
     private val _stateFlow: MutableStateFlow<ArrestUiState> = MutableStateFlow(ArrestUiState())
     internal val stateFlow: StateFlow<ArrestUiState> = _stateFlow.asStateFlow()
     private val state get() = stateFlow.value
 
-    init {
-        @Suppress("OPT_IN_USAGE")
-        savedStateHandle.getStateFlow(Args.ID, "").flatMapLatest { id ->
-            getMyArrestListUseCase(id)
-        }.onEach { data ->
+    internal fun getMyArrestList(id: String) {
+        Log.e("확인", "getMyArrestList: $id", )
+        getMyArrestListUseCase(id).onEach { data ->
             _stateFlow.update {
                 it.copy(
                     arrestList = data,

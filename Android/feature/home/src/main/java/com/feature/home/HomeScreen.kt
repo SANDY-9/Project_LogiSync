@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -113,7 +114,7 @@ fun HomeScreen(
                     emptyReport = state.emptyReport,
                     onAllReport = {
                         navController.run {
-                            previousBackStackEntry?.savedStateHandle?.set(Args.ID, state.account?.id)
+                            currentBackStackEntry?.savedStateHandle?.set(Args.ID, state.account?.id)
                             navigate(Route.Arrest.route)
                         }
                     }
@@ -121,12 +122,21 @@ fun HomeScreen(
             }
         }
 
-        items(count = state.reportList.size) { index ->
+        items(
+            items = state.reportList,
+            key = { it.time }
+        ) { arrest ->
             BoxLayout(
                 padding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 8.dp)
             ) {
                 ReportItem(
-                    arrestItem = state.reportList[index],
+                    arrestItem = arrest,
+                    onItemClick = {
+                        navController.run {
+                            currentBackStackEntry?.savedStateHandle?.set(Args.ARREST, arrest)
+                            navigate(Route.ArrestDetails.route)
+                        }
+                    }
                 )
             }
         }

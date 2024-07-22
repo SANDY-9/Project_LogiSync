@@ -19,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +32,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.MyDateRangePickerBottomSheet
+import com.core.navigation.Args
+import com.core.navigation.Route
 import com.core.utils.DateUtil
 import com.feature.arrest.components.ArrestFilter
 import com.feature.arrest.components.ArrestItem
@@ -45,6 +48,12 @@ fun ArrestScreen(
     modifier: Modifier = Modifier,
     viewModel: ArrestViewModel = hiltViewModel()
 ) {
+
+    LaunchedEffect(navController.previousBackStackEntry) {
+        navController.previousBackStackEntry?.savedStateHandle?.get<String>(Args.ID)?.let { id ->
+            viewModel.getMyArrestList(id)
+        }
+    }
 
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
@@ -81,8 +90,16 @@ fun ArrestScreen(
                     items(
                         items = items,
                         key = { it.time }
-                    ) {
-                        ArrestItem(arrest = it)
+                    ) { arrest ->
+                        ArrestItem(
+                            arrest = arrest,
+                            onItemClick = {
+                                navController.run {
+                                    previousBackStackEntry?.savedStateHandle?.set(Args.ARREST, arrest)
+                                    navigate(Route.ArrestDetails.route)
+                                }
+                            }
+                        )
                     }
                 }
             }

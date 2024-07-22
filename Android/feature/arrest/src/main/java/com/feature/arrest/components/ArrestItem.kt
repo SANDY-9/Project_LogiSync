@@ -26,7 +26,8 @@ import com.feature.arrest.R
 @Composable
 internal fun ArrestItem(
     arrest: Arrest,
-    modifier: Modifier = Modifier
+    onItemClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -35,18 +36,21 @@ internal fun ArrestItem(
     ) {
         when(arrest.arrestType) {
             Arrest.ArrestType.NORMAL -> ReportItemNormal(
-                arrest.arrestType.desc,
-                arrest.date(),
+                desc = arrest.arrestType.desc,
+                date = arrest.date(),
+                onItemClick = onItemClick,
             )
             Arrest.ArrestType.HEART_RATE_LOW -> ReportItemHeartRate(
                 bpm = arrest.bpm,
-                arrest.arrestType.desc,
-                arrest.date(),
+                desc = arrest.arrestType.desc,
+                date = arrest.date(),
+                onItemClick = onItemClick,
             )
             Arrest.ArrestType.HEART_RATE_HIGH -> ReportItemHeartRate(
                 bpm = arrest.bpm,
-                arrest.arrestType.desc,
-                arrest.date(),
+                desc = arrest.arrestType.desc,
+                date = arrest.date(),
+                onItemClick = onItemClick,
             )
         }
         Spacer(modifier = modifier.height(8.dp))

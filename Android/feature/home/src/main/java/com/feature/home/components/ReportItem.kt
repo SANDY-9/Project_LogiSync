@@ -11,22 +11,26 @@ import java.time.LocalDateTime
 @Composable
 fun ReportItem(
     arrestItem: Arrest,
+    onItemClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when(arrestItem.arrestType) {
         Arrest.ArrestType.NORMAL -> ReportItemNormal(
             arrestItem.arrestType.desc,
             arrestItem.date(),
+            onItemClick = onItemClick,
         )
         Arrest.ArrestType.HEART_RATE_LOW -> ReportItemHeartRate(
             bpm = arrestItem.bpm,
             arrestItem.arrestType.desc,
             arrestItem.date(),
+            onItemClick = onItemClick,
         )
         Arrest.ArrestType.HEART_RATE_HIGH -> ReportItemHeartRate(
             bpm = arrestItem.bpm,
             arrestItem.arrestType.desc,
             arrestItem.date(),
+            onItemClick = onItemClick,
         )
     }
 }
@@ -41,6 +45,7 @@ private fun PreviewReportItem() {
             lng = 123.123,
             bpm = 100,
             arrestType = Arrest.ArrestType.NORMAL,
-        )
+        ),
+        {}
     )
 }
