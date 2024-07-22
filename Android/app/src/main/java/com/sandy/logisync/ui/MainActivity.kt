@@ -47,7 +47,8 @@ class MainActivity : ComponentActivity() {
                         //startDestination = Route.Statistics.route
                         //startDestination = Route.Admin.route
                         //startDestination = Route.Arrest.route
-                        startDestination = Route.ArrestDetails.route
+                        //startDestination = Route.ArrestDetails.route
+                        startDestination = Route.UserDetails.route
                     )
                 }
             }
