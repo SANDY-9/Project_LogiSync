@@ -34,3 +34,5 @@ google-services.json
 
 Android/core/firebase/src/main/assets/firebase-admin.json
 WearOS/app/src/main/assets/firebase-admin.json
+Android/secrets.properties
+Android/local.defaults.properties

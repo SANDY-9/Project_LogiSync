@@ -12,7 +12,7 @@ import com.core.firebase.utils.ErrorMassage.NETWORK_ERROR_MESSAGE
 import com.core.firebase.utils.LoginError
 import com.core.firebase.utils.NetworkError
 import com.core.model.Account
-import com.core.model.Member
+import com.core.model.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -22,7 +22,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.suspendCoroutine
 
 class AuthClient @Inject constructor(
     private val ref: DatabaseReference,
@@ -53,8 +52,8 @@ class AuthClient @Inject constructor(
                     accountDTO?.let {
                         var account = it.toAccount(id)
                         if (snapshot.children.count() == 1) {
-                            user.child(id).child(DUTY).setValue(Member.Duty.ADMIN.name)
-                            account = account.copy(duty = Member.Duty.ADMIN)
+                            user.child(id).child(DUTY).setValue(User.Duty.ADMIN.name)
+                            account = account.copy(duty = User.Duty.ADMIN)
                         }
 
                         // FCM토큰 등록

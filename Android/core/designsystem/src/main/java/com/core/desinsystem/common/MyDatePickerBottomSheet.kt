@@ -1,4 +1,4 @@
-package com.sandy.statistics.compoents
+package com.core.desinsystem.common
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,17 +19,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.core.desinsystem.common.NextButton
-import com.sandy.statistics.R
-import com.sandy.statistics.utils.minDate
-import com.sandy.statistics.utils.minDateMillis
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,7 +57,7 @@ fun MyDateRangePickerBottomSheet(
                 onSelectedEndDate = onSelectedEndDate,
             )
             NextButton(
-                title = stringResource(id = R.string.date_picker_complete),
+                title = "적용하기",
                 onClick = {
                     coroutineScope.launch {
                         bottomSheetState.hide()
@@ -77,6 +72,8 @@ fun MyDateRangePickerBottomSheet(
 }
 
 private val currentYear = LocalDate.now().year
+val minDate: LocalDate = LocalDate.of(2024, 6, 1)
+val minDateMillis = minDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
 @OptIn(ExperimentalMaterial3Api::class)
 private val selectableDates = object : SelectableDates {
@@ -108,7 +105,7 @@ private fun MyDateRangePicker(
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(4.dp),
-                text = stringResource(id = R.string.date_picker_title),
+                text = "조회를 확인하고 싶은 날짜를 선택해주세요.",
                 textAlign = TextAlign.Center,
             )
         },
@@ -137,10 +134,4 @@ private fun MyDateRangePicker(
     LaunchedEffect(state.selectedEndDateMillis) {
         onSelectedEndDate(state.selectedEndDateMillis)
     }
-}
-
-@Preview(name = "MyDatePickerDialog")
-@Composable
-private fun PreviewMyDatePickerDialog() {
-    //MyDateRangePickerBottomSheet(true, {})
 }

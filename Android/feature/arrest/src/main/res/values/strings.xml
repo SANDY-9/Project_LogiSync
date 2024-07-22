@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- arrest -->
+    <string name="arrest_title">신고내역 조회</string>
+    <string name="arrest_filter_all">전체보기</string>
+    <string name="arrest_filter_danger">위험 신고</string>
+    <string name="arrest_filter_warning">심박수 경고</string>
+    <string name="arrest_empty">신고 내역이 없습니다.</string>
+
+    <!-- arrest details -->
+    <string name="arrest_details_title">신고 정보</string>
+    <string name="arrest_details_user_title">신고자 정보</string>
+    <string name="arrest_details_content_title">신고 내용</string>
+    <string name="arrest_details_location_title">신고 위치</string>
+    <string name="arrest_details_location_arrest">신고한 장소</string>
+
+</resources>

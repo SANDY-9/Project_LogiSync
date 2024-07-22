@@ -69,6 +69,24 @@ class HomeViewModel @Inject constructor(
             }
             .launchIn(viewModelScope)
 
+        combine(
+            getLastHeartRateUseCase("nal0256"),
+            getLastMyArrestUseCase("nal0256")
+        ) { heartRate, arrest ->
+            Log.e("확인", "$heartRate: $arrest", )
+            state.copy(
+                heartRate = heartRate,
+                reportList = arrest,
+                emptyReport = arrest.isEmpty(),
+            )
+        }
+            .onEach { state ->
+                state?.let {
+                    _stateFlow.value = it
+                }
+            }
+            .launchIn(viewModelScope)
+
         monitorWearableConnectState()
     }
 

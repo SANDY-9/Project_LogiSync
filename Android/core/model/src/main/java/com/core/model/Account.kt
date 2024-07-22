@@ -1,7 +1,7 @@
 package com.core.model
 
-import com.core.model.Member.Duty
-import com.core.model.Member.Team
+import com.core.model.User.Duty
+import com.core.model.User.Team
 
 data class Account(
     val id: String = "",

@@ -2,16 +2,16 @@ package com.core.model
 
 import java.time.LocalDateTime
 
-data class Member(
+data class User(
     val id: String,
     val name: String,
     val tel: String,
     val duty: Duty,
     val team: Team,
-    val lastBpm: Int,
-    val lastBpmDateTime: LocalDateTime,
-    val minCriticalPoint: Int,
-    val maxCriticalPoint: Int,
+    val lastBpm: Int?,
+    val lastBpmDateTime: LocalDateTime?,
+    val minCriticalPoint: Int?,
+    val maxCriticalPoint: Int?,
 ) {
     enum class Duty {
         ADMIN,

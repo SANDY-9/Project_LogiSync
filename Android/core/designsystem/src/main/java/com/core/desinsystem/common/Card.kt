@@ -1,5 +1,6 @@
 package com.core.desinsystem.common
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import com.core.desinsystem.theme.LogiLightGray
 @Composable
 fun LogiCard(
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
     content: @Composable (ColumnScope.() -> Unit),
 ) {
     Card(
@@ -29,6 +31,7 @@ fun LogiCard(
         colors = CardDefaults.cardColors(
             containerColor = LogiLightGray,
         ),
+        onClick = onClick,
         content = {
             Column(
                 modifier = modifier

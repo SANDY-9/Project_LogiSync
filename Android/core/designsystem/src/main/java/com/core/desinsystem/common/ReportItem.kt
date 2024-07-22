@@ -20,9 +20,12 @@ import com.core.desinsystem.theme.DarkRed
 fun ReportItemNormal(
     desc: String,
     date: String,
+    onItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LogiCard {
+    LogiCard(
+        onClick = onItemClick,
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -45,14 +48,18 @@ fun ReportItemNormal(
         }
     }
 }
+
 @Composable
 fun ReportItemHeartRate(
     bpm: Int?,
     desc: String,
     date: String,
+    onItemClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LogiCard {
+    LogiCard(
+        onClick = onItemClick,
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {

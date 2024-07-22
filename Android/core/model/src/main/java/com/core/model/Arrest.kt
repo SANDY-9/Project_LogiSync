@@ -1,6 +1,7 @@
 package com.core.model
 
 import com.core.utils.DateUtil
+import java.io.Serializable
 import java.time.LocalDateTime
 
 data class Arrest(
@@ -10,7 +11,7 @@ data class Arrest(
     val lng: Double,
     val bpm: Int?,
     val arrestType: ArrestType,
-) {
+): Serializable {
     fun date(): String {
         return DateUtil.convertDateTime(time)
     }
