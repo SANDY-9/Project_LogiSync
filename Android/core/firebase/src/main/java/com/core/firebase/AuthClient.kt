@@ -5,8 +5,6 @@ import com.core.firebase.common.Constants.TEL
 import com.core.firebase.common.Constants.USERS
 import com.core.firebase.mappers.toAccount
 import com.core.firebase.model.AccountDTO
-import com.core.firebase.utils.EmptyValueError
-import com.core.firebase.utils.ErrorMassage.EMPTY_ERROR_MESSAGE
 import com.core.firebase.utils.ErrorMassage.LOGIN_ERROR_MESSAGE
 import com.core.firebase.utils.ErrorMassage.NETWORK_ERROR_MESSAGE
 import com.core.firebase.utils.LoginError
@@ -116,7 +114,6 @@ class AuthClient @Inject constructor(
         onLogin: (Account) -> Unit,
         onError: (Throwable) -> Unit,
     ) {
-        if (id.isEmpty() || pwd.isEmpty()) throw EmptyValueError(EMPTY_ERROR_MESSAGE)
         ref.child(USERS).child(id).get().addOnSuccessListener { snapshot ->
             if (snapshot.exists()) {
                 val account = snapshot.getValue<AccountDTO>()

@@ -53,14 +53,12 @@ fun LoginScreen(
     }
 
     val context = LocalContext.current
-
     LaunchedEffect(state.error) {
         val error = state.error
         if(error != LoginError.NONE) {
             Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
         }
     }
-
     LaunchedEffect(state.isLoading) {
         if(state.isLoading) {
             focusManager.clearFocus()
@@ -102,7 +100,14 @@ fun LoginScreen(
         Spacer(modifier = modifier.height(32.dp))
 
         Button(
-            onClick = viewModel::requestLogin
+            onClick = {
+                if(state.id.isNotBlank() && state.pwd.isNotBlank()) {
+                    viewModel.requestLogin()
+                }
+                else {
+                    Toast.makeText(context, EMPTY_ID_OR_PWD_MESSAGE, Toast.LENGTH_SHORT).show()
+                }
+            }
         ) {
             Text(text = stringResource(id = R.string.login_title_login))
         }
@@ -137,3 +142,5 @@ private fun LoginScreenPreview() {
         )
     }
 }
+
+private const val EMPTY_ID_OR_PWD_MESSAGE = "아이디, 비밀번호를 입력해주세요."

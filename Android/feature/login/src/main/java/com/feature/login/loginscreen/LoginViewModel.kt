@@ -64,7 +64,6 @@ class LoginViewModel @Inject constructor(
             )
         }.catch { e ->
             when(e.message) {
-                LoginError.EMPTY_ID_OR_PWD.name -> updateLoginState(false, LoginError.EMPTY_ID_OR_PWD)
                 LoginError.WRONG_ID_OR_PWD.name -> updateLoginState(false, LoginError.WRONG_ID_OR_PWD)
                 else -> updateLoginState(false, LoginError.NETWORK_ERROR)
             }

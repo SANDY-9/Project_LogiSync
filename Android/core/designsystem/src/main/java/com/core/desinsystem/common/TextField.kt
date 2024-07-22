@@ -67,13 +67,8 @@ fun MyTextField(
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
     OutlinedTextField(
-        value = TextFieldValue(
-            text = value,
-            selection = TextRange(value.length)
-        ),
-        onValueChange = {
-            onValueChange(it.text)
-        },
+        value = value,
+        onValueChange = onValueChange,
         modifier = modifier.addFocusCleaner(focusManager),
         enabled = enabled,
         readOnly = readOnly,
@@ -146,13 +141,8 @@ fun MyPwdTextField(
     val visualIcon = if (inputVisible) Icons.Visibility else Icons.Visibilityoff
     val visualTransformation = if (inputVisible) VisualTransformation.None else PasswordVisualTransformation()
     OutlinedTextField(
-        value = TextFieldValue(
-            text = value,
-            selection = TextRange(value.length)
-        ),
-        onValueChange = {
-            onValueChange(it.text)
-        },
+        value = value,
+        onValueChange = onValueChange,
         modifier = modifier.addFocusCleaner(focusManager),
         enabled = enabled,
         readOnly = readOnly,
