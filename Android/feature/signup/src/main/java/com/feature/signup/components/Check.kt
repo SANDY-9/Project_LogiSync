@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.core.desinsystem.common.MyTelTextField
 import com.core.desinsystem.common.MyTextField
 import com.core.desinsystem.common.addFocusCleaner
 import com.feature.signup.R
@@ -54,7 +55,7 @@ internal fun Check(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(20.dp)
     ) {
         val focusManager = LocalFocusManager.current
 
@@ -68,7 +69,7 @@ internal fun Check(
                 style = MaterialTheme.typography.headlineSmall
             )
 
-            Spacer(modifier = modifier.height(16.dp))
+            Spacer(modifier = modifier.height(30.dp))
 
             NameTextField(
                 input = check.name,
@@ -96,9 +97,7 @@ internal fun Check(
         }
 
         Button(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = modifier.fillMaxWidth(),
             enabled = check.isInputComplete,
             onClick = onSignupCheck,
         ) {
@@ -141,7 +140,7 @@ private fun TelTextField(
     onInputClear: () -> Unit,
     focusManager: FocusManager,
 ) {
-    MyTextField(
+    MyTelTextField(
         value = input,
         onValueChange = onInputChange,
         onValueClear = onInputClear,

@@ -19,7 +19,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
@@ -194,6 +193,89 @@ fun MyPwdTextField(
         colors = colors,
     )
 }
+
+@Composable
+fun MyTelTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    onValueClear: () -> Unit,
+    focusManager: FocusManager,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    textStyle: TextStyle = LocalTextStyle.current,
+    label: @Composable (() -> Unit)? = null,
+    placeholder: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    prefix: @Composable (() -> Unit)? = null,
+    suffix: @Composable (() -> Unit)? = null,
+    supportingText: @Composable (() -> Unit)? = null,
+    isError: Boolean = false,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardActions: (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
+) {
+    OutlinedTextField(
+        value = TextFieldValue(
+            text = value,
+            selection = TextRange(value.length)
+        ),
+        onValueChange = {
+            onValueChange(it.text)
+        },
+        modifier = modifier.addFocusCleaner(focusManager).background(
+            color = Color.White,
+            shape = RoundedCornerShape(8.dp)
+        ),
+        enabled = enabled,
+        readOnly = readOnly,
+        textStyle = textStyle,
+        label = label,
+        placeholder = placeholder,
+        leadingIcon = leadingIcon,
+        trailingIcon = {
+            if (value.isNotBlank()) {
+                IconButton(
+                    onClick = {
+                        focusManager.moveFocus(FocusDirection.Previous)
+                        onValueClear()
+                    }) {
+                    Icon(
+                        imageVector = Icons.Clear,
+                        tint = Color.Gray,
+                        contentDescription = null
+                    )
+                }
+            }
+        },
+        prefix = prefix,
+        suffix = suffix,
+        supportingText = supportingText,
+        isError = isError,
+        visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = KeyboardActions(
+            onDone = {
+                if (keyboardActions == null) {
+                    focusManager.moveFocus(FocusDirection.Next)
+                }
+                else {
+                    keyboardActions.invoke()
+                }
+            }
+        ),
+        singleLine = true,
+        maxLines = 1,
+        minLines = 1,
+        interactionSource = interactionSource,
+        shape = RoundedCornerShape(8.dp),
+        colors = colors,
+    )
+}
+
+
 @Preview
 @Composable
 private fun TextFieldPreview() {
