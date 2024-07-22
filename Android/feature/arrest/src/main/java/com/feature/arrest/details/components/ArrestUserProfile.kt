@@ -1,5 +1,8 @@
 package com.feature.arrest.details.components
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -24,14 +27,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.core.desinsystem.common.CallButton
 import com.core.desinsystem.theme.CallGreen
 import com.core.desinsystem.theme.TransparentBlack
 import com.core.model.User
-import com.feature.arrest.R
 
 @Composable
 fun ArrestUserProfile(
@@ -39,9 +41,11 @@ fun ArrestUserProfile(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ){
-        Spacer(modifier = modifier.height(12.dp))
+        Spacer(modifier = modifier.height(4.dp))
         UserProfile(user = user)
     }
 }
@@ -51,6 +55,7 @@ private fun UserProfile(
     user: User,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -80,23 +85,6 @@ private fun UserProfile(
             )
         }
         Spacer(modifier = modifier.weight(1f))
-        IconButton(
-            modifier = modifier.size(30.dp),
-            onClick = {
-                // 전화로직 추가
-            },
-            colors = IconButtonColors(
-                containerColor = CallGreen,
-                contentColor = Color.White,
-                disabledContainerColor = Color.Gray,
-                disabledContentColor = Color.White,
-            )
-        ) {
-            Icon(
-                modifier = modifier.padding(5.dp),
-                imageVector = Icons.Rounded.Call,
-                contentDescription = null
-            )
-        }
+        CallButton(tel = user.tel, context = context)
     }
 }
