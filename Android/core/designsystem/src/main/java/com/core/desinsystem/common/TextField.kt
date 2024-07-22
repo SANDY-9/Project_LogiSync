@@ -1,5 +1,6 @@
 package com.core.desinsystem.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -69,7 +70,10 @@ fun MyTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.addFocusCleaner(focusManager),
+        modifier = modifier.addFocusCleaner(focusManager).background(
+            color = Color.White,
+            shape = RoundedCornerShape(8.dp)
+        ),
         enabled = enabled,
         readOnly = readOnly,
         textStyle = textStyle,
@@ -143,7 +147,10 @@ fun MyPwdTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.addFocusCleaner(focusManager),
+        modifier = modifier.addFocusCleaner(focusManager).background(
+            color = Color.White,
+            shape = RoundedCornerShape(8.dp)
+        ),
         enabled = enabled,
         readOnly = readOnly,
         textStyle = textStyle,

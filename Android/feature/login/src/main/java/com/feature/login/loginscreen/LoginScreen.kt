@@ -2,24 +2,31 @@ package com.feature.login.loginscreen
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.addFocusCleaner
+import com.core.desinsystem.common.noRippleClickable
 import com.core.desinsystem.lottie.LottieProgressBarBlue
 import com.core.desinsystem.theme.LogiSyncTheme
 import com.core.model.Account
@@ -70,17 +78,22 @@ fun LoginScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .paint(
+                painter = painterResource(id = com.core.desinsystem.R.drawable.bg_white),
+                contentScale = ContentScale.FillBounds,
+            )
             .addFocusCleaner(focusManager),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
+
+        Spacer(modifier = modifier.fillMaxHeight(0.32f))
 
         Image(
             painter = painterResource(id = com.core.desinsystem.R.drawable.temp_logo),
             contentDescription = null
         )
 
-        Spacer(modifier = modifier.height(32.dp))
+        Spacer(modifier = modifier.height(50.dp))
 
         IdInputTextField(
             id = state.id,
@@ -99,9 +112,10 @@ fun LoginScreen(
             focusManager = focusManager
         )
 
-        Spacer(modifier = modifier.height(32.dp))
+        Spacer(modifier = modifier.height(50.dp))
 
         Button(
+            modifier = modifier.width(280.dp),
             onClick = {
                 if(state.id.isNotBlank() && state.pwd.isNotBlank()) {
                     viewModel.requestLogin()
@@ -114,19 +128,44 @@ fun LoginScreen(
             Text(text = stringResource(id = R.string.login_title_login))
         }
 
-        Button(
-            onClick = { viewModel.requestBioLogin() }
-        ) {
-            Text(text = stringResource(id = R.string.login_title_bio))
+        Spacer(modifier = modifier.height(16.dp))
+
+        Row {
+            Text(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .noRippleClickable(
+                        onClick = viewModel::requestBioLogin
+                    ),
+                text = stringResource(id = R.string.login_title_bio),
+                style = MaterialTheme.typography.labelLarge,
+                color = Color.DarkGray,
+                textAlign = TextAlign.End
+            )
+
+            Text(
+                modifier = modifier.padding(horizontal = 16.dp),
+                text = "|",
+                style = MaterialTheme.typography.labelLarge,
+                color = Color.Gray,
+            )
+
+            Text(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .noRippleClickable {
+                        navController.navigate(route = Route.Signup.route)
+                    },
+                text = stringResource(id = R.string.login_title_signup),
+                style = MaterialTheme.typography.labelLarge,
+                color = Color.DarkGray,
+                textAlign = TextAlign.Start
+            )
+
         }
 
-        TextButton(
-            onClick = {
-                navController.navigate(route = Route.Signup.route)
-            }
-        ) {
-            Text(text = stringResource(id = R.string.login_title_signup))
-        }
 
         if(state.isLoading) {
             LottieProgressBarBlue(modifier = modifier.padding(top = 32.dp))
