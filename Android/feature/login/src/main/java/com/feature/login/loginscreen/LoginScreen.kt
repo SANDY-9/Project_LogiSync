@@ -86,7 +86,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        Spacer(modifier = modifier.fillMaxHeight(0.32f))
+        Spacer(modifier = modifier.fillMaxHeight(0.3f))
 
         Image(
             painter = painterResource(id = com.core.desinsystem.R.drawable.temp_logo),
@@ -112,7 +112,7 @@ fun LoginScreen(
             focusManager = focusManager
         )
 
-        Spacer(modifier = modifier.height(50.dp))
+        Spacer(modifier = modifier.height(60.dp))
 
         Button(
             modifier = modifier.width(280.dp),

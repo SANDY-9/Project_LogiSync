@@ -1,6 +1,7 @@
 package com.sandy.logisync.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -8,20 +9,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.theme.LogiSyncTheme
-import com.core.navigation.Route
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -29,17 +25,7 @@ class MainActivity : ComponentActivity() {
         requestPermissions()
         setContent {
             LogiSyncTheme {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .imePadding(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    MainNavGraph(
-                        navController = rememberNavController(),
-                        startDestination = Route.Login.route,
-                    )
-                }
+                MainScreen(navController = rememberNavController())
             }
         }
     }

@@ -23,6 +23,7 @@ fun MainNavGraph(
     modifier: Modifier = Modifier,
 ) {
     NavHost(
+        modifier = modifier,
         navController = navController,
         startDestination = startDestination,
     ) {
@@ -36,7 +37,6 @@ fun MainNavGraph(
                         popUpTo(Route.Login.route) { inclusive = true }
                     }
                 },
-                modifier = modifier,
             )
         }
         composable(
