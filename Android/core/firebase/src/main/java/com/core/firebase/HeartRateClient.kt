@@ -1,5 +1,6 @@
 package com.core.firebase
 
+import android.util.Log
 import com.core.firebase.common.Constants.CRITICAL_POINT
 import com.core.firebase.common.Constants.HEART_RATE
 import com.core.firebase.common.Constants.MAX_CRITICAL_POINT
@@ -50,6 +51,30 @@ class HeartRateClient @Inject constructor(
             }
         }
         ref.child(HEART_RATE).child(id).orderByValue().limitToLast(1).addValueEventListener(listener)
+    }
+
+    fun getLastHeartRateList(
+        id: String,
+        onSuccess: (List<HeartRateDTO>) -> Unit,
+        onError: (Throwable) -> Unit,
+    ) {
+        ref.child(HEART_RATE).child(id).orderByKey().limitToLast(1).get().addOnSuccessListener { snapshot ->
+            val list = mutableListOf<HeartRateDTO>()
+            if(snapshot.exists()) {
+                snapshot.children.last().children.last().children.forEach { heartRate ->
+                    val heartRateDTO = HeartRateDTO(
+                        bpm = heartRate.value.toString().toInt(),
+                        date = heartRate.key.toString(),
+                    )
+                    list.add(heartRateDTO)
+                }
+            }
+            val result = if(list.size > 6) list.slice(0..4) else listOf()
+            Log.e("확인", "getLastHeartRateList: ${list.size}", )
+            onSuccess(result)
+        }.addOnFailureListener {
+            onError(it)
+        }
     }
 
     fun getHeartRateByDate(

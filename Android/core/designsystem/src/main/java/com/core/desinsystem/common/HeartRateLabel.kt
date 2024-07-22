@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,6 +50,42 @@ fun HeartRateLabel(
             style = TextStyle(
                 fontSize = 10.sp,
                 fontWeight = FontWeight(500)
+            )
+        )
+    }
+}
+
+@Composable
+fun HeartRateLabelLarge(
+    bpm: String,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            modifier = modifier.size(15.dp),
+            imageVector = Icons.Rounded.Favorite,
+            tint = HeartRed,
+            contentDescription = null
+        )
+        Spacer(modifier = modifier.width(8.dp))
+        Text(
+            text = bpm,
+            style = TextStyle(
+                fontSize = 28.sp,
+                fontWeight = FontWeight(500)
+            )
+        )
+        Spacer(modifier = modifier.width(8.dp))
+        Text(
+            modifier = modifier.padding(top = 8.dp),
+            text = "bpm",
+            style = TextStyle(
+                fontSize = 14.sp,
+                fontWeight = FontWeight(500),
+                color = Color.DarkGray,
             )
         )
     }

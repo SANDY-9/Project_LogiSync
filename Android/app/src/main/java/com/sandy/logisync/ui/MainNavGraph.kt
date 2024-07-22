@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.core.navigation.Route
 import com.feature.admin.AdminScreen
+import com.feature.admin.details.UserDetailsScreen
 import com.feature.arrest.ArrestScreen
 import com.feature.arrest.details.ArrestDetailsScreen
 import com.feature.home.HomeScreen
@@ -94,6 +95,14 @@ fun MainNavGraph(
         ) {
             ArrestDetailsScreen(
                 navController = navController,
+            )
+        }
+
+        composable(
+            route = Route.UserDetails.route,
+        ) {
+            UserDetailsScreen(
+                navController = navController
             )
         }
 

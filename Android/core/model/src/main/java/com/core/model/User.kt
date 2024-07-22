@@ -1,5 +1,6 @@
 package com.core.model
 
+import java.io.Serializable
 import java.time.LocalDateTime
 
 data class User(
@@ -12,7 +13,14 @@ data class User(
     val lastBpmDateTime: LocalDateTime?,
     val minCriticalPoint: Int?,
     val maxCriticalPoint: Int?,
-) {
+): Serializable {
+    fun isCritical(): Boolean {
+        return if(minCriticalPoint != null && maxCriticalPoint != null && lastBpm != null) {
+            lastBpm < minCriticalPoint || lastBpm > maxCriticalPoint
+        } else {
+            false
+        }
+    }
     enum class Duty {
         ADMIN,
         NORMAL;

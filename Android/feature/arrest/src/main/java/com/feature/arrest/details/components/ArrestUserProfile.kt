@@ -79,7 +79,7 @@ private fun UserProfile(
             Text(text = "${user.name} (${user.id})")
             Spacer(modifier = modifier.weight(1f))
             Text(
-                text = "${user.duty.str()} | ${user.team.name}",
+                text = "${user.duty.str()}  |  ${user.team.name}",
                 style = MaterialTheme.typography.labelMedium,
                 color = Color.DarkGray
             )

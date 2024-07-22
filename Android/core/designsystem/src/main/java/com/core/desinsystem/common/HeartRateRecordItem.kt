@@ -1,6 +1,5 @@
-package com.sandy.statistics.compoents
+package com.core.desinsystem.common
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -18,21 +16,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.core.model.HeartRate
-import com.sandy.statistics.R
 
 @Composable
 fun HeartRateRecordItem(
-    heartRate: HeartRate,
+    bpm: Int,
+    time: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 20.dp)
     ) {
         Row(
             modifier = modifier
@@ -41,12 +37,12 @@ fun HeartRateRecordItem(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             HeartRateDesc(
-                bpm = heartRate.bpm,
-                time = heartRate.time(),
+                bpm = bpm,
+                time = time,
                 modifier = modifier.weight(1f)
             )
             HeartRateLevel(
-                bpm = heartRate.bpm
+                bpm = bpm
             )
         }
         HorizontalDivider()
@@ -71,7 +67,7 @@ private fun HeartRateDesc(
             )
             Text(
                 modifier = modifier.padding(start = 4.dp),
-                text = stringResource(id = R.string.heart_rate_unit),
+                text = "bpm",
                 style = MaterialTheme.typography.titleSmall
             )
         }
@@ -106,5 +102,5 @@ private fun HeartRateLevel(
 @Preview(name = "HeartRateRecord")
 @Composable
 private fun PreviewHeartRateRecord() {
-    HeartRateRecordItem(HeartRate())
+    HeartRateRecordItem(100, "2023.06.15")
 }

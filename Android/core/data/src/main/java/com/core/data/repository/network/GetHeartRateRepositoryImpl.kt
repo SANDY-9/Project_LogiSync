@@ -42,6 +42,7 @@ class GetHeartRateRepositoryImpl @Inject constructor(
             it.toHeartRateList()
         }.flowOn(Dispatchers.IO)
     }
+
     override fun getHeartRateByPeriod(
         id: String,
         startDate: LocalDate,
@@ -50,5 +51,18 @@ class GetHeartRateRepositoryImpl @Inject constructor(
         return heartRateClient.getHeartRateByPeriod(id, startDate, endDate).map {
             it.toHeartRateList()
         }.flowOn(Dispatchers.IO)
+    }
+
+    override fun getLastHeartRateList(id: String): Flow<List<HeartRate>> = callbackFlow {
+        heartRateClient.getLastHeartRateList(
+            id = id,
+            onSuccess = {
+                trySend(it.toHeartRateList())
+            },
+            onError = { e ->
+                close(e)
+            },
+        )
+        awaitClose()
     }
 }

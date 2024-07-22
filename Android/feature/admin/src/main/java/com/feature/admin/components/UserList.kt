@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Favorite
@@ -28,30 +30,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.core.model.Member
+import com.core.desinsystem.icons.Flag
+import com.core.desinsystem.theme.DarkRed
+import com.core.desinsystem.theme.LogiOrange
+import com.core.desinsystem.theme.LogiRed
+import com.core.model.User
 import com.core.utils.DateUtil
 import java.time.LocalDateTime
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MemberList(
-    memberList: Map<Member.Team, List<Member>>,
-    onItemClick: (Member) -> Unit,
+fun UserList(
+    userList: Map<User.Team, List<User>>,
+    onItemClick: (User) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize()
     ) {
-        memberList.forEach { (team, members) ->
+        userList.forEach { (team, users) ->
             stickyHeader {
                 TeamStickyHeader(team = team)
             }
             items(
-                count = members.size
-            ) { index ->
+                items = users,
+                key = { it.id }
+            ) { user ->
                 Column {
-                    MemberItem(
-                        member = members[index],
+                    UserItem(
+                        user = user,
                         onItemClick = onItemClick,
                     )
                     HorizontalDivider()
@@ -63,7 +70,7 @@ fun MemberList(
 
 @Composable
 private fun TeamStickyHeader(
-    team: Member.Team,
+    team: User.Team,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -85,26 +92,28 @@ private fun TeamStickyHeader(
 }
 
 @Composable
-private fun MemberItem(
-    member: Member,
-    onItemClick: (Member) -> Unit,
+private fun UserItem(
+    user: User,
+    onItemClick: (User) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onItemClick(member) }
+            .clickable { onItemClick(user) }
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
         ) {
-            MemberName(
-                name = member.name
+            UserName(
+                name = user.name,
+                isCritical = user.isCritical(),
             )
             CriticalPoint(
-                minCriticalPoint = member.minCriticalPoint,
-                maxCriticalPoint = member.maxCriticalPoint
+                modifier = modifier.padding(top = 2.dp),
+                minCriticalPoint = user.minCriticalPoint ?: return,
+                maxCriticalPoint = user.maxCriticalPoint ?: return,
             )
         }
         Column(
@@ -113,10 +122,10 @@ private fun MemberItem(
             verticalArrangement = Arrangement.Center,
         ) {
             MeasuredBpm(
-                bpm = member.lastBpm
+                bpm = user.lastBpm ?: return
             )
             Text(
-                text = DateUtil.convertDateTime(member.lastBpmDateTime),
+                text = DateUtil.convertDateTime(user.lastBpmDateTime ?: return),
                 style = MaterialTheme.typography.labelSmall
             )
         }
@@ -124,8 +133,9 @@ private fun MemberItem(
 }
 
 @Composable
-private fun MemberName(
+private fun UserName(
     name: String,
+    isCritical: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -135,12 +145,15 @@ private fun MemberName(
             text = name,
             style = MaterialTheme.typography.titleMedium
         )
-        Spacer(modifier = modifier.width(4.dp))
-        Icon(
-            modifier = modifier.size(20.dp),
-            imageVector = Icons.Rounded.Warning,
-            contentDescription = null
-        )
+        if(isCritical) {
+            Spacer(modifier = modifier.width(4.dp))
+            Icon(
+                modifier = modifier.size(18.dp),
+                imageVector = Icons.Rounded.Warning,
+                tint = DarkRed,
+                contentDescription = null
+            )
+        }
     }
 }
 
@@ -151,15 +164,16 @@ private fun CriticalPoint(
     modifier: Modifier = Modifier,
 ) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             modifier = Modifier.size(15.dp),
-            imageVector = Icons.Rounded.Check,
-            tint = Color.Gray,
+            imageVector = Icons.Flag,
+            tint = LogiOrange,
             contentDescription = null
         )
-        Spacer(modifier = modifier.width(2.dp))
+        Spacer(modifier = Modifier.width(2.dp))
         Text(
             text = "$minCriticalPoint - $maxCriticalPoint",
             color = Color.Gray,
@@ -193,51 +207,4 @@ private fun MeasuredBpm(
             style = MaterialTheme.typography.labelSmall
         )
     }
-}
-
-@Preview(name = "MemberList")
-@Composable
-private fun PreviewMemberList() {
-    val memberList = mapOf(
-        Member.Team.물류1팀 to List(10) {
-            Member(
-                id = "",
-                name = "홍길동",
-                tel = "010-1234-5678",
-                duty = Member.Duty.NORMAL,
-                team = Member.Team.물류1팀,
-                lastBpm = 88,
-                lastBpmDateTime = LocalDateTime.now(),
-                minCriticalPoint = 20,
-                maxCriticalPoint = 130,
-            )
-        },
-        Member.Team.물류2팀 to List(10) {
-            Member(
-                id = "",
-                name = "홍길동",
-                tel = "010-1234-5678",
-                duty = Member.Duty.NORMAL,
-                team = Member.Team.물류1팀,
-                lastBpm = 88,
-                lastBpmDateTime = LocalDateTime.now(),
-                minCriticalPoint = 20,
-                maxCriticalPoint = 130,
-            )
-        },
-        Member.Team.TES물류기술연구소 to List(10) {
-            Member(
-                id = "",
-                name = "홍길동",
-                tel = "010-1234-5678",
-                duty = Member.Duty.NORMAL,
-                team = Member.Team.물류1팀,
-                lastBpm = 88,
-                lastBpmDateTime = LocalDateTime.now(),
-                minCriticalPoint = 20,
-                maxCriticalPoint = 130,
-            )
-        }
-    )
-    MemberList(memberList = memberList, {})
 }

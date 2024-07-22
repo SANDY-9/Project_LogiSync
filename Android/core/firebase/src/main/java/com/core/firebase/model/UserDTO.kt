@@ -2,10 +2,11 @@ package com.core.firebase.model
 
 
 data class UserDTO(
-    val name: String = "",
-    val tel: String = "",
-    val duty: String = "",
-    val team: String = "",
+    val id: String? = null,
+    val name: String? = null,
+    val tel: String? = null,
+    val duty: String? = null,
+    val team: String? = null,
     val lastBpm: Int? = null,
     val lastBpmDateTime: String? = null,
     val criticalPoint: CriticalPointDTO? = null

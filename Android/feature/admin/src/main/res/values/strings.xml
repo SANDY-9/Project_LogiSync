@@ -4,19 +4,24 @@
     <!-- admin -->
     <string name="admin_menu_title">회원 현황</string>
     <string name="admin_search_hint">팀/사원 이름으로 검색</string>
+    <string name="admin_search_empty">검색어를 입력해주세요.</string>
     <string name="admin_search_result_empty">해당하는 회원이 없습니다.</string>
     <string name="admin_member_filter_all">전체보기</string>
     <string name="admin_member_filter_attention">주의</string>
     <string name="admin_member_filter_danger">위험</string>
 
-    <string name="admin_memeber_state_normal">정상</string>
-    <string name="admin_memeber_state_warning">위험</string>
-
     <!-- member details -->
-    <string name="member_details_critical_point_settings">임계치 설정하기</string>
-    <string name="member_details_arrest_title">신고 내역</string>
-    <string name="member_details_arrest_empty">신고 내역이 없습니다.</string>
-    <string name="member_details_heart_rate_title">심박수 기록</string>
-    <string name="member_details_heart_rate_empty">심박수 기록 내역이 없습니다.</string>
+    <string name="details_critical_point_settings">임계치 변경하기</string>
+    <string name="details_state_normal">정상입니다</string>
+    <string name="details_state_warning">위험합니다</string>
+    <string name="details_heart_rate_desc_avg">안정시 심박수 평균 : 60 - 100 bpm</string>
+    <string name="details_heart_rate_null">수집된 심박수 기록이 없습니다.</string>
+
+    <string name="details_arrest_title">최근 신고 내역</string>
+    <string name="details_arrest_empty">신고 내역이 없습니다.</string>
+    <string name="details_arrest_all">전체보기</string>
+    <string name="details_heart_rate_title">심박수 기록</string>
+    <string name="details_heart_rate_all">더보기</string>
+    <string name="details_heart_rate_empty">심박수 기록 내역이 없습니다.</string>
 
 </resources>

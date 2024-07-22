@@ -1,8 +1,8 @@
 package com.feature.admin.components
 
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,30 +14,37 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.core.desinsystem.common.addFocusCleaner
+import com.core.desinsystem.common.noRippleClickable
+import com.core.desinsystem.icons.Clear
 import com.feature.admin.R
 
+private const val QUERY_EMPTY_MESSAGE = "검색어를 입력해주세요."
 @Composable
-fun MemberSearchField(
+fun UserSearchField(
     query: String,
     onQueryChange: (String) -> Unit,
     onQueryClear: () -> Unit,
     onSearch: () -> Unit,
+    focusManager: FocusManager,
     modifier: Modifier = Modifier,
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
     BasicTextField(
         value = query,
         onValueChange = onQueryChange,
@@ -45,19 +52,29 @@ fun MemberSearchField(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .height(48.dp)
-            .background(
-                color = Color.LightGray,
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(16.dp)
-            ),
+            )
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(16.dp)
+            )
+            .addFocusCleaner(focusManager),
         singleLine = true,
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Search
         ),
         keyboardActions = KeyboardActions(
             onSearch = {
-                Log.e("확인", "MemberSearchBar: onSearch")
-                onSearch()
-                keyboardController?.hide()
+                if(query.isNotBlank()) {
+                    onSearch()
+                    focusManager.clearFocus()
+                }
+                else {
+                    Toast.makeText(context, QUERY_EMPTY_MESSAGE, Toast.LENGTH_SHORT).show()
+                }
             }
         ),
         decorationBox = { innerTextField ->
@@ -78,15 +95,21 @@ fun MemberSearchField(
                         Icon(
                             modifier = modifier
                                 .padding(horizontal = 8.dp)
-                                .clickable(onClick = onQueryClear),
-                            imageVector = Icons.Rounded.Clear,
+                                .noRippleClickable(onClick = onQueryClear),
+                            imageVector = Icons.Clear,
+                            tint = Color.Gray,
                             contentDescription = null
                         )
                     }
                     Icon(
-                        modifier = modifier.clickable {
-                            onSearch()
-                            keyboardController?.hide()
+                        modifier = modifier.noRippleClickable {
+                            if(query.isNotBlank()) {
+                                onSearch()
+                                focusManager.clearFocus()
+                            }
+                            else {
+                                Toast.makeText(context, QUERY_EMPTY_MESSAGE, Toast.LENGTH_SHORT).show()
+                            }
                         },
                         imageVector = Icons.Rounded.Search,
                         contentDescription = null
@@ -105,8 +128,10 @@ fun MemberSearchField(
     )
 }
 
+
 @Preview(name = "MemberSearchBar")
 @Composable
 private fun PreviewMemberSearchBar() {
-    MemberSearchField("", {}, {}, {})
+    val focusManager = LocalFocusManager.current
+    UserSearchField("", {}, {}, {}, focusManager)
 }

@@ -6,9 +6,7 @@ import java.time.LocalDate
 
 interface GetHeartRateRepository {
 
-    fun getLastHeartRate(
-        id: String,
-    ): Flow<HeartRate?>
+    fun getLastHeartRate(id: String): Flow<HeartRate?>
 
     fun getHeartRateByDate(
         id: String,
@@ -22,5 +20,7 @@ interface GetHeartRateRepository {
         startDate: LocalDate,
         endDate: LocalDate,
     ): Flow<List<HeartRate>>
+
+    fun getLastHeartRateList(id: String) : Flow<List<HeartRate>>
 
 }
