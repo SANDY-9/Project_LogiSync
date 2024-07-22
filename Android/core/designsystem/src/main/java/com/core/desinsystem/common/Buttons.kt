@@ -81,7 +81,7 @@ fun CallButton(
     IconButton(
         modifier = modifier.size(30.dp),
         onClick = {
-            callArrestUser(context, tel)
+            callUser(context, tel)
         },
         colors = IconButtonColors(
             containerColor = CallGreen,
@@ -98,7 +98,7 @@ fun CallButton(
     }
 }
 
-private fun callArrestUser(
+private fun callUser(
     context: Context,
     tel: String,
 ) {

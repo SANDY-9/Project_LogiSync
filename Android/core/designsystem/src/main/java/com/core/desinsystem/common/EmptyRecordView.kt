@@ -1,8 +1,6 @@
-package com.sandy.statistics.compoents
+package com.core.desinsystem.common
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,19 +14,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.sandy.statistics.R
 
 @Composable
 fun EmptyRecordView(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom,
+        verticalArrangement = Arrangement.Center,
     ) {
         Icon(
             imageVector = Icons.Rounded.Info,
@@ -37,7 +33,7 @@ fun EmptyRecordView(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(id = R.string.heart_rate_empty),
+            text = "수집된 심박수 데이터가 없습니다.",
             style = MaterialTheme.typography.labelLarge,
             color = Color.Gray
         )

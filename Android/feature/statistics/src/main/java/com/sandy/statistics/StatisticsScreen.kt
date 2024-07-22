@@ -36,7 +36,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.MyDateRangePickerBottomSheet
 import com.core.desinsystem.common.RecordItemHeartRate
-import com.sandy.statistics.compoents.EmptyRecordView
+import com.core.desinsystem.common.EmptyRecordView
 import com.sandy.statistics.compoents.HeartRateChart
 import com.sandy.statistics.compoents.HeartRateDescriptionCard
 import com.sandy.statistics.model.StatisticsUiState
@@ -74,22 +74,19 @@ fun StatisticsScreen(
             )
         }
 
-        if(state.isSelectItemEmpty) {
-            item {
-                EmptyRecordView(modifier = modifier.fillMaxWidth().fillParentMaxHeight(0.3f))
-            }
+        stickyHeader {
+            HeartRateRecordAppBar()
         }
 
-        else {
-            stickyHeader {
-                HeartRateRecordAppBar()
-            }
-
-            items(items = state.selectRecordItem){ item ->
-                RecordItemHeartRate(item.bpm, item.time())
-            }
+        items(items = state.selectRecordItem){ item ->
+            RecordItemHeartRate(item.bpm, item.time())
         }
     }
+
+    if(state.isSelectItemEmpty) {
+        EmptyRecordView(modifier = modifier.fillMaxWidth())
+    }
+
     if (state.datePickerVisible) {
         MyDateRangePickerBottomSheet(
             selectedStartDateStr = state.selectedStartDateStr,
