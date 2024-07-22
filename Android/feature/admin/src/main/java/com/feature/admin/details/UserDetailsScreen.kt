@@ -82,7 +82,12 @@ fun UserDetailsScreen(
                 item {
                     UserReport(
                         emptyReport = state.lastReportList.isEmpty(),
-                        onNavigateToAllReport = {},
+                        onNavigateToAllReport = {
+                            navController.run {
+                                currentBackStackEntry?.savedStateHandle?.set(Args.ID, user.id)
+                                navigate(Route.Arrest.route)
+                            }
+                        },
                     )
                     Spacer(modifier = modifier.height(8.dp))
                 }
@@ -108,7 +113,12 @@ fun UserDetailsScreen(
 
                 item {
                     UserHeartRateReportTitle(
-                        onNavigateToStatistics = {}
+                        onNavigateToStatistics = {
+                            navController.run {
+                                currentBackStackEntry?.savedStateHandle?.set(Args.ID, user.id)
+                                navigate(Route.Statistics.route)
+                            }
+                        }
                     )
                 }
 
