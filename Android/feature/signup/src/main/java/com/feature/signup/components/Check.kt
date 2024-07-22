@@ -7,12 +7,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Call
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,15 +26,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.core.desinsystem.common.ButtonLoadingBar
 import com.core.desinsystem.common.MyTelTextField
 import com.core.desinsystem.common.MyTextField
 import com.core.desinsystem.common.addFocusCleaner
+import com.core.desinsystem.theme.TransparentWhite
 import com.feature.signup.R
 import com.feature.signup.model.CheckState
 import com.feature.signup.model.InputType
@@ -40,6 +47,7 @@ private const val EXIST_MEMBER_ERROR = "이미 가입되어 있는 회원입니�
 // 회원가입 여부 확인
 @Composable
 internal fun Check(
+    loading: Boolean,
     check: CheckState,
     onInputChange: (String, InputType) -> Unit,
     onInputClear: (InputType) -> Unit,
@@ -101,9 +109,8 @@ internal fun Check(
             enabled = check.isInputComplete,
             onClick = onSignupCheck,
         ) {
-            Text(
-                text = stringResource(id = R.string.signup_next_step1)
-            )
+            if (loading) ButtonLoadingBar()
+            else Text(text = stringResource(id = R.string.signup_next_step1))
         }
     }
 }

@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.core.desinsystem.common.ButtonLoadingBar
 import com.feature.signup.R
 import com.feature.signup.model.AgreementState
 import com.feature.signup.model.AgreementType
@@ -31,6 +32,7 @@ import com.feature.signup.model.AgreementType
 // 회원가입 약관 동의
 @Composable
 internal fun Agreement(
+    loading: Boolean,
     agreement: AgreementState,
     onCheckChange: (Boolean, AgreementType) -> Unit,
     onContentExpand: (AgreementType) -> Unit,
@@ -42,7 +44,7 @@ internal fun Agreement(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(20.dp)
     ) {
         Column(
             modifier = modifier
@@ -99,9 +101,8 @@ internal fun Agreement(
             enabled = isAgreeComplete,
             onClick = onComplete,
         ) {
-            Text(
-                text = stringResource(id = R.string.signup_next_step2)
-            )
+            if (loading) ButtonLoadingBar()
+            else Text(text = stringResource(id = R.string.signup_next_step2))
         }
     }
 }
