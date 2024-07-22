@@ -1,6 +1,7 @@
 package com.core.data.repository.network
 
 import com.core.data.mapper.toUser
+import com.core.data.mapper.toUserMap
 import com.core.domain.repository.GetUserRepository
 import com.core.firebase.UserClient
 import com.core.model.User
@@ -28,10 +29,10 @@ class GetUserRepositoryImpl @Inject constructor(
         awaitClose()
     }.flowOn(Dispatchers.IO)
 
-    override fun getUserList(): Flow<List<User>?> = callbackFlow {
+    override fun getUserList(): Flow<Map<User.Team, List<User>>?> = callbackFlow {
         userClient.getUserList(
             onSuccess = {
-                trySend(emptyList())
+                trySend(it.toUserMap())
             },
             onError = {
                 close(it)

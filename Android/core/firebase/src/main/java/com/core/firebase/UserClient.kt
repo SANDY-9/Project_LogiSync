@@ -32,18 +32,23 @@ class UserClient @Inject constructor(
     }
 
     fun getUserList(
-        onSuccess: (Map<String, UserDTO>?) -> Unit,
+        onSuccess: (List<UserDTO?>) -> Unit,
         onError: (Throwable) -> Unit,
     ) {
         ref.child(USERS).get().addOnSuccessListener { snapshot ->
             if (snapshot.exists()) {
-                snapshot.children.forEach {
-
+                val userList = snapshot.children.map {
+                    val user = it.getValue<UserDTO>()
+                    val criticalPoint = it.child(CRITICAL_POINT).getValue<CriticalPointDTO>()
+                    user?.copy(
+                        id = it.key,
+                        criticalPoint = criticalPoint,
+                    )
                 }
-                onSuccess(emptyMap())
+                onSuccess(userList)
             }
             else {
-                onError(Exception())
+                onSuccess(emptyList())
             }
         }.addOnFailureListener {
             onError(it)
