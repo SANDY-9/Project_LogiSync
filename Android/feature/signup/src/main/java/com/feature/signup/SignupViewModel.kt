@@ -172,7 +172,7 @@ class SignupViewModel @Inject constructor(
     internal fun completeAgreement() {
         viewModelScope.launch {
             _stateFlow.value = state.copy(loading = true)
-            delay(500L)
+            delay(700L)
             _stateFlow.value = state.copy(
                 loading = false,
                 phase = SignupStep.JOINING,
