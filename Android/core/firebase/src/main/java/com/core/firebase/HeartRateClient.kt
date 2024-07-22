@@ -52,6 +52,28 @@ class HeartRateClient @Inject constructor(
         ref.child(HEART_RATE).child(id).orderByValue().limitToLast(1).addValueEventListener(listener)
     }
 
+    fun getLastHeartRateList(
+        id: String,
+        onSuccess: (List<HeartRateDTO>) -> Unit,
+        onError: (Throwable) -> Unit,
+    ) {
+        ref.child(HEART_RATE).child(id).orderByKey().limitToLast(1).get().addOnSuccessListener { snapshot ->
+            val list = mutableListOf<HeartRateDTO>()
+            if(snapshot.exists()) {
+                snapshot.children.last().children.last().children.forEach { heartRate ->
+                    val heartRateDTO = HeartRateDTO(
+                        bpm = heartRate.value.toString().toInt(),
+                        date = heartRate.key.toString(),
+                    )
+                    list.add(heartRateDTO)
+                }
+            }
+            onSuccess(list)
+        }.addOnFailureListener {
+            onError(it)
+        }
+    }
+
     fun getHeartRateByDate(
         id: String,
         yearMonth: String,
