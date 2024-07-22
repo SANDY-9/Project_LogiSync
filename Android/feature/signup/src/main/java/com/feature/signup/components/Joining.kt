@@ -98,9 +98,7 @@ internal fun Joining(
 
         val isSingUpEnabled = joining.isNotValidPwdCheck == false && joining.existedId == false
         Button(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = modifier.fillMaxWidth(),
             enabled = isSingUpEnabled,
             onClick = onSignupComplete,
         ) {

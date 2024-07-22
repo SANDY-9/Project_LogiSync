@@ -17,11 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.common.MyPwdTextField
 import com.core.desinsystem.icons.Check
+import com.core.desinsystem.theme.DarkGreen
 import com.feature.signup.R
 import com.feature.signup.model.InputType
 
@@ -66,6 +66,7 @@ internal fun PwdInput(
             isNotValidPwd = isNotValidPwdCheck,
             focusManager = focusManager,
         )
+        Spacer(modifier = modifier.height(36.dp))
     }
 }
 
@@ -110,7 +111,7 @@ private fun PwdCheckTextField(
         unfocusedBorderColor = when(isNotValidPwd) {
             null -> MaterialTheme.colorScheme.outline
             true -> MaterialTheme.colorScheme.error
-            false -> Color.Green
+            false -> DarkGreen
         }
     )
     MyPwdTextField(
@@ -143,12 +144,12 @@ private fun CheckPwdOk(
         Icon(
             modifier = modifier.size(18.dp),
             imageVector = Icons.Check, contentDescription = null,
-            tint = Color.Green,
+            tint = DarkGreen,
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = stringResource(id = R.string.signup_join_pwd_check_ok),
-            color = Color.Green,
+            color = DarkGreen,
         )
     }
 }

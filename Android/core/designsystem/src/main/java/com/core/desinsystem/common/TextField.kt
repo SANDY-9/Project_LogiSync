@@ -69,10 +69,12 @@ fun MyTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.addFocusCleaner(focusManager).background(
-            color = Color.White,
-            shape = RoundedCornerShape(8.dp)
-        ),
+        modifier = modifier
+            .addFocusCleaner(focusManager)
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(8.dp)
+            ),
         enabled = enabled,
         readOnly = readOnly,
         textStyle = textStyle,
@@ -82,10 +84,8 @@ fun MyTextField(
         trailingIcon = {
             if (value.isNotBlank()) {
                 IconButton(
-                    onClick = {
-                        focusManager.moveFocus(FocusDirection.Previous)
-                        onValueClear()
-                    }) {
+                    onClick = onValueClear
+                ) {
                     Icon(
                         imageVector = Icons.Clear,
                         tint = Color.Gray,
@@ -146,10 +146,12 @@ fun MyPwdTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.addFocusCleaner(focusManager).background(
-            color = Color.White,
-            shape = RoundedCornerShape(8.dp)
-        ),
+        modifier = modifier
+            .addFocusCleaner(focusManager)
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(8.dp)
+            ),
         enabled = enabled,
         readOnly = readOnly,
         textStyle = textStyle,
@@ -225,10 +227,12 @@ fun MyTelTextField(
         onValueChange = {
             onValueChange(it.text)
         },
-        modifier = modifier.addFocusCleaner(focusManager).background(
-            color = Color.White,
-            shape = RoundedCornerShape(8.dp)
-        ),
+        modifier = modifier
+            .addFocusCleaner(focusManager)
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(8.dp)
+            ),
         enabled = enabled,
         readOnly = readOnly,
         textStyle = textStyle,
