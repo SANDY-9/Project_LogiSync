@@ -29,6 +29,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.addFocusCleaner
+import com.core.navigation.Args
+import com.core.navigation.Route
 import com.feature.admin.components.UserFilter
 import com.feature.admin.components.UserList
 import com.feature.admin.components.UserSearchField
@@ -70,6 +72,10 @@ fun AdminScreen(
             UserList(
                 userList = state.filteredUserList,
                 onItemClick = { user ->
+                    navController.run {
+                        currentBackStackEntry?.savedStateHandle?.set(Args.USER, user)
+                        navigate(Route.UserDetails.route)
+                    }
                 }
             )
         }
