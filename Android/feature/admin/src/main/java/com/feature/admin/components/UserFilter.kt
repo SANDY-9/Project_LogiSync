@@ -1,8 +1,7 @@
 package com.feature.admin.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,34 +9,35 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.feature.admin.R
 
 @Composable
-fun MemberFilter(
+fun UserFilter(
     allFilterSelected: Boolean,
     onSelectAllFilter: () -> Unit,
-    attentionFilterSelected: Boolean,
-    onSelectAttentionFilter: () -> Unit,
     dangerFilterSelected: Boolean,
     onSelectDangerFilter: () -> Unit,
+    onRefreshList: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.End
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         FilterButton(
             isSelected = allFilterSelected,
@@ -46,15 +46,15 @@ fun MemberFilter(
         )
         Spacer(modifier = modifier.width(8.dp))
         FilterButton(
-            isSelected = attentionFilterSelected,
-            onSelect = onSelectAttentionFilter,
-            title = stringResource(id = R.string.admin_member_filter_attention)
-        )
-        Spacer(modifier = modifier.width(8.dp))
-        FilterButton(
             isSelected = dangerFilterSelected,
             onSelect = onSelectDangerFilter,
             title = stringResource(id = R.string.admin_member_filter_danger)
+        )
+        Spacer(modifier = modifier.weight(1f))
+        Icon(
+            modifier = modifier.clickable(onClick = onRefreshList),
+            imageVector = Icons.Rounded.Refresh,
+            contentDescription = null
         )
     }
 }

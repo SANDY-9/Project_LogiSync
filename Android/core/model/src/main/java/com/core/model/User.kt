@@ -13,6 +13,13 @@ data class User(
     val minCriticalPoint: Int?,
     val maxCriticalPoint: Int?,
 ) {
+    fun isCritical(): Boolean {
+        return if(minCriticalPoint != null && maxCriticalPoint != null && lastBpm != null) {
+            lastBpm < minCriticalPoint || lastBpm > maxCriticalPoint
+        } else {
+            false
+        }
+    }
     enum class Duty {
         ADMIN,
         NORMAL;
