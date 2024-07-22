@@ -92,20 +92,14 @@ private fun ArrestContent(
     state: ArrestDetailsUiState,
     modifier: Modifier = Modifier,
 ) {
-    val scrollState = rememberScrollState()
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
+        modifier = modifier.fillMaxSize()
     ) {
         ArrestUserProfile(user = state.user ?: return)
-        Spacer(modifier = modifier.height(30.dp))
+        Spacer(modifier = modifier.height(24.dp))
         ArrestContentDetails(arrest = state.arrest ?: return)
-        Spacer(modifier = modifier.height(30.dp))
-        ArrestLocationDetails(
-            lat = state.arrest.lat,
-            lng = state.arrest.lng,
-        )
+        Spacer(modifier = modifier.height(24.dp))
+        ArrestLocationDetails(arrestLocation = state.arrestLocation ?: return)
         Spacer(modifier = modifier.height(30.dp))
     }
 }

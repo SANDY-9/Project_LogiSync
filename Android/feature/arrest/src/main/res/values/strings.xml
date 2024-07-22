@@ -13,5 +13,6 @@
     <string name="arrest_details_user_title">신고자 정보</string>
     <string name="arrest_details_content_title">신고 내용</string>
     <string name="arrest_details_location_title">신고 위치</string>
+    <string name="arrest_details_location_arrest">신고한 장소</string>
 
 </resources>
