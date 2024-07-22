@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -26,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.addFocusCleaner
+import com.core.desinsystem.lottie.LottieProgressBarBlue
 import com.core.desinsystem.theme.LogiSyncTheme
 import com.core.model.Account
 import com.core.navigation.Route
@@ -124,6 +126,10 @@ fun LoginScreen(
             }
         ) {
             Text(text = stringResource(id = R.string.login_title_signup))
+        }
+
+        if(state.isLoading) {
+            LottieProgressBarBlue(modifier = modifier.padding(top = 32.dp))
         }
 
     }
