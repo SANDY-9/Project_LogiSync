@@ -21,6 +21,7 @@
     <string name="details_arrest_empty">신고 내역이 없습니다.</string>
     <string name="details_arrest_all">전체보기</string>
     <string name="details_heart_rate_title">심박수 기록</string>
+    <string name="details_heart_rate_all">더보기</string>
     <string name="details_heart_rate_empty">심박수 기록 내역이 없습니다.</string>
 
 </resources>

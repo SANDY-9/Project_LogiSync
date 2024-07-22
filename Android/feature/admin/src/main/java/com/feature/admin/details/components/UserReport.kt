@@ -24,11 +24,13 @@ import com.feature.admin.R
 @Composable
 internal fun UserReport(
     emptyReport: Boolean,
-    onAllReport: () -> Unit,
+    onNavigateToAllReport: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-        ReportTitle(onAllReport = onAllReport)
+    Column(
+        modifier = modifier.fillMaxWidth().padding(horizontal = 20.dp)
+    ) {
+        ReportTitle(onNavigateToAllReport = onNavigateToAllReport)
         Spacer(modifier = modifier.size(12.dp))
         if(emptyReport) {
             EmptyReport()
@@ -38,7 +40,7 @@ internal fun UserReport(
 
 @Composable
 private fun ReportTitle(
-    onAllReport: () -> Unit,
+    onNavigateToAllReport: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -46,11 +48,11 @@ private fun ReportTitle(
     ) {
         Text(
             text = stringResource(id = R.string.details_arrest_title),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleLarge,
         )
         Spacer(modifier = modifier.weight(1f))
         Text(
-            modifier = modifier.noRippleClickable(onClick = onAllReport),
+            modifier = modifier.noRippleClickable(onClick = onNavigateToAllReport),
             text = stringResource(id = R.string.details_arrest_all),
             style = MaterialTheme.typography.labelMedium,
             color = Color.Gray,

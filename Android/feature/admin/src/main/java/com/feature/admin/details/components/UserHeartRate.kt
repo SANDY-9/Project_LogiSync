@@ -38,7 +38,7 @@ internal fun UserHeartRate(
     modifier: Modifier = Modifier
 ) {
     LogiCard(
-        modifier = modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 20.dp),
     ){
         Column(
             modifier = modifier.fillMaxWidth(),

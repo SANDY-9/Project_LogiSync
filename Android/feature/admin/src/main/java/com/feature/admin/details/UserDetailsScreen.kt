@@ -17,6 +17,7 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,16 +32,15 @@ import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.BoxLayout
 import com.core.desinsystem.common.CallButton
 import com.core.desinsystem.common.EmptyRecordView
-import com.core.desinsystem.common.HeartRateRecordItem
 import com.core.model.User
 import com.core.navigation.Args
 import com.core.navigation.Route
 import com.feature.admin.details.components.ReportItem
 import com.feature.admin.details.components.UserHeartRate
+import com.feature.admin.details.components.UserHeartRateReportItem
 import com.feature.admin.details.components.UserHeartRateReportTitle
 import com.feature.admin.details.components.UserProfile
 import com.feature.admin.details.components.UserReport
-import java.time.LocalDateTime
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -49,6 +49,13 @@ fun UserDetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: UserDetailsViewModel = hiltViewModel()
 ) {
+
+    LaunchedEffect(navController.previousBackStackEntry) {
+        navController.previousBackStackEntry?.savedStateHandle?.get<User>(Args.USER)?.let { user ->
+            viewModel.getUserDetails(user)
+        }
+    }
+
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
     Column(
         modifier = modifier
@@ -74,9 +81,10 @@ fun UserDetailsScreen(
 
                 item {
                     UserReport(
-                        emptyReport = true,
-                        onAllReport = {},
+                        emptyReport = state.lastReportList.isEmpty(),
+                        onNavigateToAllReport = {},
                     )
+                    Spacer(modifier = modifier.height(8.dp))
                 }
 
                 items(
@@ -84,7 +92,7 @@ fun UserDetailsScreen(
                     key = { it.time }
                 ) { arrest ->
                     BoxLayout(
-                        padding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 8.dp)
+                        padding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 8.dp, top = 0.dp)
                     ) {
                         ReportItem(
                             arrestItem = arrest,
@@ -98,15 +106,17 @@ fun UserDetailsScreen(
                     }
                 }
 
-                stickyHeader {
-                    UserHeartRateReportTitle()
+                item {
+                    UserHeartRateReportTitle(
+                        onNavigateToStatistics = {}
+                    )
                 }
 
                 items(
                     items = state.lastHeartRateList,
                     key = { it.date }
                 ) { heartRate ->
-                    HeartRateRecordItem(heartRate.bpm, heartRate.time())
+                    UserHeartRateReportItem(heartRate.bpm, heartRate.time())
                 }
 
             }

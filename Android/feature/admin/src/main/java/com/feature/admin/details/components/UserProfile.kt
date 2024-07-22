@@ -46,7 +46,7 @@ fun UserProfile(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 20.dp)
     ){
         Spacer(modifier = modifier.height(16.dp))
         Row(
