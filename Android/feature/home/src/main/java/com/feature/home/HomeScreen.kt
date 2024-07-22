@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -49,11 +50,9 @@ fun HomeScreen(
 ) {
 
     // DisposableEffect
-    val context = LocalContext.current as? Activity?
+    val context = LocalContext.current
     HomeWearableListener(context)
-    BackHandler(enabled = true) {
-        context?.finish()
-    }
+    BackOnPressed(context)
 
     // Ui
     val state: HomeUiState by viewModel.stateFlow.collectAsStateWithLifecycle()
@@ -69,6 +68,7 @@ fun HomeScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
+            .systemBarsPadding()
             .background(color = Color.White)
     ) {
 
