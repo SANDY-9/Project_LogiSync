@@ -4,4 +4,5 @@ data class Device(
     val name: String,
     val alias: String,
     val id: String,
+    val isNearby: Boolean =false
 )

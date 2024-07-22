@@ -17,5 +17,6 @@ internal fun Node.toDevice(alias: String? = null): Device {
         name = displayName,
         alias = alias ?: displayName,
         id = id,
+        isNearby = isNearby,
     )
 }

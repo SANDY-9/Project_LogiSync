@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,7 +35,7 @@ internal fun PairingInfo(
     Column {
         Text(
             text = stringResource(id = R.string.home_device_pairing_title),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleLarge,
         )
         Spacer(modifier = modifier.size(12.dp))
         LogiCard{
@@ -40,7 +43,7 @@ internal fun PairingInfo(
                 modifier = modifier
                     .align(Alignment.CenterHorizontally),
                 text = deviceName,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = modifier.size(8.dp))
             val connectModifier = modifier.align(Alignment.CenterHorizontally)
@@ -70,7 +73,7 @@ private fun ConnectedWatch(
         )
         Text(
             text = stringResource(id = R.string.home_device_pairing_connect),
-            style = MaterialTheme.typography.titleSmall
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
@@ -92,25 +95,14 @@ private fun DisConnectedDevice(
             Spacer(modifier = modifier.width(4.dp))
             Text(
                 text = stringResource(id = R.string.home_device_pairing_deconnect),
-                style = MaterialTheme.typography.titleSmall
+                style = MaterialTheme.typography.bodyMedium
             )
         }
-        Spacer(modifier = modifier.height(16.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                modifier = modifier.size(15.dp),
-                imageVector = Icons.Rounded.Info,
-                contentDescription = null,
-                tint = Color.Gray,
-            )
-            Spacer(modifier = modifier.width(4.dp))
-            Text(
-                text = stringResource(id = R.string.home_device_pairing_connect_title),
-                style = MaterialTheme.typography.titleSmall,
-                color = Color.Gray,
-            )
-        }
+        Spacer(modifier = modifier.height(8.dp))
+        Text(
+            text = stringResource(id = R.string.home_device_pairing_connect_title),
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Gray,
+        )
     }
 }

@@ -3,6 +3,7 @@ package com.core.desinsystem.common
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
@@ -12,17 +13,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Call
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.theme.CallGreen
+import com.core.desinsystem.theme.TransparentWhite
+import com.core.desinsystem.theme.TransparentWhiteDeem
 
 @Composable
 fun BasicTextButton(
@@ -65,8 +69,15 @@ fun BasicOutlinedButton(
 ) {
     OutlinedButton(
         modifier = modifier.defaultMinSize(minHeight = 1.dp, minWidth = 1.dp),
-        contentPadding = PaddingValues(vertical = 4.dp, horizontal = 16.dp),
+        contentPadding = PaddingValues(vertical = 5.dp, horizontal = 16.dp),
         onClick = onClick,
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = TransparentWhiteDeem,
+            contentColor = MaterialTheme.colorScheme.primary,
+            disabledContainerColor = Color.Gray,
+            disabledContentColor = Color.White,
+        ),
+        border = BorderStroke(1.dp, Color.LightGray)
     ) {
         Text(text = title)
     }

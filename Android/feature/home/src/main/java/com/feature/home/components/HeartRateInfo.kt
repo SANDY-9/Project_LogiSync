@@ -42,7 +42,7 @@ internal fun HeartRateInfo(
     Column {
         Text(
             text = stringResource(id = R.string.home_heart_rate_title),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleLarge,
         )
         Spacer(modifier = modifier.size(12.dp))
         LogiCard{
@@ -73,7 +73,7 @@ private fun EmptyMeasuredHeartRateView(
     ) {
         Text(
             text = stringResource(id = R.string.home_heart_rate_empty),
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.bodyMedium,
         )
         Spacer(modifier = modifier.width(8.dp))
         HeartRateCollectButton(

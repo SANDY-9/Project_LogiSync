@@ -1,9 +1,9 @@
 package com.feature.home.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -14,7 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.common.BasicOutlinedButton
-import com.core.desinsystem.common.HeartRateLabel
+import com.core.desinsystem.common.DottedLine
+import com.core.desinsystem.common.HeartRateLabelLarge
 import com.core.desinsystem.common.LinearHeartRateGraph
 import com.core.desinsystem.theme.DarkGreen
 import com.core.desinsystem.theme.DarkRed
@@ -27,23 +28,20 @@ internal fun NotEmptyHeartRateView(
     onRequestCollect: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row{
+    Box{
         Column(
-            modifier = modifier
-                .weight(1f)
-                .padding(end = 24.dp)
+            modifier = modifier.padding(end = 24.dp)
         ) {
             HeartRateRecord(
+                modifier = modifier.padding(top = 4.dp),
                 heartRate = heartRate,
             )
-            Spacer(modifier = modifier.height(4.dp))
-            HeartRateAnalysis(
-                avgRange = heartRate.avgRange,
-            )
-            Spacer(modifier = modifier.height(4.dp))
-            LinearHeartRateGraph(bpm = heartRate.bpm)
+            DottedLine(modifier = modifier.padding(top = 8.dp, bottom = 16.dp))
+            HeartRateAnalysis(avgRange = heartRate.avgRange)
+            LinearHeartRateGraph(bpm = heartRate.bpm,)
         }
         HeartRateCollectButton(
+            modifier = modifier.align(Alignment.TopEnd),
             onClick = onRequestCollect,
         )
     }
@@ -54,17 +52,13 @@ private fun HeartRateRecord(
     heartRate: HeartRate,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    Column(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
     ) {
-        HeartRateLabel(bpm = "${heartRate.bpm}")
+        HeartRateLabelLarge(bpm = "${heartRate.bpm}")
         Text(
-            modifier = Modifier
-                .align(Alignment.Bottom)
-                .padding(start = 8.dp, bottom = 3.dp),
             text = heartRate.time(),
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.bodySmall,
         )
     }
 }
@@ -89,19 +83,19 @@ private fun NormalAvg(
     ) {
         Text(
             text = stringResource(id = R.string.home_heart_rate_avg_normal1),
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.bodyMedium,
         )
         Text(
             modifier = modifier.padding(horizontal = 3.dp),
             text = stringResource(id = R.string.home_heart_rate_avg_normal2),
-            style = MaterialTheme.typography.labelMedium.copy(
+            style = MaterialTheme.typography.bodyMedium.copy(
                 color = DarkGreen,
                 fontWeight = FontWeight.Bold,
             ),
         )
         Text(
             text = stringResource(id = R.string.home_heart_rate_avg_normal3),
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }
@@ -115,12 +109,12 @@ private fun HighAvg(
     ) {
         Text(
             text = stringResource(id = R.string.home_heart_rate_avg),
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.bodyMedium,
         )
         Text(
             modifier = modifier.padding(horizontal = 3.dp),
             text = stringResource(id = R.string.home_heart_rate_avg_high),
-            style = MaterialTheme.typography.labelMedium.copy(
+            style = MaterialTheme.typography.bodyMedium.copy(
                 color = DarkRed,
                 fontWeight = FontWeight.Bold,
             ),
@@ -137,12 +131,12 @@ private fun LowAvg(
     ) {
         Text(
             text = stringResource(id = R.string.home_heart_rate_avg),
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.bodyMedium,
         )
         Text(
             modifier = modifier.padding(horizontal = 3.dp),
             text = stringResource(id = R.string.home_heart_rate_avg_low),
-            style = MaterialTheme.typography.labelMedium.copy(
+            style = MaterialTheme.typography.bodyMedium.copy(
                 color = DarkRed,
                 fontWeight = FontWeight.Bold,
             ),
@@ -152,8 +146,8 @@ private fun LowAvg(
 
 @Composable
 private fun HeartRateCollectButton(
-    modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     BasicOutlinedButton(
         modifier = modifier,

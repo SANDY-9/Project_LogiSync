@@ -28,15 +28,8 @@ class WearableRepositoryImpl @Inject constructor(
     // 테스트용
     override fun getWearableConnectState(): Flow<Device?> = flow {
         val node = wearableClient.getConnectWearable()
-        /*if (node == null) {
-            emit(null)
-        }
-        else {
-            val alias = bluetoothManager.getDeviceAlias()
-            emit(node.toDevice(alias))
-        }*/
-        var start = true
-        while (start) {
+        //var start = true
+        while (true) {
             val node = wearableClient.getConnectWearable()
             Log.e("확인", "getWearableConnectState: $node", )
             if(node == null) {
@@ -45,7 +38,7 @@ class WearableRepositoryImpl @Inject constructor(
             else {
                 val alias = bluetoothManager.getDeviceAlias()
                 emit(node.toDevice(alias))
-                start = false
+                //start = false
             }
             delay(INTERVAL)
         }

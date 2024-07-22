@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
@@ -45,47 +46,30 @@ class HomeViewModel @Inject constructor(
 
     init {
         @Suppress("OPT_IN_USAGE")
-        getAccountUseCase().flatMapLatest{ account ->
+        getAccountUseCase().flatMapLatest { account ->
             account?.let {
                 _stateFlow.update { state -> state.copy(account = it) }
                 combine(
                     getLastHeartRateUseCase(it.id),
                     getLastMyArrestUseCase(it.id)
                 ) { heartRate, arrest ->
-                    Log.e("확인", "$heartRate: $arrest", )
                     state.copy(
-                        heartRate = heartRate,
-                        reportList = arrest,
-                        emptyReport = arrest.isEmpty(),
-                    )
-                }
-            }
-            ?: flowOf(null)
-        }
-            .onEach { state ->
-                state?.let {
-                    _stateFlow.value = it
-                }
-            }
-            .launchIn(viewModelScope)
-
-        combine(
-            getLastHeartRateUseCase("nal0256"),
-            getLastMyArrestUseCase("nal0256")
-        ) { heartRate, arrest ->
-            Log.e("확인", "$heartRate: $arrest", )
-            state.copy(
-                heartRate = heartRate,
-                reportList = arrest,
-                emptyReport = arrest.isEmpty(),
-            )
-        }
-            .onEach { state ->
-                state?.let {
-                    _stateFlow.value = it
-                }
-            }
-            .launchIn(viewModelScope)
+                         heartRate = heartRate,
+                         reportList = arrest,
+                         emptyReport = arrest.isEmpty(),
+                         loading = false,
+                        )
+                    }
+                } ?: flowOf(null)
+                    }.onStart {
+                     _stateFlow.value = state.copy(loading = true)
+                    }
+                    .onEach { state ->
+                        state?.let { _stateFlow.value = it }
+                    }.catch {
+                        _stateFlow.value = state.copy(loading = false)
+                    }
+                    .launchIn(viewModelScope)
 
         monitorWearableConnectState()
     }
@@ -96,7 +80,7 @@ class HomeViewModel @Inject constructor(
             getLastPairedDeviceUseCase(),
         ) { pairedWatch, pairedDevice ->
             _stateFlow.value.copy(
-                isPairedWatch = pairedWatch != null,
+                isPairedWatch = pairedWatch,
                 pairedDeviceName = pairedDevice?.alias ?: ""
             )
         }.onEach {
