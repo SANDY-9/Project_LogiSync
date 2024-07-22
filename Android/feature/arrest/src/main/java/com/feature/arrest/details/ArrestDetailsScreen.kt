@@ -23,17 +23,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.feature.arrest.R
 import com.feature.arrest.details.components.ArrestContentDetails
 import com.feature.arrest.details.components.ArrestLocationDetails
 import com.feature.arrest.details.components.ArrestUserProfile
+import com.feature.arrest.details.model.ArrestDetailsUiState
 
 @Composable
 fun ArrestDetailsScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
+    viewModel: ArrestDetailsViewModel = hiltViewModel()
 ) {
     Column(
         modifier = modifier
@@ -41,7 +44,7 @@ fun ArrestDetailsScreen(
             .background(color = Color.White)
     ) {
         ArrestDetailsAppBar(onNavigateUp = { navController.navigateUp() })
-        ArrestContent()
+       // ArrestContent()
     }
 }
 
@@ -73,18 +76,19 @@ private fun ArrestDetailsAppBar(
 
 @Composable
 private fun ArrestContent(
+    state: ArrestDetailsUiState,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .verticalScroll(scrollState)
+        modifier = modifier.fillMaxSize().verticalScroll(scrollState)
     ) {
         ArrestUserProfile()
-        ArrestContentDetails()
+        Spacer(modifier = modifier.height(30.dp))
+        ArrestContentDetails(state.arrest ?: return)
+        Spacer(modifier = modifier.height(30.dp))
         ArrestLocationDetails()
+        Spacer(modifier = modifier.height(30.dp))
     }
 }
 
