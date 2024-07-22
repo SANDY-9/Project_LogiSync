@@ -21,6 +21,8 @@ import com.feature.arrest.R
 
 @Composable
 fun ArrestLocationDetails(
+    lat: Double,
+    lng: Double,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -52,5 +54,5 @@ private fun ArrestLocationMap(
 @Preview(name = "ArrestLocation")
 @Composable
 private fun PreviewArrestLocation() {
-    ArrestLocationDetails()
+    ArrestLocationDetails(36.213, 132.31234)
 }

@@ -95,7 +95,7 @@ fun ArrestScreen(
                             arrest = arrest,
                             onItemClick = {
                                 navController.run {
-                                    previousBackStackEntry?.savedStateHandle?.set(Args.ARREST, arrest)
+                                    currentBackStackEntry?.savedStateHandle?.set(Args.ARREST, arrest)
                                     navigate(Route.ArrestDetails.route)
                                 }
                             }

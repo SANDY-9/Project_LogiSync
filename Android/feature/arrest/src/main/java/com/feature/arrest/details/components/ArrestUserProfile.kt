@@ -30,26 +30,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.theme.CallGreen
 import com.core.desinsystem.theme.TransparentBlack
+import com.core.model.User
 import com.feature.arrest.R
 
 @Composable
 fun ArrestUserProfile(
+    user: User,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp)
     ){
-        Text(
-            text = stringResource(id = R.string.arrest_details_user_title),
-            style = MaterialTheme.typography.headlineSmall,
-        )
         Spacer(modifier = modifier.height(12.dp))
-        UserProfile()
+        UserProfile(user = user)
     }
 }
 
 @Composable
 private fun UserProfile(
+    user: User,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -72,10 +71,10 @@ private fun UserProfile(
         )
         Spacer(modifier = modifier.width(8.dp))
         Column {
-            Text(text = "홍길동 (nal0256)")
+            Text(text = "${user.name} (${user.id})")
             Spacer(modifier = modifier.weight(1f))
             Text(
-                text = "사원 | 물류2팀",
+                text = "${user.duty.str()} | ${user.team.name}",
                 style = MaterialTheme.typography.labelMedium,
                 color = Color.DarkGray
             )
@@ -100,10 +99,4 @@ private fun UserProfile(
             )
         }
     }
-}
-
-@Preview(name = "ArrestUserDetails")
-@Composable
-private fun PreviewArrestUserDetails() {
-    ArrestUserProfile()
 }
