@@ -10,6 +10,7 @@ sealed class Route(
     data object Statistics : Route(route = Screen.STATISTICS.name)
     data object Admin : Route(route = Screen.ADMIN.name)
     data object Arrest : Route(route = Screen.ARREST.name)
+    data object ArrestDetails : Route(route = Screen.ARREST_DETAILS.name)
 }
 
 enum class Screen {
@@ -20,4 +21,5 @@ enum class Screen {
     STATISTICS,
     ADMIN,
     ARREST,
+    ARREST_DETAILS,
 }
