@@ -12,12 +12,14 @@ class GetWearableConnectStateUseCase @Inject constructor(
 ) {
     operator fun invoke(): Flow<Boolean> {
         return wearableRepository.getWearableConnectState().map {
-            it?.let { device ->
-                devicePrefsRepository.updatePairedDevice(
-                    name = device.name,
-                    alias = device.alias,
-                    id = device.id
-                )
+            if(it !== null && it.isNearby) {
+                it?.let { device ->
+                    devicePrefsRepository.updatePairedDevice(
+                        name = device.name,
+                        alias = device.alias,
+                        id = device.id
+                    )
+                }
             }
             it?.isNearby ?: false
         }

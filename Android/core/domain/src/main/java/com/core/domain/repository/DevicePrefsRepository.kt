@@ -10,4 +10,9 @@ interface DevicePrefsRepository {
         alias: String?,
         id: String,
     )
+
+    fun getIsInitialConnectState(): Flow<Boolean>
+    suspend fun getIsInitialConnect(): Boolean
+    suspend fun updateInitialConnect()
+
 }

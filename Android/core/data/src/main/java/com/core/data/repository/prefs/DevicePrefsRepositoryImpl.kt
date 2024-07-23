@@ -6,6 +6,7 @@ import com.core.model.Device
 import com.sandy.datastore.DeviceDataStoreManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -28,6 +29,22 @@ class DevicePrefsRepositoryImpl @Inject constructor(
     ) {
         withContext(Dispatchers.IO) {
             deviceDataStoreManager.updateLastConnectedDevice(name, alias, id)
+        }
+    }
+
+    override fun getIsInitialConnectState(): Flow<Boolean> {
+        return deviceDataStoreManager.getIsInitialConnect().flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun getIsInitialConnect(): Boolean {
+        return withContext(Dispatchers.IO) {
+            deviceDataStoreManager.getIsInitialConnect().first()
+        }
+    }
+
+    override suspend fun updateInitialConnect() {
+        withContext(Dispatchers.IO) {
+            deviceDataStoreManager.updateInitialConnect()
         }
     }
 }
