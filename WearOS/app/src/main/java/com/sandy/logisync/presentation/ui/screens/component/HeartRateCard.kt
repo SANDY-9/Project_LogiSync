@@ -32,7 +32,7 @@ import java.time.LocalDateTime
 
 @Composable
 fun HeartRateCard(
-    heartRate: HeartRate,
+    heartRate: HeartRate?,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -49,54 +49,53 @@ fun HeartRateCard(
         verticalAlignment = Alignment.Top,
     ) {
         Icon(
-            modifier = modifier.padding(top = 7.dp),
+            modifier = modifier.padding(top = 6.dp),
             imageVector = Icons.Rounded.Favorite,
             tint = DeepRed,
             contentDescription = null,
         )
-        Column(
-            modifier = modifier
-                .weight(1f)
-                .padding(horizontal = 8.dp),
-        ) {
-            Row {
-                Text(
-                    modifier = modifier.weight(1f),
-                    text = stringResource(id = R.string.heart_rate_title),
-                    style = MaterialTheme.typography.caption2,
-                    color = Color.White,
-                )
-            }
-            Row(
-                verticalAlignment = Alignment.Bottom,
-            ) {
-                Text(
-                    text = "${heartRate.bpm}",
-                    style = MaterialTheme.typography.body1,
-                    color = Color.White,
-                )
-                Spacer(modifier = modifier.width(4.dp))
-                Text(
-                    modifier = modifier.padding(bottom = 3.dp),
-                    text = stringResource(id = R.string.heart_rate_unit),
-                    style = MaterialTheme.typography.caption3.copy(
-                        fontSize = 8.sp,
-                    ),
-                    color = Color.White,
-                )
-            }
+        if(heartRate != null) {
+            NotEmptyHeartRate(
+                heartRate = heartRate,
+                modifier = modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp),
+            )
         }
-        Column(
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.End,
-        ) {
+        else {
+            EmptyHeartRate()
+        }
+    }
+}
+
+@Composable
+private fun NotEmptyHeartRate(
+    heartRate: HeartRate,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+    ) {
+        Row {
             Text(
-                text = heartRate.dateStr(),
-                style = MaterialTheme.typography.caption3,
+                modifier = Modifier.weight(1f),
+                text = stringResource(id = R.string.heart_rate_title),
+                style = MaterialTheme.typography.caption2,
                 color = Color.White,
             )
+        }
+        Row(
+            verticalAlignment = Alignment.Bottom,
+        ) {
             Text(
-                text = heartRate.timeStr(),
+                text = "${heartRate.bpm}",
+                style = MaterialTheme.typography.body1,
+                color = Color.White,
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                modifier = Modifier.padding(bottom = 3.dp),
+                text = stringResource(id = R.string.heart_rate_unit),
                 style = MaterialTheme.typography.caption3.copy(
                     fontSize = 8.sp,
                 ),
@@ -104,6 +103,35 @@ fun HeartRateCard(
             )
         }
     }
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.End,
+    ) {
+        Text(
+            text = heartRate.dateStr(),
+            style = MaterialTheme.typography.caption3,
+            color = Color.White,
+        )
+        Text(
+            text = heartRate.timeStr(),
+            style = MaterialTheme.typography.caption3.copy(
+                fontSize = 8.sp,
+            ),
+            color = Color.White,
+        )
+    }
+}
+
+@Composable
+private fun EmptyHeartRate(
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        modifier = modifier.fillMaxWidth().padding(start = 8.dp),
+        text = stringResource(id = R.string.heart_rate_empty),
+        style = MaterialTheme.typography.caption3,
+        color = Color.White,
+    )
 }
 
 @Preview(device = WearDevices.SMALL_ROUND, uiMode = UI_MODE_NIGHT_YES, showBackground = true)

@@ -50,17 +50,6 @@ class MainActivity : ComponentActivity() {
         subscribeToObservers()
     }
 
-    override fun onDestroy() {
-        //commandHeartRateService(STOP_HEART_RATE_SENSOR)
-        // healthClient.unregisterHeartRateCallback()
-        super.onDestroy()
-    }
-
-    private fun startMyWearableListenerService() {
-        val intent = Intent(this, MyWearableListenerService::class.java)
-        startService(intent)
-    }
-
     private fun requestPermission() {
         val permissions = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -119,23 +108,16 @@ class MainActivity : ComponentActivity() {
         val initialPaired by mainViewModel.initialPairedMobile.collectAsStateWithLifecycle()
         val measuredHeartRate by mainViewModel.measuredHeartRate.collectAsStateWithLifecycle()
         val isGrantedPermission by mainViewModel.isGrantedPermission.collectAsStateWithLifecycle()
+        val account by mainViewModel.account.collectAsStateWithLifecycle(null)
         LogisyncWearTheme {
-            if (initialPaired) {
-                if (isGrantedPermission) {
-                    WatchScreen(
-                        measuredHeartRate = measuredHeartRate,
-                        onCollect = mainViewModel::collectHeartRate,
-                        onArrest = mainViewModel::arrest,
-                    )
-                }
-                else {
-                    PermissionScreen(onPermission = this::requestPermission)
-                }
-            }
-            else {
-                NotInitialPairedScreen()
-            }
+            WatchScreen(
+                initialPaired = initialPaired,
+                isGrantedPermission = isGrantedPermission,
+                measuredHeartRate = measuredHeartRate,
+                account = account,
+                onCollect = mainViewModel::collectHeartRate,
+                onArrest = mainViewModel::arrest,
+            )
         }
-
     }
 }

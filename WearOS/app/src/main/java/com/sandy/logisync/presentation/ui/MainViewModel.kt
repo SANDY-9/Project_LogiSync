@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sandy.logisync.data.datastore.WearableDataStoreRepository
 import com.sandy.logisync.domain.RequestNormalArrestUseCase
+import com.sandy.logisync.model.Account
 import com.sandy.logisync.model.MeasuredAvailability
 import com.sandy.logisync.model.MeasuredHeartRate
 import com.sandy.logisync.workmanager.HeartRateMeasureWorker
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,10 +42,15 @@ class MainViewModel @Inject constructor(
     private val _isGrantedPermission = MutableStateFlow(false)
     val isGrantedPermission = _isGrantedPermission.asStateFlow()
 
+    val account = wearableDataStoreRepository.getAccount().stateIn(
+        viewModelScope,
+        SharingStarted.Lazily,
+        null
+    ).onEach {
+        _initialPairedMobile.value = it != null
+    }
+
     init {
-        wearableDataStoreRepository.getAccount().onEach {
-            _initialPairedMobile.value = it != null
-        }.launchIn(viewModelScope)
 
         // 심박수
         wearableDataStoreRepository.getLastHeartRate().shareIn(

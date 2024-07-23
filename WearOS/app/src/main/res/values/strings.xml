@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">로지싱크Wear</string>
+    <string name="app_name">로지싱크</string>
 
     <!-- auth -->
     <string name="auth_error1">LogiSync 모바일 앱과\n최초 연동이 필요합니다.</string>
@@ -9,10 +9,11 @@
     <!-- heart rate -->
     <string name="heart_rate_title">심박수</string>
     <string name="heart_rate_unit">bpm</string>
+    <string name="heart_rate_empty">측정된 심박수 데이터가\n없습니다</string>
     <string name="heart_rate_error_body_off">워치를 손목에 착용해주세요.</string>
     <string name="heart_rate_error_body_disabled">심박수 측정을\n지원하지 않는 기기입니다.</string>
-    <string name="heart_rate_collect">수집</string>
-    <string name="heart_rate_arrest">신고</string>
+    <string name="heart_rate_collect">심박수 수집하기</string>
+    <string name="heart_rate_arrest">위급상황 신고하기</string>
 
 
 </resources>
