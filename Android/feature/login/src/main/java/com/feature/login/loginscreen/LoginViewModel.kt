@@ -1,8 +1,8 @@
 package com.feature.login.loginscreen
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.core.domain.repository.DevicePrefsRepository
 import com.core.domain.usecases.auth.RequestLoginUseCase
 import com.feature.login.loginscreen.model.LoginError
 import com.feature.login.loginscreen.model.LoginUiState
@@ -17,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val requestLoginUseCase: RequestLoginUseCase,
+    private val devicePrefsRepository: DevicePrefsRepository,
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<LoginUiState> = MutableStateFlow(LoginUiState())
@@ -75,6 +75,10 @@ class LoginViewModel @Inject constructor(
             isLoading = isLoading,
             error = error
         )
+    }
+
+    internal suspend fun getIsInitialConnect(): Boolean {
+        return devicePrefsRepository.getIsInitialConnect()
     }
 
     fun requestBioLogin() {

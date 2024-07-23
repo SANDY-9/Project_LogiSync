@@ -2,6 +2,7 @@ package com.feature.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.core.domain.repository.DevicePrefsRepository
 import com.core.domain.usecases.auth.GetIsExistId
 import com.core.domain.usecases.auth.GetIsExistMember
 import com.core.domain.usecases.auth.RequestSignupUseCase
@@ -28,6 +29,7 @@ class SignupViewModel @Inject constructor(
     private val getIsExistMember: GetIsExistMember,
     private val getIsExistId: GetIsExistId,
     private val requestSignupUseCase: RequestSignupUseCase,
+    private val devicePrefsRepository: DevicePrefsRepository,
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<SignupUiState> = MutableStateFlow(SignupUiState())
@@ -238,4 +240,9 @@ class SignupViewModel @Inject constructor(
             it.copy(error = false)
         }
     }
+
+    internal suspend fun getIsInitialConnect(): Boolean {
+        return devicePrefsRepository.getIsInitialConnect()
+    }
+
 }

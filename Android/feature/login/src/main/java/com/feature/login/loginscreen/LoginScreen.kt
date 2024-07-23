@@ -47,7 +47,7 @@ import com.feature.login.loginscreen.model.LoginError
 @Composable
 fun LoginScreen(
     navController: NavController,
-    onLogin: (Account) -> Unit,
+    onLogin: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
@@ -58,7 +58,8 @@ fun LoginScreen(
     LaunchedEffect(state.account) {
         val account = state.account
         account?.let {
-            onLogin(it)
+            val isInitialConnect = viewModel.getIsInitialConnect()
+            onLogin(isInitialConnect)
         }
     }
 

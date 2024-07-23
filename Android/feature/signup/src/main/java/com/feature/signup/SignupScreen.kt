@@ -39,6 +39,7 @@ private const val NETWORK_ERROR_MESSAGE = "네트워크 연결 상태를 확인�
 @Composable
 fun SignupScreen(
     navController: NavController,
+    onNavigate: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SignupViewModel = hiltViewModel(),
 ) {
@@ -46,9 +47,8 @@ fun SignupScreen(
     val context = LocalContext.current
     LaunchedEffect(state.signupComplete) {
         if (state.signupComplete) {
-            navController.navigate(Route.Onboarding.route) {
-                popUpTo(Route.Signup.route) { inclusive = true }
-            }
+            val isInitialConnect = viewModel.getIsInitialConnect()
+            onNavigate(isInitialConnect)
         }
     }
 
@@ -157,9 +157,4 @@ private fun SignupPhaseContent(
             )
         }
     }
-}
-@Composable
-@Preview(name = "Signup")
-private fun SignupScreenPreview() {
-    SignupScreen(rememberNavController())
 }

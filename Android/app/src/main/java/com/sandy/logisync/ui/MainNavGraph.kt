@@ -35,9 +35,16 @@ fun MainNavGraph(
         ) {
             LoginScreen(
                 navController = navController,
-                onLogin = { account ->
-                    navController.navigate(Route.Onboarding.route) {
-                        popUpTo(Route.Login.route) { inclusive = true }
+                onLogin = { isInitialConnect ->
+                    if(!isInitialConnect) {
+                        navController.navigate(Route.Onboarding.route) {
+                            popUpTo(Route.Login.route) { inclusive = true }
+                        }
+                    }
+                    else {
+                        navController.navigate(Route.Home.route) {
+                            popUpTo(Route.Login.route) { inclusive = true }
+                        }
                     }
                 },
             )
@@ -47,6 +54,18 @@ fun MainNavGraph(
         ) {
             SignupScreen(
                 navController = navController,
+                onNavigate = { isInitialConnect ->
+                    if(!isInitialConnect) {
+                        navController.navigate(Route.Onboarding.route) {
+                            popUpTo(Route.Signup.route) { inclusive = true }
+                        }
+                    }
+                    else {
+                        navController.navigate(Route.Home.route) {
+                            popUpTo(Route.Signup.route) { inclusive = true }
+                        }
+                    }
+                }
             )
         }
         composable(
