@@ -7,6 +7,7 @@ import com.core.domain.usecases.network.GetUserListUseCase
 import com.feature.admin.model.AdminUiState
 import com.feature.admin.utils.filter
 import com.feature.admin.utils.filterArrest
+import com.feature.admin.utils.filterHeart
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,27 +73,38 @@ class AdminViewModel @Inject constructor(
                 filteredUserList = searchList,
                 allFilterSelected = true,
                 dangerFilterSelected = false,
+                heartFilterSelected = false,
                 loading = false,
             )
         }
     }
 
     fun getAllMemberList() {
-        val state = _stateFlow.value
         if (state.allFilterSelected) return
         _stateFlow.value = state.copy(
             allFilterSelected = true,
             dangerFilterSelected = false,
+            heartFilterSelected = false,
             filteredUserList = state.searchUserList,
         )
     }
 
+    fun getHeartRateMemberList() {
+        if (state.heartFilterSelected) return
+        _stateFlow.value = state.copy(
+            allFilterSelected = false,
+            dangerFilterSelected = false,
+            heartFilterSelected = true,
+            filteredUserList = state.searchUserList.filterHeart()
+        )
+    }
+
     fun getDangerMemberList() {
-        val state = _stateFlow.value
         if (state.dangerFilterSelected) return
         _stateFlow.value = state.copy(
             allFilterSelected = false,
             dangerFilterSelected = true,
+            heartFilterSelected = false,
             filteredUserList = state.searchUserList.filterArrest()
         )
     }
@@ -101,8 +113,10 @@ class AdminViewModel @Inject constructor(
         _stateFlow.value = state.copy(
             allFilterSelected = true,
             dangerFilterSelected = false,
+            heartFilterSelected = false,
             filteredUserList = state.userList,
             searchUserList = state.userList,
         )
     }
+
 }

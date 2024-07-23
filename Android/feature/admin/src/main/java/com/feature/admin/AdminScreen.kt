@@ -67,6 +67,8 @@ fun AdminScreen(
         UserFilter(
             allFilterSelected = state.allFilterSelected,
             onSelectAllFilter = viewModel::getAllMemberList,
+            heartRateFilterSelected = state.heartFilterSelected,
+            onSelectHeartRateFilter = viewModel::getHeartRateMemberList,
             dangerFilterSelected = state.dangerFilterSelected,
             onSelectDangerFilter = viewModel::getDangerMemberList,
             onRefreshList = viewModel::refreshMemberList,

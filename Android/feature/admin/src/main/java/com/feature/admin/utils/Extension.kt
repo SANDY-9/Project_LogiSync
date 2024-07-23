@@ -22,3 +22,12 @@ internal fun Map<User.Team, List<User>>.filterArrest(): Map<User.Team, List<User
     }
     return filteredUsers.groupBy { it.team }
 }
+
+internal fun Map<User.Team, List<User>>.filterHeart(): Map<User.Team, List<User>> {
+    val filteredUsers = flatMap { (team, users) ->
+        users.filter { user ->
+            user.lastBpm != null
+        }
+    }
+    return filteredUsers.groupBy { it.team }
+}

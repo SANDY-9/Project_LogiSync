@@ -7,7 +7,7 @@
     <string name="admin_search_empty">검색어를 입력해주세요.</string>
     <string name="admin_search_result_empty">해당하는 사원이 없습니다.</string>
     <string name="admin_member_filter_all">전체보기</string>
-    <string name="admin_member_filter_attention">주의</string>
+    <string name="admin_member_filter_heart">심박수</string>
     <string name="admin_member_filter_danger">위험</string>
 
     <!-- member details -->

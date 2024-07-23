@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccountBox
+import androidx.compose.material.icons.rounded.Call
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.HorizontalDivider
@@ -30,8 +33,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.core.desinsystem.icons.Flag
+import com.core.desinsystem.theme.DarkGreen
 import com.core.desinsystem.theme.DarkRed
 import com.core.desinsystem.theme.HeartRed
+import com.core.desinsystem.theme.LogiDarkBlue
 import com.core.desinsystem.theme.LogiDarkGray
 import com.core.desinsystem.theme.LogiLightGray
 import com.core.desinsystem.theme.LogiSemiGray
@@ -106,15 +111,23 @@ private fun UserItem(
         Column(
             verticalArrangement = Arrangement.Center,
         ) {
-            UserName(
+            UserInfo(
+                id = user.id,
                 name = user.name,
                 isCritical = user.isCritical(),
             )
-            CriticalPoint(
-                modifier = modifier.padding(top = 2.dp),
-                minCriticalPoint = user.minCriticalPoint ?: return,
-                maxCriticalPoint = user.maxCriticalPoint ?: return,
-            )
+            Spacer(modifier = modifier.height(4.dp))
+            Row (
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                UserTelInfo(tel = user.tel)
+                Spacer(modifier = modifier.width(16.dp))
+                CriticalPoint(
+                    modifier = modifier.padding(top = 2.dp),
+                    minCriticalPoint = user.minCriticalPoint ?: return,
+                    maxCriticalPoint = user.maxCriticalPoint ?: return,
+                )
+            }
         }
         Column(
             modifier = modifier.align(Alignment.CenterEnd),
@@ -124,6 +137,7 @@ private fun UserItem(
             MeasuredBpm(
                 bpm = user.lastBpm ?: return
             )
+            Spacer(modifier = modifier.height(2.dp))
             Text(
                 text = DateUtil.convertDateTime(user.lastBpmDateTime ?: return),
                 style = MaterialTheme.typography.bodySmall.copy(
@@ -138,27 +152,62 @@ private fun UserItem(
 }
 
 @Composable
-private fun UserName(
+private fun UserInfo(
+    id: String,
     name: String,
     isCritical: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                modifier = modifier.size(20.dp),
+                imageVector = Icons.Rounded.AccountBox,
+                contentDescription = null,
+                tint = LogiDarkBlue,
+            )
+            Spacer(modifier = modifier.width(6.dp))
+            Text(
+                text = "$id ($name)",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            if(isCritical) {
+                Spacer(modifier = modifier.width(4.dp))
+                Icon(
+                    modifier = modifier.size(18.dp),
+                    imageVector = Icons.Rounded.Warning,
+                    tint = DarkRed,
+                    contentDescription = null
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun UserTelInfo(
+    tel: String,
     modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = name,
-            style = MaterialTheme.typography.bodyMedium
+        Icon(
+            modifier = modifier.size(15.dp),
+            imageVector = Icons.Rounded.Call,
+            tint = DarkGreen,
+            contentDescription = null,
         )
-        if(isCritical) {
-            Spacer(modifier = modifier.width(4.dp))
-            Icon(
-                modifier = modifier.size(18.dp),
-                imageVector = Icons.Rounded.Warning,
-                tint = DarkRed,
-                contentDescription = null
-            )
-        }
+        Spacer(modifier = modifier.width(4.dp))
+        Text(
+            text = tel,
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 12.sp,
+            ),
+            color = LogiDarkGray,
+        )
     }
 }
 
@@ -178,12 +227,12 @@ private fun CriticalPoint(
             tint = DarkRed,
             contentDescription = null
         )
-        Spacer(modifier = Modifier.width(2.dp))
+        Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = "$minCriticalPoint - $maxCriticalPoint",
-            color = LogiDarkGray,
+            color = DarkRed,
             style = MaterialTheme.typography.bodySmall.copy(
-                fontSize = 10.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.W500,
                 letterSpacing = (-0.2).sp
             )
@@ -209,7 +258,7 @@ private fun MeasuredBpm(
         Text(
             text = "$bpm",
             style = MaterialTheme.typography.titleMedium.copy(
-                lineHeight = 18.sp
+                fontSize = 22.sp
             ),
         )
     }

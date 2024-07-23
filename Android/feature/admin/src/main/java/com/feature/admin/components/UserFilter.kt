@@ -32,9 +32,11 @@ import com.core.desinsystem.theme.LogiSemiGray
 import com.feature.admin.R
 
 @Composable
-fun UserFilter(
+internal fun UserFilter(
     allFilterSelected: Boolean,
     onSelectAllFilter: () -> Unit,
+    heartRateFilterSelected: Boolean,
+    onSelectHeartRateFilter: () -> Unit,
     dangerFilterSelected: Boolean,
     onSelectDangerFilter: () -> Unit,
     onRefreshList: () -> Unit,
@@ -50,6 +52,12 @@ fun UserFilter(
             isSelected = allFilterSelected,
             onSelect = onSelectAllFilter,
             title = stringResource(id = R.string.admin_member_filter_all)
+        )
+        Spacer(modifier = modifier.width(8.dp))
+        FilterButton(
+            isSelected = heartRateFilterSelected,
+            onSelect = onSelectHeartRateFilter,
+            title = stringResource(id = R.string.admin_member_filter_heart)
         )
         Spacer(modifier = modifier.width(8.dp))
         FilterButton(
