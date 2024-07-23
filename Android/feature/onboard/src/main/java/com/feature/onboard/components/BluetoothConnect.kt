@@ -8,25 +8,24 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.core.desinsystem.icons.Bluetooth
+import androidx.compose.ui.unit.sp
+import com.core.desinsystem.common.BasicOutlinedButton
+import com.core.desinsystem.lottie.LottieBluetooth
+import com.core.desinsystem.lottie.LottieBluetoothOk
 import com.core.domain.enums.BluetoothState
 import com.feature.onboard.R
 
@@ -39,21 +38,21 @@ fun BluetoothConnect(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = modifier.weight(1f))
-
+        Spacer(modifier = modifier.height(150.dp))
         Text(
             text = stringResource(id = R.string.onboard_connect_bluetooth_desc),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.bodyLarge.copy(
+                letterSpacing = (-0.1).sp,
+                fontSize = 18.sp
+            ),
         )
-
-        Icon(
-            modifier = modifier
-                .padding(vertical = 36.dp)
-                .size(100.dp),
-            imageVector = Icons.Bluetooth,
-            contentDescription = null
-        )
+        if(bluetoothState != BluetoothState.ON) {
+            LottieBluetooth(modifier = modifier.size(150.dp))
+        }
+        else {
+            LottieBluetoothOk(modifier = modifier.size(150.dp))
+        }
 
         Spacer(modifier = modifier.height(16.dp))
 
@@ -69,7 +68,11 @@ fun BluetoothConnect(
                 }
             ),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyLarge.copy(
+                letterSpacing = (-0.1).sp,
+                fontSize = 15.sp
+            ),
+            color = Color.Gray
         )
         if (bluetoothState == BluetoothState.PERMISSION_DENIED) {
             BluetoothPermissionButton()
@@ -107,23 +110,10 @@ private fun BluetoothPermissionButton(
         val isGranted = !it.containsValue(false)
     }
 
-    Button(
-        modifier = modifier.defaultMinSize(
-            minHeight = 1.dp,
-        ),
-        contentPadding = PaddingValues(
-            vertical = 6.dp,
-            horizontal = 16.dp
-        ),
-        onClick = {
-            permissionLauncher.launch(bluetoothPermissions)
-        }
-    ) {
-        Text(
-            text = stringResource(id = R.string.onboard_connect_bluetooth_permission),
-            style = MaterialTheme.typography.bodySmall
-        )
-    }
+    BasicOutlinedButton(
+        title = stringResource(id = R.string.onboard_connect_bluetooth_permission),
+        onClick = { permissionLauncher.launch(bluetoothPermissions) }
+    )
 }
 
 @Composable
@@ -136,22 +126,11 @@ private fun BluetoothConnectButton(
         Log.e("확인", "BluetoothConnectButton: $it")
     }
 
-    Button(
-        modifier = modifier.defaultMinSize(
-            minHeight = 1.dp,
-        ),
-        contentPadding = PaddingValues(
-            vertical = 6.dp,
-            horizontal = 16.dp
-        ),
+    BasicOutlinedButton(
+        title = stringResource(id = R.string.onboard_connect_bluetooth),
         onClick = {
             val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             bluetoothLauncher.launch(intent)
         }
-    ) {
-        Text(
-            text = stringResource(id = R.string.onboard_connect_bluetooth),
-            style = MaterialTheme.typography.bodySmall
-        )
-    }
+    )
 }

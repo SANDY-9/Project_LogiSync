@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,10 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.core.desinsystem.common.NextButton
+import com.core.desinsystem.common.ButtonLoadingBar
 import com.feature.onboard.components.AppConnect
 import com.feature.onboard.components.BluetoothConnect
-import com.feature.onboard.components.WatchPairingCheck
 import com.feature.onboard.model.OnboardPhase
 import com.feature.onboard.model.OnboardUiState
 
@@ -44,15 +45,18 @@ fun OnboardingScreen(
         }
     }
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .statusBarsPadding()
     ) {
         OnboardingAppBar(
             onNavigate = { context?.finish() }
         )
         OnboardingContent(
+            modifier = modifier.weight(1f),
             state = state,
             onNext = viewModel::updatePhase,
-            modifier = modifier.weight(1f)
+            onServiceStart = viewModel::startService,
         )
     }
 }
@@ -69,7 +73,7 @@ private fun OnboardingAppBar(
     ) {
         IconButton(
             modifier = modifier
-                .padding(start = 4.dp)
+                .padding(start = 8.dp)
                 .align(Alignment.CenterStart),
             onClick = onNavigate
         ) {
@@ -85,10 +89,11 @@ private fun OnboardingAppBar(
 private fun OnboardingContent(
     state: OnboardUiState,
     onNext: () -> Unit,
+    onServiceStart: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(horizontal = 16.dp)
+        modifier = modifier.padding(horizontal = 20.dp)
     ) {
         Text(
             text = stringResource(id = R.string.onboard_connect_title1),
@@ -101,22 +106,27 @@ private fun OnboardingContent(
 
         when (state.phase) {
             OnboardPhase.BLUETOOTH_CONNECT -> BluetoothConnect(state.bluetoothState)
-            OnboardPhase.WATCH_PAIRING_CHECK -> WatchPairingCheck(state.isBondedWatch)
             else -> AppConnect(state.isConnectedApp)
         }
     }
 
-    if (state.enableServiceStart) {
-        NextButton(
-            title = stringResource(id = R.string.onboard_button_complete),
-            onClick = onNext,
-        )
+    if (state.phase == OnboardPhase.ENABLE_SERVICE_START) {
+        Button(
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            onClick = onServiceStart,
+        ) {
+            if (state.loading) ButtonLoadingBar()
+            else Text(text = stringResource(id = R.string.onboard_button_complete))
+        }
     }
     else {
-        NextButton(
-            title = stringResource(id = R.string.onboard_button),
+        Button(
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
             enabled = state.enabledNextButton,
             onClick = onNext,
-        )
+        ) {
+            if (state.loading) ButtonLoadingBar()
+            else Text(text = stringResource(id = R.string.onboard_button))
+        }
     }
 }

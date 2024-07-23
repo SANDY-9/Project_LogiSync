@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.theme.CallGreen
-import com.core.desinsystem.theme.TransparentWhite
 import com.core.desinsystem.theme.TransparentWhiteDeem
 
 @Composable
@@ -69,7 +68,7 @@ fun BasicOutlinedButton(
 ) {
     OutlinedButton(
         modifier = modifier.defaultMinSize(minHeight = 1.dp, minWidth = 1.dp),
-        contentPadding = PaddingValues(vertical = 5.dp, horizontal = 16.dp),
+        contentPadding = PaddingValues(vertical = 7.dp, horizontal = 16.dp),
         onClick = onClick,
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = TransparentWhiteDeem,
