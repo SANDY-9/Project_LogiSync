@@ -42,6 +42,7 @@ import com.core.desinsystem.theme.LogiLightGray
 import com.core.desinsystem.theme.LogiSemiGray
 import com.core.model.User
 import com.core.utils.DateUtil
+import com.core.utils.MaskingUtil
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -112,15 +113,15 @@ private fun UserItem(
             verticalArrangement = Arrangement.Center,
         ) {
             UserInfo(
-                id = user.id,
-                name = user.name,
+                id = MaskingUtil.maskId(user.id),
+                name = MaskingUtil.maskName(user.name),
                 isCritical = user.isCritical(),
             )
             Spacer(modifier = modifier.height(4.dp))
             Row (
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                UserTelInfo(tel = user.tel)
+                UserTelInfo(tel = MaskingUtil.maskTel(user.tel))
                 Spacer(modifier = modifier.width(16.dp))
                 CriticalPoint(
                     modifier = modifier.padding(top = 2.dp),

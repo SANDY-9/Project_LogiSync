@@ -73,6 +73,7 @@ fun UserDetailsScreen(
             .addFocusCleaner(focusManager),
     ) {
         UserDetailsAppBar(
+            id = state.user?.id,
             name = state.user?.name,
             onNavigateUp = navController::navigateUp
         )
@@ -133,6 +134,7 @@ fun UserDetailsScreen(
 @Composable
 private fun UserDetailsAppBar(
     onNavigateUp: () -> Unit,
+    id: String?,
     name: String?,
     modifier: Modifier = Modifier,
 ) {
@@ -156,7 +158,7 @@ private fun UserDetailsAppBar(
             )
         }
         Text(
-            text = name ?: "",
+            text = "$id ($name)",
             style = MaterialTheme.typography.titleLarge,
         )
         Spacer(modifier = modifier.weight(1f))

@@ -44,7 +44,6 @@ import com.core.model.User
 import com.core.navigation.Args
 import com.core.navigation.Route
 import com.core.utils.DateUtil
-import com.feature.arrest.admin.component.AdminArrestItem
 import com.feature.arrest.admin.model.ArrestAdminDetailsUiState
 import com.feature.arrest.components.ArrestFilter
 import com.feature.arrest.components.ArrestItem
@@ -142,7 +141,7 @@ private fun ArrestAdminDetailsAppBar(
                 Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
             }
             Text(
-                text = user?.let { "${it.name} (${it.id})" } ?: "",
+                text = user?.let { "${it.id} (${it.name})" } ?: "",
                 style = MaterialTheme.typography.titleLarge,
             )
             Spacer(modifier = modifier.weight(1f))

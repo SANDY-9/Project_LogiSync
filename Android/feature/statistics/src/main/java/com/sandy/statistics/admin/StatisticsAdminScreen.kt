@@ -140,7 +140,7 @@ private fun HeartRateStatisticsAdminAppBar(
             Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
         }
         Text(
-            text = user?.let { "${it.name} (${it.id})" } ?: "",
+            text = user?.let { "${it.id} (${it.name})" } ?: "",
             style = MaterialTheme.typography.titleLarge,
         )
 

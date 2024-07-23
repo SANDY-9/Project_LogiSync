@@ -28,6 +28,7 @@ import com.core.desinsystem.theme.DarkGreen
 import com.core.desinsystem.theme.DarkRed
 import com.core.desinsystem.theme.LogiDarkBlue
 import com.core.model.Arrest
+import com.core.utils.MaskingUtil
 import java.time.LocalDateTime
 
 @Composable
@@ -43,16 +44,16 @@ internal fun AdminArrestItem(
     ) {
         when(arrest.arrestType) {
             Arrest.ArrestType.NORMAL -> AdminReportItemNormal(
-                id = arrest.id,
-                name = arrest.name,
-                tel = arrest.tel,
+                id = MaskingUtil.maskId(arrest.id),
+                name = MaskingUtil.maskName(arrest.name),
+                tel = MaskingUtil.maskTel(arrest.tel),
                 desc = arrest.arrestType.desc,
                 date = arrest.date(),
                 onItemClick = onItemClick,
             )
             Arrest.ArrestType.HEART_RATE_LOW ->  AdminReportItemHeartRate(
-                id = arrest.id,
-                name = arrest.name,
+                id = MaskingUtil.maskId(arrest.id),
+                name = MaskingUtil.maskName(arrest.name),
                 tel = arrest.tel,
                 bpm = arrest.bpm,
                 desc = arrest.arrestType.desc,
@@ -60,9 +61,9 @@ internal fun AdminArrestItem(
                 onItemClick = onItemClick,
             )
             Arrest.ArrestType.HEART_RATE_HIGH ->  AdminReportItemHeartRate(
-                id = arrest.id,
-                name = arrest.name,
-                tel = arrest.tel,
+                id = MaskingUtil.maskId(arrest.id),
+                name = MaskingUtil.maskName(arrest.name),
+                tel = MaskingUtil.maskTel(arrest.tel),
                 bpm = arrest.bpm,
                 desc = arrest.arrestType.desc,
                 date = arrest.date(),
