@@ -23,4 +23,5 @@ interface GetHeartRateRepository {
 
     fun getLastHeartRateList(id: String) : Flow<List<HeartRate>>
 
+    fun updateChangeCriticalPoint(id: String, min: Int, max: Int): Flow<Boolean>
 }

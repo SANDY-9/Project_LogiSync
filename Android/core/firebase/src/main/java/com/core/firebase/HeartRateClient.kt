@@ -140,4 +140,29 @@ class HeartRateClient @Inject constructor(
         )
         ref.child(USERS).child(id).child(CRITICAL_POINT).setValue(map)
     }
+
+    fun updateHeartRateCriticalPoint(
+        id: String,
+        min: Int = MIN_HEART_RATE,
+        max: Int = MAX_HEART_RATE,
+        onSuccess: (Boolean) -> Unit,
+        onError: (Throwable) -> Unit,
+    ) {
+        val map = mapOf(
+            MAX_CRITICAL_POINT to max,
+            MIN_CRITICAL_POINT to min,
+        )
+        val criticalPointChild = ref.child(USERS).child(id).child(CRITICAL_POINT)
+        criticalPointChild.setValue(map)
+        criticalPointChild.addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    onSuccess(snapshot.exists())
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    onError(error.toException())
+                }
+            }
+        )
+    }
 }
