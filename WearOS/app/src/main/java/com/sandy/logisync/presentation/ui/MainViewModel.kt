@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sandy.logisync.data.datastore.WearableDataStoreRepository
 import com.sandy.logisync.domain.RequestNormalArrestUseCase
+import com.sandy.logisync.model.Account
 import com.sandy.logisync.workmanager.HeartRateMeasureWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -44,12 +46,16 @@ class MainViewModel @Inject constructor(
     private val _isGrantedPermission = MutableStateFlow(false)
     val isGrantedPermission = _isGrantedPermission.asStateFlow()
 
-    val account = wearableDataStoreRepository.getAccount().stateIn(
-        viewModelScope,
-        SharingStarted.Lazily,
-        null
-    ).onEach {
-        _initialPairedMobile.value = it != null
+    private val _account = MutableStateFlow<Account?>(null)
+    val account = _account.asStateFlow()
+
+    init {
+        wearableDataStoreRepository.getAccount().onEach {
+            _initialPairedMobile.value = it != null
+            it?.let {
+                _account.value = it
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun getRequestCollect(collecting: Boolean) {
