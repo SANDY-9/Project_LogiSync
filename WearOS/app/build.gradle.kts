@@ -130,6 +130,9 @@ dependencies {
     // Google Oauth2 http
     implementation("com.google.auth:google-auth-library-oauth2-http:1.23.0")
 
+    // Lottie
+    implementation("com.github.LottieFiles:dotlottie-android:0.3.0")
+
 
 }
 

@@ -46,7 +46,6 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
             context: Context,
         ) {
             val delay = getNextMonitoringDelay()
-            Log.e("확인", "registerWorker: $delay")
             val workRequest = OneTimeWorkRequestBuilder<HeartRateMonitoringWorker>()
                 .setInitialDelay(delay)
                 .build()
@@ -60,7 +59,6 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
         private fun getNextMonitoringDelay(): Duration {
             val nextMonitoringTime = getNextMonitoringTime()
             val currentTime = LocalDateTime.now()
-            //val nextMonitoringTime = currentTime.plusMinutes(1)
             val delay = Duration.between(currentTime, nextMonitoringTime)
             Log.e("확인", "getNextMonitoringDelay: $nextMonitoringTime")
             return delay

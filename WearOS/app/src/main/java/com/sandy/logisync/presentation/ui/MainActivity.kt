@@ -7,7 +7,6 @@
 package com.sandy.logisync.presentation.ui
 
 import android.Manifest
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -22,11 +21,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.sandy.logisync.data.health.HeartRateServiceManager
-import com.sandy.logisync.presentation.ui.screens.NotInitialPairedScreen
-import com.sandy.logisync.presentation.ui.screens.PermissionScreen
 import com.sandy.logisync.presentation.ui.screens.WatchScreen
 import com.sandy.logisync.presentation.ui.theme.LogisyncWearTheme
-import com.sandy.logisync.wearable.service.MyWearableListenerService
 import com.sandy.logisync.workmanager.HeartRateMonitoringWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -48,6 +44,11 @@ class MainActivity : ComponentActivity() {
         setTheme(android.R.style.Theme_DeviceDefault)
         setContent(content = LogiSyncWearApp())
         subscribeToObservers()
+        checkRequestCollect()
+    }
+    private fun checkRequestCollect() {
+        val collect = intent.getBooleanExtra("HEART_RATE_COLLECT", false)
+        mainViewModel.getRequestCollect(collect)
     }
 
     private fun requestPermission() {
@@ -106,15 +107,15 @@ class MainActivity : ComponentActivity() {
 
     private fun LogiSyncWearApp(): @Composable () -> Unit = {
         val initialPaired by mainViewModel.initialPairedMobile.collectAsStateWithLifecycle()
-        val measuredHeartRate by mainViewModel.measuredHeartRate.collectAsStateWithLifecycle()
-        val isGrantedPermission by mainViewModel.isGrantedPermission.collectAsStateWithLifecycle()
+        val measuredHeartRate by mainViewModel.measuredHeartRate.collectAsStateWithLifecycle(null)
         val account by mainViewModel.account.collectAsStateWithLifecycle(null)
+        val collectLoading by mainViewModel.heartRateCollectLoading.collectAsStateWithLifecycle()
         LogisyncWearTheme {
             WatchScreen(
                 initialPaired = initialPaired,
-                isGrantedPermission = isGrantedPermission,
-                measuredHeartRate = measuredHeartRate,
+                heartRate = measuredHeartRate,
                 account = account,
+                collectLoading = collectLoading,
                 onCollect = mainViewModel::collectHeartRate,
                 onArrest = mainViewModel::arrest,
             )

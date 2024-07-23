@@ -6,20 +6,16 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sandy.logisync.data.datastore.WearableDataStoreRepository
 import com.sandy.logisync.domain.RequestNormalArrestUseCase
-import com.sandy.logisync.model.Account
-import com.sandy.logisync.model.MeasuredAvailability
-import com.sandy.logisync.model.MeasuredHeartRate
 import com.sandy.logisync.workmanager.HeartRateMeasureWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,13 +27,19 @@ class MainViewModel @Inject constructor(
     application: Application,
 ) : AndroidViewModel(application) {
 
-    private val _initialPairedMobile = MutableStateFlow<Boolean>(false)
+    private val _initialPairedMobile = MutableStateFlow(false)
     val initialPairedMobile = _initialPairedMobile.asStateFlow()
 
-    private val _measuredHeartRate = MutableStateFlow(
-        MeasuredHeartRate(MeasuredAvailability.NONE, null)
-    )
-    val measuredHeartRate = _measuredHeartRate.asStateFlow()
+    private val _heartRateCollectLoading = MutableStateFlow(false)
+    val heartRateCollectLoading = _heartRateCollectLoading.asStateFlow()
+
+    val measuredHeartRate = wearableDataStoreRepository.getLastHeartRate().stateIn(
+        viewModelScope,
+        SharingStarted.Lazily,
+        null
+    ).onEach {
+        _heartRateCollectLoading.value = false
+    }
 
     private val _isGrantedPermission = MutableStateFlow(false)
     val isGrantedPermission = _isGrantedPermission.asStateFlow()
@@ -50,24 +52,13 @@ class MainViewModel @Inject constructor(
         _initialPairedMobile.value = it != null
     }
 
-    init {
-
-        // 심박수
-        wearableDataStoreRepository.getLastHeartRate().shareIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-        ).onEach { lastHeartRate ->
-            Log.e("확인", "$lastHeartRate: ")
-            if (lastHeartRate == null) {
-                collectHeartRate()
+    fun getRequestCollect(collecting: Boolean) {
+        if(collecting) {
+            viewModelScope.launch {
+                delay(500)
+                _heartRateCollectLoading.value = true
             }
-            else {
-                _measuredHeartRate.value = MeasuredHeartRate(
-                    availability = MeasuredAvailability.AVAILABLE,
-                    heartRate = lastHeartRate
-                )
-            }
-        }.launchIn(viewModelScope)
+        }
     }
 
     fun updateGrantedPermission(isGranted: Boolean) {
@@ -75,6 +66,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun collectHeartRate() {
+        _heartRateCollectLoading.value = true
         val context = getApplication<Application>().applicationContext
         HeartRateMeasureWorker.enqueueWorker(context)
     }
