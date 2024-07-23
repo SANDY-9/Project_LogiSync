@@ -80,6 +80,7 @@ fun UserDetailsScreen(
         state.user?.let { user ->
             UserDetailsContent(
                 user = user,
+                enableEdit = state.enableEdit,
                 lastReportList = state.lastReportList,
                 lastHeartRateList = state.lastHeartRateList,
                 onNavigateToAllReport = { id ->
@@ -170,6 +171,7 @@ private fun UserDetailsAppBar(
 @Composable
 private fun UserDetailsContent(
     user: User,
+    enableEdit: Boolean,
     lastReportList: List<Arrest>,
     lastHeartRateList: List<HeartRate>,
     onNavigateToAllReport: (String) -> Unit,
@@ -183,7 +185,8 @@ private fun UserDetailsContent(
         item {
             UserProfile(
                 user = user,
-                onRequestEdit = onRequestEdit
+                onRequestEdit = onRequestEdit,
+                enableEdit = enableEdit,
             )
             Spacer(modifier = modifier.height(8.dp))
         }

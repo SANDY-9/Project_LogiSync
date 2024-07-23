@@ -49,6 +49,7 @@ import java.time.LocalDateTime
 internal fun UserProfile(
     user: User,
     onRequestEdit: () -> Unit,
+    enableEdit: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -105,6 +106,7 @@ internal fun UserProfile(
             minCriticalPoint = user.minCriticalPoint ?: return,
             maxCriticalPoint = user.maxCriticalPoint ?: return,
             onRequestEdit = onRequestEdit,
+            enableEdit = enableEdit,
         )
     }
 }
@@ -113,6 +115,7 @@ internal fun UserProfile(
 private fun CriticalPoint(
     minCriticalPoint: Int,
     maxCriticalPoint: Int,
+    enableEdit: Boolean,
     onRequestEdit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -136,11 +139,13 @@ private fun CriticalPoint(
             )
         )
         Spacer(modifier = modifier.weight(1f))
-        BasicOutlinedButton(
-            modifier = modifier,
-            title = stringResource(id = R.string.details_critical_point_settings),
-            onClick = onRequestEdit,
-        )
+        if(enableEdit) {
+            BasicOutlinedButton(
+                modifier = modifier,
+                title = stringResource(id = R.string.details_critical_point_settings),
+                onClick = onRequestEdit,
+            )
+        }
     }
 }
 
@@ -160,6 +165,7 @@ private fun PreviewUserProfile() {
             minCriticalPoint = 20,
             maxCriticalPoint = 130,
         ),
-        {}
+        {},
+        true
     )
 }

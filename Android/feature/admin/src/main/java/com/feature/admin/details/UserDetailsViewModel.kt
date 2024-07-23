@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.core.domain.usecases.network.GetLastHeartRateListUseCase
 import com.core.domain.usecases.network.GetLastMyArrestUseCase
 import com.core.domain.usecases.network.RequestChangeCriticalPoint
+import com.core.domain.usecases.prefs.GetAccountUseCase
 import com.core.model.User
 import com.feature.admin.details.model.UserDetailsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +16,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
@@ -29,11 +32,13 @@ class UserDetailsViewModel @Inject constructor(
     private val getLastMyArrestUseCase: GetLastMyArrestUseCase,
     private val getLastHeartRateListUseCase: GetLastHeartRateListUseCase,
     private val requestChangeCriticalPoint: RequestChangeCriticalPoint,
+    private val getAccountUseCase: GetAccountUseCase,
 ): ViewModel() {
 
     private val _stateFlow: MutableStateFlow<UserDetailsUiState> = MutableStateFlow(UserDetailsUiState())
     internal val stateFlow: StateFlow<UserDetailsUiState> = _stateFlow.asStateFlow()
     private val state get() = stateFlow.value
+
 
     internal fun getUserDetails(user: User) {
         Log.e("확인", "getUserDetails: $user", )
@@ -43,14 +48,25 @@ class UserDetailsViewModel @Inject constructor(
             editMax = (user.maxCriticalPoint ?: "").toString(),
         )
         val id = user.id
-        combine(
-            getLastMyArrestUseCase(id),
-            getLastHeartRateListUseCase(id)
-        ) { lastMyArrest, lastHearRateList ->
-            state.copy(
-                lastReportList = lastMyArrest,
-                lastHeartRateList = lastHearRateList,
-            )
+        getAccountUseCase().filter {
+            it != null
+        }.flatMapLatest { account ->
+            _stateFlow.update {
+                val enableEdit = account?.id == user.id || user.duty == User.Duty.NORMAL
+                it.copy(
+                    account = account,
+                    enableEdit = enableEdit,
+                )
+            }
+            combine(
+                getLastMyArrestUseCase(id),
+                getLastHeartRateListUseCase(id)
+            ) { lastMyArrest, lastHearRateList ->
+                state.copy(
+                    lastReportList = lastMyArrest,
+                    lastHeartRateList = lastHearRateList,
+                )
+            }
         }.onEach {  state ->
             _stateFlow.update { state }
         }.launchIn(viewModelScope)
