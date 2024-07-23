@@ -98,7 +98,7 @@ class ArrestViewModel @Inject constructor(
             allFilterSelected = true,
             dangerFilterSelected = false,
             heartRateFilterSelected = false,
-            filteredList = state.arrestList,
+            filteredList = state.searchedList,
         )
     }
 
@@ -109,7 +109,7 @@ class ArrestViewModel @Inject constructor(
             allFilterSelected = false,
             dangerFilterSelected = true,
             heartRateFilterSelected = false,
-            filteredList = state.arrestList.filter(ArrestUiState.FilterType.FILTER_DANGER)
+            filteredList = state.searchedList.filter(ArrestUiState.FilterType.FILTER_DANGER)
         )
     }
 
@@ -120,7 +120,7 @@ class ArrestViewModel @Inject constructor(
             allFilterSelected = false,
             dangerFilterSelected = false,
             heartRateFilterSelected = true,
-            filteredList = state.arrestList.filter(ArrestUiState.FilterType.FILTER_HEART_RATE)
+            filteredList = state.searchedList.filter(ArrestUiState.FilterType.FILTER_HEART_RATE)
         )
     }
 
@@ -157,12 +157,18 @@ class ArrestViewModel @Inject constructor(
     }
 
     private fun filterByDate(startDate: LocalDate, endDate: LocalDate) {
+        val searchedList = state.arrestList.filter(
+            type = ArrestUiState.FilterType.FILTER_ALL,
+            startDate = startDate,
+            endDate = endDate
+        )
         _stateFlow.value = state.copy(
-            filteredList = state.arrestList.filter(
-                type = state.filterType,
-                startDate = startDate,
-                endDate = endDate
-            )
+            searchedList = searchedList,
+            filterType = ArrestUiState.FilterType.FILTER_ALL,
+            allFilterSelected = true,
+            dangerFilterSelected = false,
+            heartRateFilterSelected = false,
+            filteredList = searchedList,
         )
     }
 
