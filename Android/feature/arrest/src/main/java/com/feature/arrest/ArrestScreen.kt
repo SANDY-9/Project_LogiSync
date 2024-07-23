@@ -76,6 +76,7 @@ fun ArrestScreen(
             dangerFilterSelected = state.dangerFilterSelected,
             heartRateFilterSelected = state.heartRateFilterSelected,
             onSelectFilter = viewModel::filterArrestList,
+            onRefresh = viewModel::refreshArrestList,
             onOpenDatePicker = viewModel::setDatePickerVisible,
         )
 
@@ -130,6 +131,7 @@ private fun ArrestAppBar(
     dangerFilterSelected: Boolean,
     heartRateFilterSelected: Boolean,
     onSelectFilter: (ArrestUiState.FilterType) -> Unit,
+    onRefresh: () -> Unit,
     onOpenDatePicker: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -153,7 +155,7 @@ private fun ArrestAppBar(
                 modifier = modifier
                     .size(35.dp)
                     .clip(CircleShape)
-                    .clickable(onClick = onOpenDatePicker)
+                    .clickable(onClick = onRefresh)
                     .padding(5.dp),
                 imageVector = Icons.Rounded.Refresh,
                 tint = LogiBlue,

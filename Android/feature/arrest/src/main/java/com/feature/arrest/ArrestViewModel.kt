@@ -48,6 +48,7 @@ class ArrestViewModel @Inject constructor(
                 _stateFlow.update {
                     it.copy(
                         arrestList = data,
+                        searchedList = data,
                         filteredList = data,
                     )
                 }
@@ -62,12 +63,24 @@ class ArrestViewModel @Inject constructor(
             _stateFlow.update {
                 it.copy(
                     arrestList = data,
+                    searchedList = data,
                     filteredList = data,
                 )
             }
         }.catch {
             Log.e("[USER_ARREST]", "$it")
         }.launchIn(viewModelScope)
+    }
+
+    internal fun refreshArrestList() {
+        _stateFlow.value = state.copy(
+            filterType = ArrestUiState.FilterType.FILTER_ALL,
+            allFilterSelected = true,
+            dangerFilterSelected = false,
+            heartRateFilterSelected = false,
+            searchedList = state.arrestList,
+            filteredList = state.arrestList,
+        )
     }
 
     internal fun filterArrestList(type: ArrestUiState.FilterType) {
