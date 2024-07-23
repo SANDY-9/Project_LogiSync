@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.addFocusCleaner
+import com.core.desinsystem.lottie.LottieProgressBarBlue
 import com.core.desinsystem.theme.LogiBlue
 import com.core.navigation.Args
 import com.core.navigation.Route
@@ -69,19 +70,24 @@ fun AdminScreen(
             onSelectDangerFilter = viewModel::getDangerMemberList,
             onRefreshList = viewModel::refreshMemberList,
         )
-        if(state.filteredUserList.isEmpty()) {
-            EmptyUser()
+        if(state.loading) {
+            LottieProgressBarBlue(modifier = modifier.fillMaxSize().weight(1f))
         }
         else {
-            UserList(
-                userList = state.filteredUserList,
-                onItemClick = { user ->
-                    navController.run {
-                        currentBackStackEntry?.savedStateHandle?.set(Args.USER, user)
-                        navigate(Route.UserDetails.route)
+            if(state.filteredUserList.isEmpty()) {
+                EmptyUser()
+            }
+            else {
+                UserList(
+                    userList = state.filteredUserList,
+                    onItemClick = { user ->
+                        navController.run {
+                            currentBackStackEntry?.savedStateHandle?.set(Args.USER, user)
+                            navigate(Route.UserDetails.route)
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }

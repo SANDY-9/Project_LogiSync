@@ -3,6 +3,7 @@ package com.feature.admin.model
 import com.core.model.User
 
 internal data class AdminUiState(
+    val loading: Boolean = false,
     val query: String = "",
     val allFilterSelected: Boolean = true,
     val dangerFilterSelected: Boolean = false,

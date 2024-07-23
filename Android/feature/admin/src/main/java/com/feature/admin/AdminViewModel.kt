@@ -8,13 +8,16 @@ import com.feature.admin.model.AdminUiState
 import com.feature.admin.utils.filter
 import com.feature.admin.utils.filterArrest
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,19 +30,26 @@ class AdminViewModel @Inject constructor(
     private val state get() = stateFlow.value
 
     init {
-        getUserListUseCase().onEach {
-            it?.let { data ->
-                _stateFlow.update {
-                    state.copy(
-                        userList = data,
-                        searchUserList = data,
-                        filteredUserList = data,
-                    )
-                }
+        getUserListUseCase()
+            .onStart {
+                _stateFlow.value = state.copy(loading = true)
             }
-        }.catch {
-            Log.e("[USER_LIST]", "$it: ", )
-        }.launchIn(viewModelScope)
+            .onEach {
+                it?.let { data ->
+                    delay(500L)
+                    _stateFlow.update {
+                        state.copy(
+                            loading = false,
+                            userList = data,
+                            searchUserList = data,
+                            filteredUserList = data,
+                        )
+                    }
+                }
+            }.catch {
+                Log.e("[USER_LIST]", "$it: ", )
+                _stateFlow.value = state.copy(loading = false)
+            }.launchIn(viewModelScope)
     }
 
     fun inputQuery(query: String) {
@@ -52,14 +62,19 @@ class AdminViewModel @Inject constructor(
 
     fun requestSearch() {
         if(state.query.isBlank()) return
-        val query = state.query.trim()
-        val searchList = state.userList.filter(query)
-        _stateFlow.value = state.copy(
-            searchUserList = searchList,
-            filteredUserList = searchList,
-            allFilterSelected = true,
-            dangerFilterSelected = false,
-        )
+        viewModelScope.launch {
+            _stateFlow.value = state.copy(loading = true)
+            delay(500L)
+            val query = state.query.trim()
+            val searchList = state.userList.filter(query)
+            _stateFlow.value = state.copy(
+                searchUserList = searchList,
+                filteredUserList = searchList,
+                allFilterSelected = true,
+                dangerFilterSelected = false,
+                loading = false,
+            )
+        }
     }
 
     fun getAllMemberList() {
