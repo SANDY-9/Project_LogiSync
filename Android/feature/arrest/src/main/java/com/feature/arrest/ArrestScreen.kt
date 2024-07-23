@@ -2,18 +2,25 @@ package com.feature.arrest
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.MyDateRangePickerBottomSheet
+import com.core.desinsystem.theme.LogiBlue
 import com.core.navigation.Args
 import com.core.navigation.Route
 import com.core.utils.DateUtil
@@ -60,16 +69,14 @@ fun ArrestScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = Color.White)
+            .statusBarsPadding()
     ) {
-
         ArrestAppBar(
             allFilterSelected = state.allFilterSelected,
             dangerFilterSelected = state.dangerFilterSelected,
             heartRateFilterSelected = state.heartRateFilterSelected,
             onSelectFilter = viewModel::filterArrestList,
             onOpenDatePicker = viewModel::setDatePickerVisible,
-            onNavigateUp = navController::navigateUp,
         )
 
         if(state.filteredList.isEmpty()) {
@@ -123,12 +130,13 @@ private fun ArrestAppBar(
     dangerFilterSelected: Boolean,
     heartRateFilterSelected: Boolean,
     onSelectFilter: (ArrestUiState.FilterType) -> Unit,
-    onNavigateUp: () -> Unit,
     onOpenDatePicker: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 13.dp)
     ) {
         Row(
             modifier = modifier
@@ -136,17 +144,31 @@ private fun ArrestAppBar(
                 .background(color = Color.White),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(onClick = onNavigateUp) {
-                Icon(imageVector = Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = null)
-            }
             Text(
                 text = stringResource(id = R.string.arrest_title),
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.titleLarge,
             )
             Spacer(modifier = modifier.weight(1f))
-            IconButton(onClick = onOpenDatePicker) {
-                Icon(imageVector = Icons.Rounded.DateRange, contentDescription = null)
-            }
+            Icon(
+                modifier = modifier
+                    .size(35.dp)
+                    .clip(CircleShape)
+                    .clickable(onClick = onOpenDatePicker)
+                    .padding(5.dp),
+                imageVector = Icons.Rounded.Refresh,
+                tint = LogiBlue,
+                contentDescription = null
+            )
+            Icon(
+                modifier = modifier
+                    .size(35.dp)
+                    .clip(CircleShape)
+                    .clickable(onClick = onOpenDatePicker)
+                    .padding(5.dp),
+                imageVector = Icons.Rounded.DateRange,
+                tint = LogiBlue,
+                contentDescription = null
+            )
         }
         ArrestFilter(
             allFilterSelected = allFilterSelected,

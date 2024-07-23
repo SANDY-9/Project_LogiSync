@@ -33,7 +33,7 @@ internal fun ArrestStickyHeader(
         Spacer(modifier = modifier.weight(1f))
         Text(
             text = "$count 건",
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.bodySmall,
             color = Color.Gray,
         )
     }

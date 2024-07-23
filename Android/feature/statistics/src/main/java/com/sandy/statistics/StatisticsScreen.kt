@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -113,7 +114,7 @@ private fun HeartRateStatisticsAppBar(
         modifier = modifier
             .fillMaxWidth()
             .background(color = Color.White)
-            .padding(horizontal = 20.dp)
+            .padding(start = 20.dp, end = 13.dp)
             .height(56.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -127,19 +128,20 @@ private fun HeartRateStatisticsAppBar(
 
         Icon(
             modifier = modifier
-                .padding(end = 12.dp)
-                .noRippleClickable(
-                    onClick = onReset
-                ),
+                .size(35.dp)
+                .clip(CircleShape)
+                .clickable(onClick = onReset)
+                .padding(5.dp),
             imageVector = Icons.Rounded.Refresh,
             tint = LogiBlue,
             contentDescription = null
         )
-
         Icon(
-            modifier = modifier.noRippleClickable(
-                    onClick = onDatePickerClick
-                ),
+            modifier = modifier
+                .size(35.dp)
+                .clip(CircleShape)
+                .clickable(onClick = onDatePickerClick)
+                .padding(5.dp),
             imageVector = Icons.Rounded.DateRange,
             tint = LogiBlue,
             contentDescription = null

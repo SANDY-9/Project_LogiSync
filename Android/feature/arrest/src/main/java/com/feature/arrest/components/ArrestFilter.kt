@@ -17,7 +17,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.core.desinsystem.theme.LogiSemiGray
 import com.feature.arrest.R
 import com.feature.arrest.model.ArrestUiState
 
@@ -30,7 +33,7 @@ internal fun ArrestFilter(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().height(36.dp).padding(horizontal = 16.dp),
+        modifier = modifier.fillMaxWidth().height(36.dp)
     ) {
         FilterButton(
             isSelected = allFilterSelected,
@@ -65,9 +68,9 @@ private fun FilterButton(
     title: String,
     modifier: Modifier = Modifier,
 ) {
-    val containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+    val containerColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.White
     val contentColor = if (isSelected) Color.White else MaterialTheme.colorScheme.primary
-    val strokeColor = if (isSelected) Color.Transparent else MaterialTheme.colorScheme.primary
+    val strokeColor = if (isSelected) Color.Transparent else LogiSemiGray
     Button(
         modifier = modifier.defaultMinSize(
             minWidth = 1.dp,
@@ -86,7 +89,11 @@ private fun FilterButton(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 13.sp,
+                fontWeight = if(isSelected) FontWeight.W500 else FontWeight.W400,
+                letterSpacing = (-0.3).sp
+            ),
         )
     }
 }
