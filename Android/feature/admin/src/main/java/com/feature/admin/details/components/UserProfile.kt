@@ -2,6 +2,7 @@ package com.feature.admin.details.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -25,13 +26,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.core.desinsystem.common.BasicOutlinedButton
+import com.core.desinsystem.common.CallButton
 import com.core.desinsystem.icons.Flag
+import com.core.desinsystem.theme.DarkRed
 import com.core.desinsystem.theme.HeartRed
+import com.core.desinsystem.theme.LogiDarkGray
+import com.core.desinsystem.theme.LogiGray
 import com.core.desinsystem.theme.LogiOrange
 import com.core.desinsystem.theme.TransparentBlack
 import com.core.model.User
@@ -39,7 +46,7 @@ import com.feature.admin.R
 import java.time.LocalDateTime
 
 @Composable
-fun UserProfile(
+internal fun UserProfile(
     user: User,
     modifier: Modifier = Modifier
 ) {
@@ -48,7 +55,6 @@ fun UserProfile(
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
     ){
-        Spacer(modifier = modifier.height(16.dp))
         Row(
             modifier = modifier
                 .fillMaxWidth()
@@ -57,7 +63,7 @@ fun UserProfile(
         ) {
             Image(
                 modifier = modifier
-                    .size(width = 50.dp, height = 50.dp)
+                    .size(width = 42.dp, height = 42.dp)
                     .clip(CircleShape)
                     .border(
                         width = 1.dp,
@@ -68,26 +74,36 @@ fun UserProfile(
                 contentDescription = null
             )
             Spacer(modifier = modifier.width(12.dp))
-            Column {
+            Column(
+                verticalArrangement = Arrangement.Center
+            ) {
+                Row(
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Text(
+                        text = user.name,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Spacer(modifier = modifier.width(4.dp))
+                    Text(
+                        modifier = modifier.padding(bottom = 1.dp),
+                        text = "(${user.id})",
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+                Spacer(modifier = modifier.height(2.dp))
                 Text(
-                    text = "${user.name} (${user.id})",
-                    style = MaterialTheme.typography.titleLarge,
-                )
-                Spacer(modifier = modifier.weight(1f))
-                Text(
-                    text = "${user.duty.str()}  |  ${user.team.name}",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = Color.DarkGray
+                    text = "${user.team.name}  |  ${user.duty.str()}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
                 )
             }
             Spacer(modifier = modifier.weight(1f))
-            CriticalPoint(
-                minCriticalPoint = user.minCriticalPoint ?: return,
-                maxCriticalPoint = user.maxCriticalPoint ?: return
-            )
         }
-
-        Spacer(modifier = modifier.height(8.dp))
+        CriticalPoint(
+            minCriticalPoint = user.minCriticalPoint ?: return,
+            maxCriticalPoint = user.maxCriticalPoint ?: return
+        )
     }
 }
 
@@ -97,44 +113,34 @@ private fun CriticalPoint(
     maxCriticalPoint: Int,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        horizontalAlignment = Alignment.End,
+    Row(
+        modifier = modifier.padding(end = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier = modifier.padding(end = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                modifier = modifier.size(20.dp),
-                imageVector = Icons.Flag,
-                tint = HeartRed,
-                contentDescription = null
+        Icon(
+            modifier = modifier.size(22.dp),
+            imageVector = Icons.Flag,
+            tint = DarkRed,
+            contentDescription = null
+        )
+        Spacer(modifier = Modifier.width(6.dp))
+        Text(
+            text = "최소 $minCriticalPoint - 최대 $maxCriticalPoint",
+            color = LogiDarkGray,
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontSize = 16.sp,
+                letterSpacing = (-0.5).sp
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "$minCriticalPoint - $maxCriticalPoint",
-                color = HeartRed,
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
-        Spacer(modifier = modifier.height(4.dp))
-        OutlinedButton(
-            modifier = modifier
-                .defaultMinSize(
-                    minWidth = 1.dp,
-                    minHeight = 1.dp,
-                )
-            ,
-            contentPadding = PaddingValues(vertical = 2.dp, horizontal = 8.dp),
-            onClick = { /*TODO*/ }
-        ) {
-            Text(
-                text = stringResource(id = R.string.details_critical_point_settings),
-                style = MaterialTheme.typography.labelMedium,
-            )
-        }
+        )
+        Spacer(modifier = modifier.weight(1f))
+        BasicOutlinedButton(
+            modifier = modifier,
+            title = stringResource(id = R.string.details_critical_point_settings),
+            onClick = {},
+        )
     }
 }
+
 
 @Preview(name = "UserProfile")
 @Composable

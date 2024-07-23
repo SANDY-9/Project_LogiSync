@@ -31,7 +31,6 @@ fun EmptyRecordView(
             start = 20.dp,
             end = 20.dp,
             bottom = 16.dp,
-            top = 8.dp,
         ).background(
             color = LogiLightGray,
             shape = RoundedCornerShape(16.dp)

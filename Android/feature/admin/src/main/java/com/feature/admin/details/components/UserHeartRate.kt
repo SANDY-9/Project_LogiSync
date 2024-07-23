@@ -21,12 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.core.desinsystem.common.HeartRateLabelLarge
 import com.core.desinsystem.common.LinearHeartRateRangeGraph
 import com.core.desinsystem.common.LogiCard
 import com.core.desinsystem.icons.Check
 import com.core.desinsystem.theme.DarkGreen
 import com.core.desinsystem.theme.DarkRed
+import com.core.utils.DateUtil
 import com.feature.admin.R
 import java.time.LocalDateTime
 
@@ -79,8 +81,10 @@ private fun HeartRate(
             HeartRateLabelLarge("$bpm")
             Spacer(modifier = modifier.height(2.dp))
             Text(
-                text = measureDateTime.toString(),
-                style = MaterialTheme.typography.labelLarge,
+                text = DateUtil.convertDateTime(measureDateTime),
+                style = MaterialTheme.typography.bodySmall.copy(
+                    letterSpacing = (-0.2).sp,
+                ),
                 color = Color.DarkGray,
             )
         }
@@ -134,7 +138,7 @@ private fun HeartRateAvg(
         Spacer(modifier = modifier.width(4.dp))
         Text(
             text = stringResource(id = R.string.details_heart_rate_desc_avg),
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.bodySmall,
             color = Color.Gray,
         )
     }
@@ -154,10 +158,10 @@ private fun EmptyHeartRate(
             tint = Color.Gray,
             contentDescription = null,
         )
-        Spacer(modifier = modifier.height(8.dp))
+        Spacer(modifier = modifier.height(4.dp))
         Text(
             text = stringResource(id = R.string.details_heart_rate_null),
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray,
         )
     }

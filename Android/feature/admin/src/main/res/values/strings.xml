@@ -11,7 +11,7 @@
     <string name="admin_member_filter_danger">위험</string>
 
     <!-- member details -->
-    <string name="details_critical_point_settings">임계치 변경하기</string>
+    <string name="details_critical_point_settings">임계치 변경</string>
     <string name="details_state_normal">정상입니다</string>
     <string name="details_state_warning">위험합니다</string>
     <string name="details_heart_rate_desc_avg">안정시 심박수 평균 : 60 - 100 bpm</string>
