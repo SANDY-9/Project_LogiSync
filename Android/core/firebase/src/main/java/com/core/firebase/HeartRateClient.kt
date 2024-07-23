@@ -1,6 +1,5 @@
 package com.core.firebase
 
-import android.util.Log
 import com.core.firebase.common.Constants.CRITICAL_POINT
 import com.core.firebase.common.Constants.HEART_RATE
 import com.core.firebase.common.Constants.MAX_CRITICAL_POINT
@@ -70,7 +69,6 @@ class HeartRateClient @Inject constructor(
                 }
             }
             val result = if(list.size > 6) list.slice(0..4) else listOf()
-            Log.e("확인", "getLastHeartRateList: ${list.size}", )
             onSuccess(result)
         }.addOnFailureListener {
             onError(it)
