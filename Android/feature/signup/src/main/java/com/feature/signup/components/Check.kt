@@ -167,9 +167,6 @@ private fun TelTextField(
         keyboardActions = {
             focusManager.clearFocus()
         },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number
-        ),
     )
 }
 @Preview

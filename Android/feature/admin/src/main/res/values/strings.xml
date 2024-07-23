@@ -12,6 +12,9 @@
 
     <!-- member details -->
     <string name="details_critical_point_settings">임계치 변경</string>
+    <string name="details_critical_point">변경하고자 하는 심박수 임계치를 입력해주세요.</string>
+    <string name="details_critical_point_min">최소 임계치</string>
+    <string name="details_critical_point_max">최대 임계치</string>
     <string name="details_state_normal">정상입니다</string>
     <string name="details_state_warning">위험합니다</string>
     <string name="details_heart_rate_desc_avg">안정시 심박수 평균 : 60 - 100 bpm</string>

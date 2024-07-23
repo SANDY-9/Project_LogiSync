@@ -1,11 +1,14 @@
 package com.feature.admin.details
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,31 +25,34 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.BoxLayout
 import com.core.desinsystem.common.CallButton
 import com.core.desinsystem.common.EmptyRecordView
+import com.core.desinsystem.common.addFocusCleaner
+import com.core.desinsystem.lottie.LottieProgressBarBlue
 import com.core.model.Arrest
 import com.core.model.HeartRate
 import com.core.model.User
 import com.core.navigation.Args
 import com.core.navigation.Route
+import com.feature.admin.details.components.CriticalPointChangeBottomSheet
 import com.feature.admin.details.components.ReportItem
 import com.feature.admin.details.components.UserHeartRate
 import com.feature.admin.details.components.UserHeartRateReportItem
 import com.feature.admin.details.components.UserHeartRateReportTitle
 import com.feature.admin.details.components.UserProfile
 import com.feature.admin.details.components.UserReport
-import com.feature.admin.details.model.UserDetailsUiState
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -63,10 +69,12 @@ fun UserDetailsScreen(
     }
 
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
+    val focusManager = LocalFocusManager.current
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .statusBarsPadding(),
+            .statusBarsPadding()
+            .addFocusCleaner(focusManager),
     ) {
         UserDetailsAppBar(
             name = state.user?.name,
@@ -94,10 +102,36 @@ fun UserDetailsScreen(
                         currentBackStackEntry?.savedStateHandle?.set(Args.ID, id)
                         navigate(Route.Statistics.route)
                     }
-                }
+                },
+                onRequestEdit = viewModel::openChangeBottomSheet
             )
         }
     }
+    if(state.changeBottomSheetVisible) {
+        CriticalPointChangeBottomSheet(
+            min = state.editMin,
+            max = state.editMax,
+            onMinInputChange = viewModel::editMinPoint,
+            onMaxInputChange = viewModel::editMaxPoint,
+            onComplete = viewModel::requestChangeCriticalPoint,
+            onDismissRequest = viewModel::openChangeBottomSheet,
+            focusManager,
+        )
+    }
+    val context = LocalContext.current
+    LaunchedEffect (state.error){
+        snapshotFlow { state.error }.collectLatest { error ->
+            Log.e("확인", "UserDetailsScreen: $error", )
+            error?.let { isError ->
+                Toast.makeText(
+                    context,
+                    if(isError) "변경할 수 없습니다. 네트워크 환경을 확인해주세요." else "성공적으로 변경했습니다",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+    if(state.loading) LottieProgressBarBlue(modifier = modifier.fillMaxSize())
 }
 
 @Composable
@@ -147,12 +181,16 @@ private fun UserDetailsContent(
     onNavigateToAllReport: (String) -> Unit,
     onArrestItemClick: (Arrest) -> Unit,
     onNavigateToStatistics: (String) -> Unit,
+    onRequestEdit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn {
 
         item {
-            UserProfile(user = user)
+            UserProfile(
+                user = user,
+                onRequestEdit = onRequestEdit
+            )
             Spacer(modifier = modifier.height(8.dp))
         }
 
@@ -219,10 +257,4 @@ private fun isCritical(bpm: Int?, min: Int?, max: Int?): Boolean {
     } else {
         false
     }
-}
-
-@Preview(name = "MemberDetailsScreen")
-@Composable
-private fun PreviewMemberDetailsScreen() {
-    UserDetailsScreen(rememberNavController())
 }

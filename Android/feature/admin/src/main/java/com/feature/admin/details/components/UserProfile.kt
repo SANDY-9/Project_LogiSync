@@ -48,6 +48,7 @@ import java.time.LocalDateTime
 @Composable
 internal fun UserProfile(
     user: User,
+    onRequestEdit: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -102,7 +103,8 @@ internal fun UserProfile(
         }
         CriticalPoint(
             minCriticalPoint = user.minCriticalPoint ?: return,
-            maxCriticalPoint = user.maxCriticalPoint ?: return
+            maxCriticalPoint = user.maxCriticalPoint ?: return,
+            onRequestEdit = onRequestEdit,
         )
     }
 }
@@ -111,6 +113,7 @@ internal fun UserProfile(
 private fun CriticalPoint(
     minCriticalPoint: Int,
     maxCriticalPoint: Int,
+    onRequestEdit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -136,7 +139,7 @@ private fun CriticalPoint(
         BasicOutlinedButton(
             modifier = modifier,
             title = stringResource(id = R.string.details_critical_point_settings),
-            onClick = {},
+            onClick = onRequestEdit,
         )
     }
 }
@@ -156,6 +159,7 @@ private fun PreviewUserProfile() {
             lastBpmDateTime = LocalDateTime.now(),
             minCriticalPoint = 20,
             maxCriticalPoint = 130,
-        )
+        ),
+        {}
     )
 }

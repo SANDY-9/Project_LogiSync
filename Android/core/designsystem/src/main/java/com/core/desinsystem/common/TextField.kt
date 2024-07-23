@@ -26,6 +26,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
@@ -215,7 +217,6 @@ fun MyTelTextField(
     isError: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardActions: (() -> Unit)? = null,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
@@ -259,7 +260,9 @@ fun MyTelTextField(
         supportingText = supportingText,
         isError = isError,
         visualTransformation = visualTransformation,
-        keyboardOptions = keyboardOptions,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number
+        ),
         keyboardActions = KeyboardActions(
             onDone = {
                 if (keyboardActions == null) {
@@ -292,5 +295,74 @@ private fun TextFieldPreview() {
         inputVisible = visible,
         onInputVisibleChange = { visible = !visible },
         focusManager = focusManager
+    )
+}
+
+@Composable
+fun MyNumberTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    focusManager: FocusManager,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
+    textStyle: TextStyle = LocalTextStyle.current,
+    label: @Composable (() -> Unit)? = null,
+    placeholder: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    prefix: @Composable (() -> Unit)? = null,
+    suffix: @Composable (() -> Unit)? = null,
+    supportingText: @Composable (() -> Unit)? = null,
+    isError: Boolean = false,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardActions: (() -> Unit)? = null,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
+) {
+    OutlinedTextField(
+        value = TextFieldValue(
+            text = value,
+            selection = TextRange(value.length)
+        ),
+        onValueChange = {
+            onValueChange(it.text)
+        },
+        modifier = modifier
+            .addFocusCleaner(focusManager)
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(8.dp)
+            ),
+        enabled = enabled,
+        readOnly = readOnly,
+        textStyle = textStyle,
+        label = label,
+        placeholder = placeholder,
+        leadingIcon = leadingIcon,
+        prefix = prefix,
+        suffix = suffix,
+        supportingText = supportingText,
+        isError = isError,
+        visualTransformation = visualTransformation,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                if (keyboardActions == null) {
+                    focusManager.moveFocus(FocusDirection.Next)
+                }
+                else {
+                    keyboardActions.invoke()
+                }
+            }
+        ),
+        singleLine = true,
+        maxLines = 1,
+        minLines = 1,
+        interactionSource = interactionSource,
+        shape = RoundedCornerShape(8.dp),
+        colors = colors,
     )
 }

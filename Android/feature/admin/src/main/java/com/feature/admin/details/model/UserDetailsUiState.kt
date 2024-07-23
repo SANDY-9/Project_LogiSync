@@ -5,7 +5,16 @@ import com.core.model.HeartRate
 import com.core.model.User
 
 data class UserDetailsUiState(
+
+    val loading: Boolean = false,
+    val error: Boolean? = null,
+
     val user: User? = null,
     val lastReportList: List<Arrest> = emptyList(),
     val lastHeartRateList: List<HeartRate> = emptyList(),
+
+    // 임계점 변경
+    val changeBottomSheetVisible: Boolean = false,
+    val editMin: String = "",
+    val editMax: String = "",
 )

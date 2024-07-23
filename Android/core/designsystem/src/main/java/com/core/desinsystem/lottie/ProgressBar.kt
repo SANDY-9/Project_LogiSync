@@ -18,7 +18,7 @@ import com.lottiefiles.dotlottie.core.util.DotLottieSource
 fun LottieProgressBarBlue(modifier: Modifier = Modifier) {
     val dotLottieController = remember { DotLottieController() }
     Box(
-        modifier = modifier.background(Color.White)
+        modifier = modifier
     ) {
         DotLottieAnimation(
             modifier = Modifier.size(50.dp).align(Alignment.Center),
