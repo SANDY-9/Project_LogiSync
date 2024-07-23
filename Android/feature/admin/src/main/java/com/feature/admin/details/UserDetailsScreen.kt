@@ -1,5 +1,6 @@
 package com.feature.admin.details
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -77,32 +78,34 @@ fun UserDetailsScreen(
             name = state.user?.name,
             onNavigateUp = { navController.navigateUp() }
         )
-        state.user?.let { user ->
-            UserDetailsContent(
-                user = user,
-                enableEdit = state.enableEdit,
-                lastReportList = state.lastReportList,
-                lastHeartRateList = state.lastHeartRateList,
-                onNavigateToAllReport = { id ->
-                    navController.run {
-                        currentBackStackEntry?.savedStateHandle?.set(Args.ID, user.id)
-                        navigate(Route.Arrest.route)
-                    }
-                },
-                onArrestItemClick = { arrest ->
-                    navController.run {
-                        currentBackStackEntry?.savedStateHandle?.set(Args.ARREST, arrest)
-                        navigate(Route.ArrestDetails.route)
-                    }
-                },
-                onNavigateToStatistics = { id ->
-                    navController.run {
-                        currentBackStackEntry?.savedStateHandle?.set(Args.ID, id)
-                        navigate(Route.Statistics.route)
-                    }
-                },
-                onRequestEdit = viewModel::openChangeBottomSheet
-            )
+        if(!state.loading) {
+            state.user?.let { user ->
+                UserDetailsContent(
+                    user = user,
+                    enableEdit = state.enableEdit,
+                    lastReportList = state.lastReportList,
+                    lastHeartRateList = state.lastHeartRateList,
+                    onNavigateToAllReport = { id ->
+                        navController.run {
+                            currentBackStackEntry?.savedStateHandle?.set(Args.ID, user.id)
+                            navigate(Route.Arrest.route)
+                        }
+                    },
+                    onArrestItemClick = { arrest ->
+                        navController.run {
+                            currentBackStackEntry?.savedStateHandle?.set(Args.ARREST, arrest)
+                            navigate(Route.ArrestDetails.route)
+                        }
+                    },
+                    onNavigateToStatistics = { id ->
+                        navController.run {
+                            currentBackStackEntry?.savedStateHandle?.set(Args.ID, id)
+                            navigate(Route.Statistics.route)
+                        }
+                    },
+                    onRequestEdit = viewModel::openChangeBottomSheet
+                )
+            }
         }
     }
     if(state.changeBottomSheetVisible) {
@@ -219,6 +222,7 @@ private fun UserDetailsContent(
                 ReportItem(
                     arrestItem = arrest,
                     onItemClick = {
+                        Log.e("확인", "UserDetailsContent: $arrest", )
                         onArrestItemClick(arrest)
                     }
                 )

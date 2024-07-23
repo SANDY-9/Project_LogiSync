@@ -48,7 +48,12 @@ class UserDetailsViewModel @Inject constructor(
             editMax = (user.maxCriticalPoint ?: "").toString(),
         )
         val id = user.id
-        getAccountUseCase().filter {
+        getAccountUseCase()
+            .onStart {
+                _stateFlow.value = state.copy(
+                    loading = true,
+                )
+            }.filter {
             it != null
         }.flatMapLatest { account ->
             _stateFlow.update {
@@ -68,7 +73,10 @@ class UserDetailsViewModel @Inject constructor(
                 )
             }
         }.onEach {  state ->
-            _stateFlow.update { state }
+            delay(500)
+            _stateFlow.update { state.copy(loading = false) }
+        }.catch {
+            _stateFlow.value = state.copy(loading = false)
         }.launchIn(viewModelScope)
     }
 
