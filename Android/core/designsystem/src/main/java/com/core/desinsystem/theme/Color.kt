@@ -26,6 +26,7 @@ val LogiRed = Color(0xFFe8141d)
 val LogiExtraLightGray = Color(0x56f1f1f1)
 val LogiLightGray = Color(0x9eefefef)
 val LogiSemiGray = Color(0x9ee4e4e4)
+val LogiGray = Color(0x9e808080)
 val LogiDarkGray = Color(0xff4c4c4c)
 
 val HeartRed = Color(0xFFa7416c)

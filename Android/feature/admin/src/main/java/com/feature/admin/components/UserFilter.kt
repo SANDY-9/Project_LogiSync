@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.Button
@@ -19,9 +21,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.core.desinsystem.theme.LogiDarkGray
+import com.core.desinsystem.theme.LogiSemiGray
 import com.feature.admin.R
 
 @Composable
@@ -36,7 +43,7 @@ fun UserFilter(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(start = 20.dp, end = 15.dp, top = 2.dp, bottom = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         FilterButton(
@@ -52,8 +59,13 @@ fun UserFilter(
         )
         Spacer(modifier = modifier.weight(1f))
         Icon(
-            modifier = modifier.clickable(onClick = onRefreshList),
+            modifier = modifier
+                .size(35.dp)
+                .clip(CircleShape)
+                .clickable(onClick = onRefreshList)
+                .padding(5.dp),
             imageVector = Icons.Rounded.Refresh,
+            tint = LogiDarkGray,
             contentDescription = null
         )
     }
@@ -66,9 +78,9 @@ private fun FilterButton(
     title: String,
     modifier: Modifier = Modifier,
 ) {
-    val containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+    val containerColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.White
     val contentColor = if (isSelected) Color.White else MaterialTheme.colorScheme.primary
-    val strokeColor = if (isSelected) Color.Transparent else MaterialTheme.colorScheme.primary
+    val strokeColor = if (isSelected) Color.Transparent else LogiSemiGray
     Button(
         modifier = modifier.defaultMinSize(
             minWidth = 1.dp,
@@ -87,7 +99,11 @@ private fun FilterButton(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 13.sp,
+                fontWeight = if(isSelected) FontWeight.W500 else FontWeight.W400,
+                letterSpacing = (-0.3).sp
+            ),
         )
     }
 }

@@ -57,6 +57,8 @@ class AdminViewModel @Inject constructor(
         _stateFlow.value = state.copy(
             searchUserList = searchList,
             filteredUserList = searchList,
+            allFilterSelected = true,
+            dangerFilterSelected = false,
         )
     }
 

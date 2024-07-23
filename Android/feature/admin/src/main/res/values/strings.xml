@@ -2,10 +2,10 @@
 <resources>
 
     <!-- admin -->
-    <string name="admin_menu_title">회원 현황</string>
-    <string name="admin_search_hint">팀/사원 이름으로 검색</string>
+    <string name="admin_menu_title">관리자 메뉴</string>
+    <string name="admin_search_hint">팀/사원 이름으로 사원 검색</string>
     <string name="admin_search_empty">검색어를 입력해주세요.</string>
-    <string name="admin_search_result_empty">해당하는 회원이 없습니다.</string>
+    <string name="admin_search_result_empty">해당하는 사원이 없습니다.</string>
     <string name="admin_member_filter_all">전체보기</string>
     <string name="admin_member_filter_attention">주의</string>
     <string name="admin_member_filter_danger">위험</string>

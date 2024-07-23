@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Notifications
@@ -29,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.addFocusCleaner
+import com.core.desinsystem.theme.LogiBlue
 import com.core.navigation.Args
 import com.core.navigation.Route
 import com.feature.admin.components.UserFilter
@@ -47,6 +50,7 @@ fun AdminScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .systemBarsPadding()
             .addFocusCleaner(focusManager)
     ) {
         AdminAppBar()
@@ -94,20 +98,21 @@ private fun AdminAppBar(
     ) {
 
         Text(
-            modifier = modifier.padding(start = 16.dp),
+            modifier = modifier.padding(start = 20.dp),
             text = stringResource(id = R.string.admin_menu_title),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleLarge,
         )
 
         Spacer(modifier = modifier.weight(1f))
 
         IconButton(
             modifier = modifier
-                .padding(end = 4.dp, top = 8.dp),
+                .padding(end = 4.dp, top = 13.dp),
             onClick = {}
         ) {
             Icon(
                 imageVector = Icons.Rounded.Notifications,
+                tint = LogiBlue,
                 contentDescription = null
             )
         }
@@ -124,14 +129,15 @@ private fun EmptyUser(
         verticalArrangement = Arrangement.Center,
     ) {
         Icon(
+            modifier = modifier.size(20.dp),
             imageVector = Icons.Rounded.Info,
             contentDescription = null,
             tint = Color.Gray,
         )
-        Spacer(modifier = modifier.height(8.dp))
+        Spacer(modifier = modifier.height(4.dp))
         Text(
             text = stringResource(id = R.string.admin_search_result_empty),
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray
         )
     }

@@ -10,14 +10,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.HorizontalDivider
@@ -28,15 +26,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.core.desinsystem.icons.Flag
 import com.core.desinsystem.theme.DarkRed
-import com.core.desinsystem.theme.LogiOrange
-import com.core.desinsystem.theme.LogiRed
+import com.core.desinsystem.theme.HeartRed
+import com.core.desinsystem.theme.LogiDarkGray
+import com.core.desinsystem.theme.LogiLightGray
+import com.core.desinsystem.theme.LogiSemiGray
 import com.core.model.User
 import com.core.utils.DateUtil
-import java.time.LocalDateTime
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -61,7 +61,7 @@ fun UserList(
                         user = user,
                         onItemClick = onItemClick,
                     )
-                    HorizontalDivider()
+                    HorizontalDivider(color = LogiSemiGray)
                 }
             }
         }
@@ -76,7 +76,7 @@ private fun TeamStickyHeader(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.primaryContainer)
+            .background(color = LogiLightGray)
             .padding(
                 horizontal = 16.dp,
                 vertical = 4.dp
@@ -126,7 +126,12 @@ private fun UserItem(
             )
             Text(
                 text = DateUtil.convertDateTime(user.lastBpmDateTime ?: return),
-                style = MaterialTheme.typography.labelSmall
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.W400,
+                    letterSpacing = (-0.2).sp
+                ),
+                color = Color.Gray,
             )
         }
     }
@@ -143,7 +148,7 @@ private fun UserName(
     ) {
         Text(
             text = name,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.bodyMedium
         )
         if(isCritical) {
             Spacer(modifier = modifier.width(4.dp))
@@ -170,14 +175,18 @@ private fun CriticalPoint(
         Icon(
             modifier = Modifier.size(15.dp),
             imageVector = Icons.Flag,
-            tint = LogiOrange,
+            tint = DarkRed,
             contentDescription = null
         )
         Spacer(modifier = Modifier.width(2.dp))
         Text(
             text = "$minCriticalPoint - $maxCriticalPoint",
-            color = Color.Gray,
-            style = MaterialTheme.typography.labelSmall
+            color = LogiDarkGray,
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 10.sp,
+                fontWeight = FontWeight.W500,
+                letterSpacing = (-0.2).sp
+            )
         )
     }
 }
@@ -193,18 +202,15 @@ private fun MeasuredBpm(
         Icon(
             modifier = modifier.size(15.dp),
             imageVector = Icons.Rounded.Favorite,
+            tint = HeartRed,
             contentDescription = null
-        )
-        Spacer(modifier = modifier.width(8.dp))
-        Text(
-            text = "$bpm",
-            style = MaterialTheme.typography.titleMedium,
         )
         Spacer(modifier = modifier.width(4.dp))
         Text(
-            modifier = modifier.padding(top = 5.dp),
-            text = "bpm",
-            style = MaterialTheme.typography.labelSmall
+            text = "$bpm",
+            style = MaterialTheme.typography.titleMedium.copy(
+                lineHeight = 18.sp
+            ),
         )
     }
 }

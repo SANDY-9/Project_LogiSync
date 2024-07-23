@@ -27,11 +27,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.common.addFocusCleaner
 import com.core.desinsystem.common.noRippleClickable
 import com.core.desinsystem.icons.Clear
+import com.core.desinsystem.theme.LogiGray
+import com.core.desinsystem.theme.LogiSemiGray
 import com.feature.admin.R
 
 private const val QUERY_EMPTY_MESSAGE = "검색어를 입력해주세요."
@@ -50,8 +53,8 @@ fun UserSearchField(
         onValueChange = onQueryChange,
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .height(48.dp)
+            .padding(horizontal = 20.dp)
+            .height(45.dp)
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.primary,
@@ -64,7 +67,8 @@ fun UserSearchField(
             .addFocusCleaner(focusManager),
         singleLine = true,
         keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Search
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Search,
         ),
         keyboardActions = KeyboardActions(
             onSearch = {
@@ -97,7 +101,7 @@ fun UserSearchField(
                                 .padding(horizontal = 8.dp)
                                 .noRippleClickable(onClick = onQueryClear),
                             imageVector = Icons.Clear,
-                            tint = Color.Gray,
+                            tint = LogiGray,
                             contentDescription = null
                         )
                     }
