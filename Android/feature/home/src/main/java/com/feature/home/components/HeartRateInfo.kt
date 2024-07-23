@@ -75,7 +75,7 @@ private fun EmptyMeasuredHeartRateView(
             text = stringResource(id = R.string.home_heart_rate_empty),
             style = MaterialTheme.typography.bodyMedium,
         )
-        Spacer(modifier = modifier.width(8.dp))
+        Spacer(modifier = modifier.width(12.dp))
         HeartRateCollectButton(
             onClick = onRequestCollect,
         )

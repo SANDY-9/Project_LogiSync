@@ -18,6 +18,7 @@ import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 
 @HiltWorker
 class HeartRateMeasureWorker @AssistedInject constructor(
@@ -43,7 +44,7 @@ class HeartRateMeasureWorker @AssistedInject constructor(
     private suspend fun measureHeartRate() {
         wakeLock.acquire(1 * 60 * 1000L /*1 minutes*/)
         coroutineScope {
-            val account = wearableDataStoreRepository.getAccount()
+            val account = wearableDataStoreRepository.getAccount().first()
             account?.let {
                 measureHeatRateUseCase(
                     id = it.id,

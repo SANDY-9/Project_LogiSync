@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface WearableDataStoreRepository {
     suspend fun registerAccount(account: String)
-    suspend fun getAccount():Account?
+    fun getAccount():Flow<Account?>
 
     suspend fun updateLastHeartRate(heartRate: HeartRate)
     fun getLastHeartRate(): Flow<HeartRate?>

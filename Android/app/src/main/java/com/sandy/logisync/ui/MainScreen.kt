@@ -59,7 +59,7 @@ fun MainScreen(
                     .weight(1f),
                 navController = navController,
                 startDestination = Route.Login.route,
-                //startDestination = Route.Signup.route,
+                //startDestination = Route.Onboarding.route,
                 //startDestination = Route.Home.route,
             )
             if(currentRoute in BottomNavRouteEntry) {

@@ -1,5 +1,6 @@
 package com.feature.home
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -63,6 +65,12 @@ fun HomeScreen(
 
     LifecycleEventEffect(event = Lifecycle.Event.ON_RESUME) {
         viewModel.restartWearableConnectMonitoring()
+    }
+
+    LaunchedEffect(state.heartRateLoading) {
+        if(state.heartRateLoading) {
+            Toast.makeText(context, "워치에서 심박수를 측정해주세요.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     Column {

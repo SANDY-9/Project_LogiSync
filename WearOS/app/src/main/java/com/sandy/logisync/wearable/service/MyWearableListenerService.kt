@@ -13,6 +13,7 @@ import com.sandy.logisync.workmanager.HeartRateMeasureWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import javax.inject.Inject
@@ -35,9 +36,8 @@ class MyWearableListenerService : WearableListenerService() {
     }
 
     private fun login(accountData: String) {
-        Log.i("[WEARABLE-MOBILE]", "login: $accountData", )
         CoroutineScope(Dispatchers.IO).launch {
-            val existAccount = wearableDataStoreRepository.getAccount()
+            val existAccount = wearableDataStoreRepository.getAccount().first()
             if (existAccount == null) {
                 wearableDataStoreRepository.registerAccount(accountData)
             }
@@ -56,7 +56,7 @@ class MyWearableListenerService : WearableListenerService() {
     private fun collectHeartRate(id: String) {
         Log.i("[WEARABLE-MOBILE]", "collectHeartRate: $id", )
         CoroutineScope(Dispatchers.IO).launch {
-            val account = wearableDataStoreRepository.getAccount()
+            val account = wearableDataStoreRepository.getAccount().first()
             account?.let {
                 if(it.id == id) {
                     launch(Dispatchers.Main) { turnOnApp() }

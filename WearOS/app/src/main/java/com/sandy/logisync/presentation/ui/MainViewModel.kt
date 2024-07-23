@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
@@ -40,9 +41,9 @@ class MainViewModel @Inject constructor(
     val isGrantedPermission = _isGrantedPermission.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            _initialPairedMobile.value = wearableDataStoreRepository.getAccount() != null
-        }
+        wearableDataStoreRepository.getAccount().onEach {
+            _initialPairedMobile.value = it != null
+        }.launchIn(viewModelScope)
 
         // 심박수
         wearableDataStoreRepository.getLastHeartRate().shareIn(
@@ -73,9 +74,9 @@ class MainViewModel @Inject constructor(
 
     fun arrest() {
         viewModelScope.launch {
-            val account = wearableDataStoreRepository.getAccount()
+            val account = wearableDataStoreRepository.getAccount().first()
             account?.let {
-                requestNormalArrestUseCase(it.id).catch {
+                requestNormalArrestUseCase(it.id, it.name, it.tel).catch {
                     Log.e("[REQUEST_ARREST]", "$it : ${it.message}")
                 }.collectLatest {
                     Log.i("[REQUEST_ARREST]", "$it")

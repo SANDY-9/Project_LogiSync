@@ -17,19 +17,30 @@ class RequestNormalArrestUseCase @Inject constructor (
 ) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    operator fun invoke(id: String): Flow<String?> {
+    operator fun invoke(
+        id: String,
+        name: String,
+        tel: String,
+    ): Flow<String?> {
         return locationRepository.getLastLocation().flatMapLatest { location ->
-            updateArrestToServer(id, location)
+            updateArrestToServer(id, name, tel, location)
             networkRepository.notifyArrest(id)
         }
     }
-
     private suspend fun updateArrestToServer(
         id: String,
+        name: String,
+        tel: String,
         location: Location,
     ) {
         coroutineScope {
-            networkRepository.updateNormalArrest(id, Arrest.ArrestType.NORMAL, location).first()
+            networkRepository.updateNormalArrest(
+                id = id,
+                name = name,
+                tel = tel,
+                arrestType = Arrest.ArrestType.NORMAL,
+                location = location
+            ).first()
         }
     }
 

@@ -1,28 +1,44 @@
 package com.feature.home
 
 import android.content.Context
-import android.content.Intent
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import com.sandy.service.MyWearableListenerService
-import com.sandy.service.START_WEARABLE_LISTENER
-import com.sandy.service.STOP_WEARABLE_LISTENER
+import com.google.android.gms.wearable.MessageClient
+import com.google.android.gms.wearable.Wearable
 
 @Composable
 internal fun HomeWearableListener(
-    context: Context?
+    context: Context
 ) {
+    val messageListener = MessageClient.OnMessageReceivedListener {
+        val data = it.data.toString(Charsets.UTF_8)
+        Log.e("확인", "onMessageReceived: $data", )
+        when (it.path) {
+            MessagePath.GET_LOGIN_RESPONSE.path -> {
+                Log.e("확인", "onMessageReceived: $data")
+            }
+
+            MessagePath.GET_HEART_RATE.path -> {
+                Log.e("확인", "onMessageReceived: 무사히 도착 $data", )
+            }
+
+            MessagePath.GET_ARREST.path -> {
+            }
+        }
+    }
     DisposableEffect(key1 = Unit) {
-        commandHeartRateService(context, START_WEARABLE_LISTENER)
+        Wearable.getMessageClient(context).addListener(messageListener)
+
         onDispose {
-            commandHeartRateService(context, STOP_WEARABLE_LISTENER)
+            Wearable.getMessageClient(context).removeListener(messageListener)
         }
     }
 }
 
-private fun commandHeartRateService(context: Context?, command: String) {
-    val intent = Intent(context, MyWearableListenerService::class.java).apply {
-        action = command
-    }
-    context?.startService(intent)
+
+private enum class MessagePath(val path: String) {
+    GET_LOGIN_RESPONSE("/login_transcription"),
+    GET_HEART_RATE("/heart_rate_transcription"),
+    GET_ARREST("/arrest_transcription"),
 }

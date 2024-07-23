@@ -25,7 +25,6 @@ class WearableRepositoryImpl @Inject constructor(
     private val bluetoothManager: MyBluetoothManager,
 ) : WearableRepository {
 
-    // 테스트용
     override fun getWearableConnectState(): Flow<Device?> = flow {
         while (true) {
             val node = wearableClient.getConnectWearable()
