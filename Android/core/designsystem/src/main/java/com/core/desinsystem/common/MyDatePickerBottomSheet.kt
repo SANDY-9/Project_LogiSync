@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.core.desinsystem.theme.LogiBlue
+import com.core.desinsystem.theme.LogiLightGray
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -45,6 +47,7 @@ fun MyDateRangePickerBottomSheet(
         sheetState = bottomSheetState,
         dragHandle = null,
         onDismissRequest = onDismissRequest,
+        containerColor = Color.White,
     ) {
         Column(
             modifier = modifier.fillMaxWidth()
@@ -122,8 +125,8 @@ private fun MyDateRangePicker(
             weekdayContentColor = Color.Black,
             subheadContentColor = Color.Black,
             disabledDayContentColor = Color.Gray,
-            dayInSelectionRangeContainerColor = MaterialTheme.colorScheme.surfaceDim,
-            dayInSelectionRangeContentColor = Color.White,
+            dayInSelectionRangeContainerColor = LogiLightGray,
+            dayInSelectionRangeContentColor = LogiBlue,
             selectedDayContainerColor = MaterialTheme.colorScheme.primary
         )
     )

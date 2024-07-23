@@ -1,5 +1,7 @@
 package com.sandy.statistics.compoents
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -7,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +24,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.common.DottedLine
 import com.core.desinsystem.theme.DarkGreen
+import com.core.desinsystem.theme.HeartRed
 import com.core.desinsystem.theme.LightGreen
+import com.core.desinsystem.theme.LogiExtraLightGray
+import com.core.desinsystem.theme.LogiOrange
+import com.core.desinsystem.theme.LogiOrangeDeem
+import com.core.desinsystem.theme.LogiSemiGray
 import com.sandy.statistics.model.HeartRateChartItem
 import com.sandy.statistics.model.StatisticsUiState
 import java.time.LocalDate
@@ -39,7 +47,9 @@ fun HeartRateChart(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if(type == StatisticsUiState.ChartType.DAILY) {
@@ -54,6 +64,7 @@ fun HeartRateChart(
                 periodTitle = periodTitle,
             )
         }
+        Spacer(modifier = modifier.height(12.dp))
         Chart(
             type = type,
             item = chartItem,
@@ -63,7 +74,7 @@ fun HeartRateChart(
     }
 }
 
-private val stroke = Stroke(width = 2f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f))
+internal val stroke = Stroke(width = 2f, pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f))
 @Composable
 private fun Chart(
     type: StatisticsUiState.ChartType,
@@ -73,7 +84,14 @@ private fun Chart(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier.fillMaxWidth()
+        modifier
+            .fillMaxWidth()
+            .border(
+                color = LogiSemiGray,
+                shape = RoundedCornerShape(16.dp),
+                width = 1.dp
+            )
+            .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
 
         // 180 bpm
@@ -137,7 +155,7 @@ private fun Chart(
                 .align(Alignment.TopEnd)
                 .padding(top = 103.dp),
             text = "정상\n범위",
-            color = LightGreen,
+            color = DarkGreen,
             style = MaterialTheme.typography.labelSmall,
         )
 

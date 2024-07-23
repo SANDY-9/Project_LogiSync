@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,8 +14,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material.icons.rounded.Refresh
@@ -25,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -37,6 +42,8 @@ import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.MyDateRangePickerBottomSheet
 import com.core.desinsystem.common.RecordItemHeartRate
 import com.core.desinsystem.common.EmptyRecordView
+import com.core.desinsystem.common.noRippleClickable
+import com.core.desinsystem.theme.LogiBlue
 import com.sandy.statistics.compoents.HeartRateChart
 import com.sandy.statistics.compoents.HeartRateDescriptionCard
 import com.sandy.statistics.model.StatisticsUiState
@@ -49,42 +56,39 @@ fun StatisticsScreen(
     viewModel: StatisticsViewModel = hiltViewModel(),
 ) {
 
-    val context = LocalContext.current as? Activity
-    BackHandler(enabled = true) {
-        context?.finish()
-    }
-
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
+    Column(
+        modifier = modifier.fillMaxSize().statusBarsPadding()
     ) {
-        stickyHeader {
-            HeartRateStatisticsAppBar(
-                onReset = viewModel::resetChart,
-                onDatePickerClick = viewModel::setDatePickerVisible,
-            )
-        }
-        item {
-            StatisticsContent(
-                state = state,
-                onPrevClick = viewModel::getPrevDateChart,
-                onNextClick = viewModel::getNextDateChart,
-                onItemClick = viewModel::selectItem,
-            )
+        LazyColumn {
+            stickyHeader {
+                HeartRateStatisticsAppBar(
+                    onReset = viewModel::resetChart,
+                    onDatePickerClick = viewModel::setDatePickerVisible,
+                )
+            }
+            item {
+                StatisticsContent(
+                    state = state,
+                    onPrevClick = viewModel::getPrevDateChart,
+                    onNextClick = viewModel::getNextDateChart,
+                    onItemClick = viewModel::selectItem,
+                )
+            }
+
+            stickyHeader {
+                HeartRateRecordAppBar()
+            }
+
+            items(items = state.selectRecordItem){ item ->
+                RecordItemHeartRate(item.bpm, item.time())
+            }
         }
 
-        stickyHeader {
-            HeartRateRecordAppBar()
+        if(state.isSelectItemEmpty) {
+            EmptyRecordView(modifier = modifier.weight(1f))
         }
-
-        items(items = state.selectRecordItem){ item ->
-            RecordItemHeartRate(item.bpm, item.time())
-        }
-    }
-
-    if(state.isSelectItemEmpty) {
-        EmptyRecordView(modifier = modifier.fillMaxWidth())
     }
 
     if (state.datePickerVisible) {
@@ -109,35 +113,35 @@ private fun HeartRateStatisticsAppBar(
         modifier = modifier
             .fillMaxWidth()
             .background(color = Color.White)
+            .padding(horizontal = 20.dp)
             .height(56.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
         Text(
-            modifier = modifier.padding(start = 16.dp),
             text = stringResource(id = R.string.heart_rate_statistics_title),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleLarge,
         )
 
         Spacer(modifier = modifier.weight(1f))
 
         Icon(
             modifier = modifier
-                .padding(end = 10.dp)
-                .clickable(
+                .padding(end = 12.dp)
+                .noRippleClickable(
                     onClick = onReset
                 ),
             imageVector = Icons.Rounded.Refresh,
+            tint = LogiBlue,
             contentDescription = null
         )
 
         Icon(
-            modifier = modifier
-                .padding(end = 16.dp)
-                .clickable(
+            modifier = modifier.noRippleClickable(
                     onClick = onDatePickerClick
                 ),
             imageVector = Icons.Rounded.DateRange,
+            tint = LogiBlue,
             contentDescription = null
         )
     }
@@ -145,21 +149,26 @@ private fun HeartRateStatisticsAppBar(
 
 @Composable
 private fun HeartRateRecordAppBar(
+    minBpm: Int = 60,
+    maxBpm: Int = 100,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
+            .padding(horizontal = 20.dp)
             .background(color = Color.White),
-        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            modifier = modifier.padding(start = 16.dp),
             text = stringResource(id = R.string.heart_rate_record_title),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleLarge,
         )
-        Spacer(modifier = modifier.size(12.dp))
+        Text(
+            text = "정상범위 : $minBpm - $maxBpm bpm",
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.Gray,
+        )
     }
 }
 
@@ -173,9 +182,7 @@ private fun StatisticsContent(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
+        modifier = modifier.fillMaxSize()
     ) {
         HeartRateChart(
             type = state.chartType,
@@ -187,14 +194,13 @@ private fun StatisticsContent(
             onItemClick = onItemClick,
             periodTitle = state.selectDateTitle
         )
-        Spacer(modifier = modifier.height(30.dp))
+        Spacer(modifier = modifier.height(24.dp))
         if(!state.isSelectItemEmpty) {
             HeartRateDescriptionCard(
                 minBPM = state.minBPM,
                 maxBPM = state.maxBPM,
             )
         }
-
     }
 }
 

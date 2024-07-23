@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -31,9 +32,10 @@ fun HeartRateDescriptionCard(
     modifier: Modifier = Modifier
 ) {
     if(minBPM == null || maxBPM == null) return
-    LogiCard{
+    LogiCard(
+        modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    ){
         Column(
-            modifier = modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             HeartRateRangeLabel(minBPM, maxBPM)
@@ -43,7 +45,7 @@ fun HeartRateDescriptionCard(
             HeartRateAvg()
         }
     }
-    Spacer(modifier = modifier.height(30.dp))
+    Spacer(modifier = modifier.height(24.dp))
 }
 
 
@@ -63,7 +65,7 @@ private fun HeartRateAvg(
         Spacer(modifier = modifier.width(4.dp))
         Text(
             text = stringResource(id = R.string.heart_rate_desc_avg),
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.bodySmall,
             color = Color.Gray,
         )
     }
