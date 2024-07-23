@@ -78,7 +78,7 @@ fun ArrestAdminScreen(
             onSelectFilter = viewModel::filterArrestList,
             onRefresh = viewModel::refreshArrestList,
             onOpenDatePicker = viewModel::setDatePickerVisible,
-            onNavigateUp = { navController.navigateUp() },
+            onNavigateUp = navController::navigateUp,
             onQueryChange = viewModel::inputQuery,
             onQueryClear = viewModel::clearQuery,
             onSearch = viewModel::requestSearch,

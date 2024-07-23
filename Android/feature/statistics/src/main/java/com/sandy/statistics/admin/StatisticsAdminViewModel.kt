@@ -1,12 +1,13 @@
-package com.sandy.statistics
+package com.sandy.statistics.admin
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usecases.network.GetDailyHeartRateListUseCase
 import com.core.domain.usecases.network.GetPeriodHearRateListUseCase
-import com.core.domain.usecases.prefs.GetAccountUseCase
+import com.core.model.User
 import com.core.utils.DateUtil
+import com.sandy.statistics.admin.model.StatisticsAdminUiState
 import com.sandy.statistics.model.StatisticsUiState
 import com.sandy.statistics.utils.lastNotNullIndex
 import com.sandy.statistics.utils.localDate
@@ -23,68 +24,66 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class StatisticsViewModel @Inject constructor(
-    getAccountUseCase: GetAccountUseCase,
+class StatisticsAdminViewModel @Inject constructor(
     private val getDailyHeartRateListUseCase: GetDailyHeartRateListUseCase,
     private val getPeriodHearRateListUseCase: GetPeriodHearRateListUseCase,
-) : ViewModel() {
+): ViewModel() {
 
-    private val _stateFlow: MutableStateFlow<StatisticsUiState> = MutableStateFlow(StatisticsUiState())
-    internal val stateFlow: StateFlow<StatisticsUiState> = _stateFlow.asStateFlow()
+    private val _stateFlow: MutableStateFlow<StatisticsAdminUiState> = MutableStateFlow(StatisticsAdminUiState())
+    internal val stateFlow: StateFlow<StatisticsAdminUiState> = _stateFlow.asStateFlow()
     private val state get() = stateFlow.value
 
-    init {
-        getAccountUseCase().onEach { account ->
-            account?.let {
-                val id = it.id
-                LocalDate.now().run {
-                    _stateFlow.update { state ->
-                        state.copy(
-                            id = id,
-                            pickedDate = this
-                        )
-                    }
-                    requestDailyHeartRates(year, monthValue, dayOfMonth, id)
-                }
-            }
-        }.launchIn(viewModelScope)
+    fun getHeartRateList(user: User) {
+        _stateFlow.value = state.copy(
+            user = user,
+        )
+        val lastMeasuredDate = user.lastBpmDateTime ?: return
+        requestDailyHeartRates(
+            year = lastMeasuredDate.year,
+            month = lastMeasuredDate.monthValue,
+            day = lastMeasuredDate.dayOfMonth,
+            id = user.id,
+        )
     }
 
     private fun requestDailyHeartRates(
         year: Int,
         month: Int,
         day: Int,
-        id: String = state.id
+        id: String? = state.user?.id
     ) {
-        viewModelScope.launch {
-            getDailyHeartRateListUseCase(
-                id = id,
-                year = year,
-                month = month,
-                day = day
-            ).catch {
-                Log.e("[HEART_RATE_RECORD_DAILY]", "requestDailyHeartRates: $it")
-            }.collectLatest { data ->
-                _stateFlow.update {
-                    val chartItem = data.toDailyChartItem()
-                    val selectPosition = chartItem.lastNotNullIndex()
-                    val selectRecordItem = if(selectPosition == null && data.isNotEmpty()) data else data.selectRecordItem(selectPosition)
-                    it.copy(
-                        chartType = StatisticsUiState.ChartType.DAILY,
-                        minBPM = selectPosition.minBPM(chartItem),
-                        maxBPM = selectPosition.maxBPM(chartItem),
-                        recordItem = data,
-                        selectRecordItem = selectRecordItem,
-                        chartItem = chartItem,
-                        selectPosition = selectPosition,
-                        isSelectItemEmpty = selectRecordItem.isEmpty(),
-                    )
+        id?.let {
+            viewModelScope.launch {
+                getDailyHeartRateListUseCase(
+                    id = id,
+                    year = year,
+                    month = month,
+                    day = day
+                ).catch {
+                    Log.e("[HEART_RATE_RECORD_DAILY]", "requestDailyHeartRates: $it")
+                }.collectLatest { data ->
+                    _stateFlow.update {
+                        val chartItem = data.toDailyChartItem()
+                        val selectPosition = chartItem.lastNotNullIndex()
+                        val selectRecordItem = if(selectPosition == null && data.isNotEmpty()) data else data.selectRecordItem(selectPosition)
+                        it.copy(
+                            chartType = StatisticsUiState.ChartType.DAILY,
+                            minBPM = selectPosition.minBPM(chartItem),
+                            maxBPM = selectPosition.maxBPM(chartItem),
+                            recordItem = data,
+                            selectRecordItem = selectRecordItem,
+                            chartItem = chartItem,
+                            selectPosition = selectPosition,
+                            isSelectItemEmpty = selectRecordItem.isEmpty(),
+                        )
+                    }
                 }
             }
         }
@@ -181,29 +180,30 @@ class StatisticsViewModel @Inject constructor(
 
     private fun requestHeartRateByPeriod(startDate: LocalDate?, endDate: LocalDate?) {
         if(startDate == null || endDate == null) return
-        viewModelScope.launch {
-            getPeriodHearRateListUseCase(state.id, startDate, endDate).catch {
-                Log.e("[HEART_RATE_RECORD_PERIOD]", "requestHeartRateByPeriod: $it")
-            }.collectLatest { data ->
-                _stateFlow.update {
-                    val chartItem = data.toPeriodChartItem(startDate, endDate)
-                    val selectPosition = chartItem.lastNotNullIndex()
-                    val selectDate = if(selectPosition != null) chartItem[selectPosition].date else null
-                    val selectRecordItem = data.selectRecordItem(selectDate)
-                    it.copy(
-                        chartType = StatisticsUiState.ChartType.PERIOD,
-                        minBPM = selectPosition.minBPM(chartItem),
-                        maxBPM = selectPosition.maxBPM(chartItem),
-                        recordItem = data,
-                        selectRecordItem = selectRecordItem,
-                        chartItem = chartItem,
-                        selectPosition = selectPosition,
-                        isSelectItemEmpty = selectRecordItem.isEmpty(),
-                        selectDateTitle = "${DateUtil.convertDate(startDate)} - ${DateUtil.convertDate(endDate)}"
-                    )
+        state.user?.let { user ->
+            viewModelScope.launch {
+                getPeriodHearRateListUseCase(user.id, startDate, endDate).catch {
+                    Log.e("[HEART_RATE_RECORD_PERIOD]", "requestHeartRateByPeriod: $it")
+                }.collectLatest { data ->
+                    _stateFlow.update {
+                        val chartItem = data.toPeriodChartItem(startDate, endDate)
+                        val selectPosition = chartItem.lastNotNullIndex()
+                        val selectDate = if(selectPosition != null) chartItem[selectPosition].date else null
+                        val selectRecordItem = data.selectRecordItem(selectDate)
+                        it.copy(
+                            chartType = StatisticsUiState.ChartType.PERIOD,
+                            minBPM = selectPosition.minBPM(chartItem),
+                            maxBPM = selectPosition.maxBPM(chartItem),
+                            recordItem = data,
+                            selectRecordItem = selectRecordItem,
+                            chartItem = chartItem,
+                            selectPosition = selectPosition,
+                            isSelectItemEmpty = selectRecordItem.isEmpty(),
+                            selectDateTitle = "${DateUtil.convertDate(startDate)} - ${DateUtil.convertDate(endDate)}"
+                        )
+                    }
                 }
             }
         }
     }
-
 }

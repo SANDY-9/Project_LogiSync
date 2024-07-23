@@ -16,6 +16,7 @@ import com.feature.login.loginscreen.LoginScreen
 import com.feature.onboard.OnboardingScreen
 import com.feature.signup.SignupScreen
 import com.sandy.statistics.StatisticsScreen
+import com.sandy.statistics.admin.StatisticsAdminScreen
 
 @Composable
 fun MainNavGraph(
@@ -111,6 +112,14 @@ fun MainNavGraph(
             route = Route.UserDetails.route,
         ) {
             UserDetailsScreen(
+                navController = navController
+            )
+        }
+
+        composable(
+            route = Route.StatisticsAdmin.route,
+        ) {
+            StatisticsAdminScreen(
                 navController = navController
             )
         }

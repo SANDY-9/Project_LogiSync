@@ -2,7 +2,6 @@ package com.feature.admin.details
 
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -52,7 +51,6 @@ import com.feature.admin.details.components.UserHeartRateReportTitle
 import com.feature.admin.details.components.UserProfile
 import com.feature.admin.details.components.UserReport
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UserDetailsScreen(
     navController: NavController,
@@ -76,7 +74,7 @@ fun UserDetailsScreen(
     ) {
         UserDetailsAppBar(
             name = state.user?.name,
-            onNavigateUp = { navController.navigateUp() }
+            onNavigateUp = navController::navigateUp
         )
         if(!state.loading) {
             state.user?.let { user ->
@@ -97,10 +95,10 @@ fun UserDetailsScreen(
                             navigate(Route.ArrestDetails.route)
                         }
                     },
-                    onNavigateToStatistics = { id ->
+                    onNavigateToStatistics = {
                         navController.run {
-                            currentBackStackEntry?.savedStateHandle?.set(Args.ID, id)
-                            navigate(Route.Statistics.route)
+                            currentBackStackEntry?.savedStateHandle?.set(Args.USER, user)
+                            navigate(Route.StatisticsAdmin.route)
                         }
                     },
                     onRequestEdit = viewModel::openChangeBottomSheet
@@ -179,7 +177,7 @@ private fun UserDetailsContent(
     lastHeartRateList: List<HeartRate>,
     onNavigateToAllReport: (String) -> Unit,
     onArrestItemClick: (Arrest) -> Unit,
-    onNavigateToStatistics: (String) -> Unit,
+    onNavigateToStatistics: () -> Unit,
     onRequestEdit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -230,11 +228,7 @@ private fun UserDetailsContent(
         }
 
         item {
-            UserHeartRateReportTitle(
-                onNavigateToStatistics = {
-                    onNavigateToStatistics(user.id)
-                }
-            )
+            UserHeartRateReportTitle(onNavigateToStatistics = onNavigateToStatistics)
         }
 
         items(

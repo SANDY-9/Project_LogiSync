@@ -54,7 +54,7 @@ fun ArrestDetailsScreen(
             .fillMaxSize()
             .statusBarsPadding(),
     ) {
-        ArrestDetailsAppBar(onNavigateUp = { navController.navigateUp() })
+        ArrestDetailsAppBar(onNavigateUp = navController::navigateUp )
         ArrestContent(
             state = state,
             isMapReady = state.mapReady,
