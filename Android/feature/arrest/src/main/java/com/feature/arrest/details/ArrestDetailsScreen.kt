@@ -99,7 +99,7 @@ private fun ArrestContent(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        ArrestUserProfile(user = state.user ?: return)
+        ArrestUserProfile(user = state.user)
         Spacer(modifier = modifier.height(24.dp))
         ArrestContentDetails(arrest = state.arrest ?: return)
         Spacer(modifier = modifier.height(24.dp))
