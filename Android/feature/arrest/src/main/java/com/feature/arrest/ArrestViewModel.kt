@@ -4,15 +4,19 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usecases.network.GetMyArrestListUseCase
+import com.core.domain.usecases.prefs.GetAccountUseCase
 import com.core.utils.DateUtil
 import com.feature.arrest.model.ArrestUiState
 import com.feature.arrest.utils.filter
 import com.feature.arrest.utils.localDate
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -21,6 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ArrestViewModel @Inject constructor(
+    private val getAccountUseCase: GetAccountUseCase,
     private val getMyArrestListUseCase: GetMyArrestListUseCase,
 ): ViewModel() {
 
@@ -28,8 +33,31 @@ class ArrestViewModel @Inject constructor(
     internal val stateFlow: StateFlow<ArrestUiState> = _stateFlow.asStateFlow()
     private val state get() = stateFlow.value
 
-    internal fun getMyArrestList(id: String) {
-        Log.e("확인", "getMyArrestList: $id", )
+    internal fun getArrestList(id: String?) {
+        id?.let { id -> getUserArrestList(id) } ?: getMyArrestList()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun getMyArrestList() {
+        getAccountUseCase().flatMapLatest { account ->
+            account?.let {
+                getMyArrestListUseCase(it.id)
+            } ?: flowOf(null)
+        }.onEach { data ->
+            data?.let {
+                _stateFlow.update {
+                    it.copy(
+                        arrestList = data,
+                        filteredList = data,
+                    )
+                }
+            }
+        }.catch {
+            Log.e("[MY_ARREST]", "$it")
+        }.launchIn(viewModelScope)
+    }
+
+    private fun getUserArrestList(id: String) {
         getMyArrestListUseCase(id).onEach { data ->
             _stateFlow.update {
                 it.copy(
@@ -38,7 +66,7 @@ class ArrestViewModel @Inject constructor(
                 )
             }
         }.catch {
-            Log.e("[MY_ARREST]", "$it")
+            Log.e("[USER_ARREST]", "$it")
         }.launchIn(viewModelScope)
     }
 

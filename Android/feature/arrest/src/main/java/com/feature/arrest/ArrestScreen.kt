@@ -50,9 +50,8 @@ fun ArrestScreen(
 ) {
 
     LaunchedEffect(navController.previousBackStackEntry) {
-        navController.previousBackStackEntry?.savedStateHandle?.get<String>(Args.ID)?.let { id ->
-            viewModel.getMyArrestList(id)
-        }
+        val id = navController.previousBackStackEntry?.savedStateHandle?.get<String>(Args.ID)
+        viewModel.getArrestList(id)
     }
 
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
