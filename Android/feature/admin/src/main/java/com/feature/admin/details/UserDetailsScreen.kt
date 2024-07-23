@@ -1,6 +1,5 @@
 package com.feature.admin.details
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -25,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,7 +50,6 @@ import com.feature.admin.details.components.UserHeartRateReportItem
 import com.feature.admin.details.components.UserHeartRateReportTitle
 import com.feature.admin.details.components.UserProfile
 import com.feature.admin.details.components.UserReport
-import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -120,15 +117,12 @@ fun UserDetailsScreen(
     }
     val context = LocalContext.current
     LaunchedEffect (state.error){
-        snapshotFlow { state.error }.collectLatest { error ->
-            Log.e("확인", "UserDetailsScreen: $error", )
-            error?.let { isError ->
-                Toast.makeText(
-                    context,
-                    if(isError) "변경할 수 없습니다. 네트워크 환경을 확인해주세요." else "성공적으로 변경했습니다",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+        state.error?.let { isError ->
+            Toast.makeText(
+                context,
+                if(isError) "변경할 수 없습니다. 네트워크 환경을 확인해주세요." else "성공적으로 변경했습니다",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
     if(state.loading) LottieProgressBarBlue(modifier = modifier.fillMaxSize())

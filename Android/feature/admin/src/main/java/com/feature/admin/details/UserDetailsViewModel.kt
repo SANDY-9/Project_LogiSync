@@ -106,6 +106,7 @@ class UserDetailsViewModel @Inject constructor(
                     ),
                     editMin = editedMin.toString(),
                     editMax = editedMax.toString(),
+                    error = false,
                 )
             } else {
                 _stateFlow.value = state.copy(
