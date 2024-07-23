@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -23,8 +24,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -54,10 +57,14 @@ fun ArrestDetailsScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = Color.White)
+            .statusBarsPadding(),
     ) {
         ArrestDetailsAppBar(onNavigateUp = { navController.navigateUp() })
-        ArrestContent(state)
+        ArrestContent(
+            state = state,
+            isMapReady = state.mapReady,
+            onMapLoaded = viewModel::readyMap,
+        )
     }
 }
 
@@ -80,7 +87,7 @@ private fun ArrestDetailsAppBar(
             }
             Text(
                 text = stringResource(id = R.string.arrest_details_title),
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.titleLarge,
             )
             Spacer(modifier = modifier.weight(1f))
         }
@@ -90,6 +97,8 @@ private fun ArrestDetailsAppBar(
 @Composable
 private fun ArrestContent(
     state: ArrestDetailsUiState,
+    isMapReady: Boolean,
+    onMapLoaded: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -99,7 +108,11 @@ private fun ArrestContent(
         Spacer(modifier = modifier.height(24.dp))
         ArrestContentDetails(arrest = state.arrest ?: return)
         Spacer(modifier = modifier.height(24.dp))
-        ArrestLocationDetails(arrestLocation = state.arrestLocation ?: return)
+        ArrestLocationDetails(
+            arrestLocation = state.arrestLocation ?: return,
+            isMapReady = isMapReady,
+            onMapLoaded = onMapLoaded,
+        )
         Spacer(modifier = modifier.height(30.dp))
     }
 }

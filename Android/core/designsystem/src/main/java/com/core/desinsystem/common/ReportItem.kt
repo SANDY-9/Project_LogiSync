@@ -101,3 +101,80 @@ fun ReportItemHeartRate(
         }
     }
 }
+
+@Composable
+fun ReportItemNormal(
+    desc: String,
+    date: String,
+    modifier: Modifier = Modifier
+) {
+    LogiCard {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                modifier = modifier.size(20.dp),
+                imageVector = Icons.Rounded.Warning,
+                contentDescription = null,
+                tint = DarkRed,
+            )
+            Spacer(modifier = modifier.width(6.dp))
+            Text(
+                text = desc,
+                style = MaterialTheme.typography.labelLarge
+            )
+            Spacer(modifier = modifier.weight(1f))
+            Text(
+                text = date,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    letterSpacing = (-0.5).sp
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun ReportItemHeartRate(
+    bpm: Int?,
+    desc: String,
+    date: String,
+    modifier: Modifier = Modifier,
+) {
+    LogiCard {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                modifier = modifier.size(20.dp),
+                imageVector = Icons.PulseAlert,
+                contentDescription = null,
+                tint = DarkRed,
+            )
+            Spacer(modifier = modifier.width(6.dp))
+            Row {
+                Text(
+                    text = "$desc ",
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        letterSpacing = (-0.2).sp
+                    )
+                )
+                Text(
+                    modifier = modifier.padding(top = 1.dp),
+                    text = "($bpm)",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 13.sp
+                    ),
+                    color = DarkRed
+                )
+            }
+            Spacer(modifier = modifier.weight(1f))
+            Text(
+                text = date,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    letterSpacing = (-0.5).sp
+                ),
+            )
+        }
+    }
+}

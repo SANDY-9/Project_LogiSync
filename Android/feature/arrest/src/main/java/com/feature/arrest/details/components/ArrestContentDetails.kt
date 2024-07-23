@@ -1,6 +1,5 @@
 package com.feature.arrest.details.components
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,9 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.core.desinsystem.common.ReportItemHeartRate
+import com.core.desinsystem.common.ReportItemNormal
 import com.core.model.Arrest
 import com.feature.arrest.R
-import com.feature.arrest.components.ArrestItem
 import java.time.LocalDateTime
 
 @Composable
@@ -27,18 +27,45 @@ fun ArrestContentDetails(
         modifier = modifier.fillMaxWidth()
     ) {
         Text(
-            modifier = modifier.padding(horizontal = 16.dp),
+            modifier = modifier.padding(horizontal = 20.dp),
             text = stringResource(id = R.string.arrest_details_content_title),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleLarge,
         )
         Spacer(modifier = modifier.height(12.dp))
-        ArrestItem(
-            arrest = arrest,
-            onItemClick = {}
-        )
-
+        ArrestDetailsCard(arrest = arrest)
     }
 }
+
+@Composable
+private fun ArrestDetailsCard(
+    arrest: Arrest,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+    ) {
+        when(arrest.arrestType) {
+            Arrest.ArrestType.NORMAL -> ReportItemNormal(
+                desc = arrest.arrestType.desc,
+                date = arrest.date(),
+            )
+            Arrest.ArrestType.HEART_RATE_LOW -> ReportItemHeartRate(
+                bpm = arrest.bpm,
+                desc = arrest.arrestType.desc,
+                date = arrest.date(),
+            )
+            Arrest.ArrestType.HEART_RATE_HIGH -> ReportItemHeartRate(
+                bpm = arrest.bpm,
+                desc = arrest.arrestType.desc,
+                date = arrest.date(),
+            )
+        }
+        Spacer(modifier = modifier.height(8.dp))
+    }
+}
+
 @Preview(name = "ArrestContent")
 @Composable
 private fun PreviewArrestContent() {

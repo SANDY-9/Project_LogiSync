@@ -36,7 +36,10 @@ class ArrestViewModel @Inject constructor(
     internal val stateFlow: StateFlow<ArrestUiState> = _stateFlow.asStateFlow()
     private val state get() = stateFlow.value
 
+    private var savedId: String? = null
+
     internal fun getArrestList(id: String?) {
+        if(savedId != null) return
         id?.let { id -> getUserArrestList(id) } ?: getMyArrestList()
     }
 
@@ -46,25 +49,26 @@ class ArrestViewModel @Inject constructor(
             .onStart {
                 _stateFlow.value = state.copy(loading = true)
             }.flatMapLatest { account ->
-            account?.let {
-                getMyArrestListUseCase(it.id)
-            } ?: flowOf(null)
-        }.onEach { data ->
-            data?.let {
-                delay(300L)
-                _stateFlow.update {
-                    it.copy(
-                        arrestList = data,
-                        searchedList = data,
-                        filteredList = data,
-                        loading = false,
-                    )
+                account?.let {
+                    savedId = it.id
+                    getMyArrestListUseCase(it.id)
+                } ?: flowOf(null)
+            }.onEach { data ->
+                data?.let {
+                    delay(300L)
+                    _stateFlow.update {
+                        it.copy(
+                            arrestList = data,
+                            searchedList = data,
+                            filteredList = data,
+                            loading = false,
+                        )
+                    }
                 }
-            }
-        }.catch {
-            Log.e("[MY_ARREST]", "$it")
-                _stateFlow.value = state.copy(loading = false)
-        }.launchIn(viewModelScope)
+            }.catch {
+                Log.e("[MY_ARREST]", "$it")
+                    _stateFlow.value = state.copy(loading = false)
+            }.launchIn(viewModelScope)
     }
 
     private fun getUserArrestList(id: String) {
@@ -74,18 +78,19 @@ class ArrestViewModel @Inject constructor(
             }
             .onEach { data ->
                 delay(300L)
-            _stateFlow.update {
-                it.copy(
-                    loading = false,
-                    arrestList = data,
-                    searchedList = data,
-                    filteredList = data,
-                )
-            }
-        }.catch {
-            Log.e("[USER_ARREST]", "$it")
-            _stateFlow.value = state.copy(loading = false)
-        }.launchIn(viewModelScope)
+                savedId = id
+                _stateFlow.update {
+                    it.copy(
+                        loading = false,
+                        arrestList = data,
+                        searchedList = data,
+                        filteredList = data,
+                    )
+                }
+            }.catch {
+                Log.e("[USER_ARREST]", "$it")
+                _stateFlow.value = state.copy(loading = false)
+            }.launchIn(viewModelScope)
     }
 
     internal fun refreshArrestList() {

@@ -42,5 +42,9 @@ class ArrestDetailsViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    fun readyMap() {
+        _stateFlow.update { it.copy(mapReady = true) }
+    }
+
 
 }
