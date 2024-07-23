@@ -33,7 +33,7 @@ internal fun ArrestFilter(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().height(36.dp)
+        modifier = modifier.height(36.dp)
     ) {
         FilterButton(
             isSelected = allFilterSelected,

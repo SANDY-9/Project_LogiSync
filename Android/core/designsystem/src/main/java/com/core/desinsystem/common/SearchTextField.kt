@@ -1,4 +1,4 @@
-package com.feature.admin.components
+package com.core.desinsystem.common
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -24,28 +24,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.core.desinsystem.common.addFocusCleaner
-import com.core.desinsystem.common.noRippleClickable
 import com.core.desinsystem.icons.Clear
 import com.core.desinsystem.theme.LogiGray
-import com.core.desinsystem.theme.LogiSemiGray
-import com.feature.admin.R
 
 private const val QUERY_EMPTY_MESSAGE = "검색어를 입력해주세요."
 @Composable
-fun UserSearchField(
+fun MySearchTextField(
     query: String,
     onQueryChange: (String) -> Unit,
     onQueryClear: () -> Unit,
     onSearch: () -> Unit,
     focusManager: FocusManager,
     modifier: Modifier = Modifier,
+    hint: String = "",
 ) {
     val context = LocalContext.current
     BasicTextField(
@@ -92,7 +87,7 @@ fun UserSearchField(
                 ) {
                     Text(
                         modifier = modifier.weight(1f),
-                        text = if (query.isEmpty()) stringResource(id = R.string.admin_search_hint) else "",
+                        text = if (query.isEmpty()) hint else "",
                         color = Color.Gray,
                     )
                     if (query.isNotEmpty()) {
@@ -130,12 +125,4 @@ fun UserSearchField(
             }
         }
     )
-}
-
-
-@Preview(name = "MemberSearchBar")
-@Composable
-private fun PreviewMemberSearchBar() {
-    val focusManager = LocalFocusManager.current
-    UserSearchField("", {}, {}, {}, focusManager)
 }

@@ -15,4 +15,8 @@
     <string name="arrest_details_location_title">신고 위치</string>
     <string name="arrest_details_location_arrest">신고한 장소</string>
 
+    <!-- arrest admin -->
+    <string name="arrest_admin_title">전체 신고내역</string>
+    <string name="arrest_admin_search_hint">아이디로 신고내역 검색</string>
+
 </resources>

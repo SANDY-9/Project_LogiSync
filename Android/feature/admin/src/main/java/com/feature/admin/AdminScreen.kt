@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.core.desinsystem.common.MySearchTextField
 import com.core.desinsystem.common.addFocusCleaner
 import com.core.desinsystem.lottie.LottieProgressBarBlue
 import com.core.desinsystem.theme.LogiBlue
@@ -37,7 +38,6 @@ import com.core.navigation.Args
 import com.core.navigation.Route
 import com.feature.admin.components.UserFilter
 import com.feature.admin.components.UserList
-import com.feature.admin.components.UserSearchField
 
 @Composable
 fun AdminScreen(
@@ -54,14 +54,15 @@ fun AdminScreen(
             .systemBarsPadding()
             .addFocusCleaner(focusManager)
     ) {
-        AdminAppBar()
+        AdminAppBar(onNavigateArrest = { navController.navigate(Route.ArrestAdmin.route) })
         Spacer(modifier = modifier.height(4.dp))
-        UserSearchField(
+        MySearchTextField(
             query = state.query,
             onQueryChange = viewModel::inputQuery,
             onQueryClear = viewModel::clearQuery,
             onSearch = viewModel::requestSearch,
             focusManager = focusManager,
+            hint = stringResource(id = R.string.admin_search_hint)
         )
         UserFilter(
             allFilterSelected = state.allFilterSelected,
@@ -94,6 +95,7 @@ fun AdminScreen(
 
 @Composable
 private fun AdminAppBar(
+    onNavigateArrest: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -114,7 +116,7 @@ private fun AdminAppBar(
         IconButton(
             modifier = modifier
                 .padding(end = 4.dp, top = 13.dp),
-            onClick = {}
+            onClick = onNavigateArrest,
         ) {
             Icon(
                 imageVector = Icons.Rounded.Notifications,

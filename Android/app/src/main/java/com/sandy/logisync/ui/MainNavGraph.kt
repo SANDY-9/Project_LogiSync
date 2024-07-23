@@ -9,6 +9,7 @@ import com.core.navigation.Route
 import com.feature.admin.AdminScreen
 import com.feature.admin.details.UserDetailsScreen
 import com.feature.arrest.ArrestScreen
+import com.feature.arrest.admin.ArrestAdminScreen
 import com.feature.arrest.details.ArrestDetailsScreen
 import com.feature.home.HomeScreen
 import com.feature.login.loginscreen.LoginScreen
@@ -95,6 +96,14 @@ fun MainNavGraph(
         ) {
             ArrestDetailsScreen(
                 navController = navController,
+            )
+        }
+
+        composable(
+            route = Route.ArrestAdmin.route,
+        ) {
+            ArrestAdminScreen(
+                navController = navController
             )
         }
 
