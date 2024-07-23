@@ -18,12 +18,16 @@ interface NetworkRepository {
 
     suspend fun updateNormalArrest(
         id: String,
+        name: String,
+        tel: String,
         arrestType: ArrestType,
         location: Location,
     ): Flow<Boolean>
 
     suspend fun updateHeartBeatArrest(
         id: String,
+        name: String,
+        tel: String,
         arrestType: ArrestType,
         location: Location,
         bpm: Int,

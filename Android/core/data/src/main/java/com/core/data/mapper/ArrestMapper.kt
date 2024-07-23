@@ -15,6 +15,8 @@ internal fun Map<String, ArrestDTO>.toArrestList(): List<Arrest> {
             lat = dto.lat,
             lng = dto.lng,
             bpm = dto.bpm,
+            name = dto.name,
+            tel = dto.tel,
         )
     }.sortedByDescending { it.time }
 }
@@ -32,6 +34,8 @@ internal fun Map<String, ArrestDTO>.toArrestMap(): Map<LocalDate, List<Arrest>> 
                 lat = arrest.lat,
                 lng = arrest.lng,
                 bpm = arrest.bpm,
+                name = arrest.name,
+                tel = arrest.tel,
             )
         )
     }

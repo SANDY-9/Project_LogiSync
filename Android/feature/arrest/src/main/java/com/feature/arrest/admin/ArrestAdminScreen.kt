@@ -48,6 +48,7 @@ import com.core.navigation.Args
 import com.core.navigation.Route
 import com.core.utils.DateUtil
 import com.feature.arrest.R
+import com.feature.arrest.admin.component.AdminArrestItem
 import com.feature.arrest.admin.model.ArrestAdminUiState
 import com.feature.arrest.components.ArrestFilter
 import com.feature.arrest.components.ArrestItem
@@ -224,7 +225,7 @@ private fun ArrestAdminContent(
                     items = items,
                     key = { it.time }
                 ) { arrest ->
-                    ArrestItem(
+                    AdminArrestItem(
                         arrest = arrest,
                         onItemClick = {
                             onItemClick(arrest)

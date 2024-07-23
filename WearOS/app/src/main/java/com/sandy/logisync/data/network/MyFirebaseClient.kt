@@ -73,11 +73,13 @@ class MyFirebaseClient @Inject constructor(
         lat: Double,
         lng: Double,
         time: LocalDateTime,
+        name: String,
+        tel: String,
         bpm: Int? = null,
         onSuccess: (Boolean) -> Unit,
         onError: (Throwable) -> Unit,
     ) {
-        val arrestDTO = ArrestDTO(id, arrestType, lat, lng, bpm)
+        val arrestDTO = ArrestDTO(id, name, tel, arrestType, lat, lng, bpm)
         val arrestChild = ref.child(ChildName.ARREST)
         arrestChild.child(IndexChildCreateUtil.getTimeSecondsIndexChild(time)).setValue(arrestDTO)
         val dataListener = object : ValueEventListener {

@@ -6,6 +6,8 @@ import java.time.LocalDateTime
 
 data class Arrest(
     val id: String,
+    val name: String,
+    val tel: String,
     val time: LocalDateTime,
     val lat: Double,
     val lng: Double,

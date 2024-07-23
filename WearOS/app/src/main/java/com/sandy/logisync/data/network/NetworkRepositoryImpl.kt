@@ -59,6 +59,8 @@ class NetworkRepositoryImpl @Inject constructor(
 
     override suspend fun updateNormalArrest(
         id: String,
+        name: String,
+        tel: String,
         arrestType: ArrestType,
         location: Location
     ): Flow<Boolean> = withContext(Dispatchers.IO) {
@@ -70,6 +72,8 @@ class NetworkRepositoryImpl @Inject constructor(
                 lat = location.latitude,
                 lng = location.longitude,
                 time = time,
+                tel = tel,
+                name = name,
                 onSuccess = { isSuccessful ->
                     trySend(isSuccessful)
                 },
@@ -83,6 +87,8 @@ class NetworkRepositoryImpl @Inject constructor(
 
     override suspend fun updateHeartBeatArrest(
         id: String,
+        name: String,
+        tel: String,
         arrestType: ArrestType,
         location: Location,
         bpm: Int
@@ -94,6 +100,8 @@ class NetworkRepositoryImpl @Inject constructor(
                 arrestType = arrestType.name,
                 lat = location.latitude,
                 lng = location.longitude,
+                name = name,
+                tel = tel,
                 time = time,
                 bpm = bpm,
                 onSuccess = { isSuccessful ->

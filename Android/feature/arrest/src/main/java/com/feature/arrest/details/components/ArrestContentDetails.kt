@@ -76,6 +76,8 @@ private fun PreviewArrestContent() {
             lat = 136.12,
             lng = 35.1213,
             bpm = null,
+            name = "홍길동",
+            tel = "000-0000-0000",
             arrestType = Arrest.ArrestType.NORMAL,
         )
     )

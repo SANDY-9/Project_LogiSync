@@ -45,8 +45,11 @@ class HeartRateMeasureWorker @AssistedInject constructor(
         coroutineScope {
             val account = wearableDataStoreRepository.getAccount()
             account?.let {
-                val id = it.id
-                measureHeatRateUseCase(id)
+                measureHeatRateUseCase(
+                    id = it.id,
+                    name = it.name,
+                    tel = it.tel
+                )
                     .catch {
                         Log.e("[HEART_RATE_ERROR]", "${it.message}")
                         releaseWakeLock()

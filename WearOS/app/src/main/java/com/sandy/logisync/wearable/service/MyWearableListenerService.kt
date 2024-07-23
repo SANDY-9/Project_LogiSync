@@ -7,10 +7,8 @@ import com.google.android.gms.wearable.WearableListenerService
 import com.sandy.logisync.data.datastore.WearableDataStoreRepository
 import com.sandy.logisync.data.wearable.MessageResponse
 import com.sandy.logisync.data.wearable.WearableTranscriptionRepository
-import com.sandy.logisync.domain.MeasureHeatRateUseCase
 import com.sandy.logisync.presentation.ui.MainActivity
 import com.sandy.logisync.wearable.message.MessagePath
-import com.sandy.logisync.wearable.message.TranscriptionPath
 import com.sandy.logisync.workmanager.HeartRateMeasureWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -26,8 +24,6 @@ class MyWearableListenerService : WearableListenerService() {
     lateinit var wearableDataStoreRepository: WearableDataStoreRepository
     @Inject
     lateinit var wearableTranscriptionRepository: WearableTranscriptionRepository
-    @Inject
-    lateinit var measureHeatRateUseCase: MeasureHeatRateUseCase
 
     // 노드에서 전송된 메시지가 타겟 노드에서 이 콜백을 트리거
     override fun onMessageReceived(p0: MessageEvent) {
