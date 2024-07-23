@@ -40,7 +40,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.MyDateRangePickerBottomSheet
+import com.core.desinsystem.lottie.LottieProgressBarBlue
 import com.core.desinsystem.theme.LogiBlue
+import com.core.model.Arrest
 import com.core.navigation.Args
 import com.core.navigation.Route
 import com.core.utils.DateUtil
@@ -64,7 +66,6 @@ fun ArrestScreen(
     }
 
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
-    val lazyListState = rememberLazyListState()
 
     Column(
         modifier = modifier
@@ -80,36 +81,22 @@ fun ArrestScreen(
             onOpenDatePicker = viewModel::setDatePickerVisible,
         )
 
-        if(state.filteredList.isEmpty()) {
-            EmptyArrestItem()
+        if (state.loading) {
+            LottieProgressBarBlue(modifier = modifier.fillMaxSize())
         }
         else {
-            LazyColumn(
-                state = lazyListState
-            ) {
-                state.filteredList.forEach { (date, items) ->
-                    stickyHeader {
-                        ArrestStickyHeader(
-                            date = DateUtil.convertDate(date),
-                            count = items.size
+            ArrestContent(
+                state = state,
+                onItemClick = { arrest ->
+                    navController.run {
+                        currentBackStackEntry?.savedStateHandle?.set(
+                            Args.ARREST,
+                            arrest
                         )
-                    }
-                    items(
-                        items = items,
-                        key = { it.time }
-                    ) { arrest ->
-                        ArrestItem(
-                            arrest = arrest,
-                            onItemClick = {
-                                navController.run {
-                                    currentBackStackEntry?.savedStateHandle?.set(Args.ARREST, arrest)
-                                    navigate(Route.ArrestDetails.route)
-                                }
-                            }
-                        )
+                        navigate(Route.ArrestDetails.route)
                     }
                 }
-            }
+            )
         }
     }
 
@@ -178,6 +165,43 @@ private fun ArrestAppBar(
             heartRateFilterSelected = heartRateFilterSelected,
             onSelectFilter = onSelectFilter
         )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ArrestContent(
+    state: ArrestUiState,
+    onItemClick: (Arrest) -> Unit,
+) {
+    val lazyListState = rememberLazyListState()
+    if (state.filteredList.isEmpty()) {
+        EmptyArrestItem()
+    }
+    else {
+        LazyColumn(
+            state = lazyListState
+        ) {
+            state.filteredList.forEach { (date, items) ->
+                stickyHeader {
+                    ArrestStickyHeader(
+                        date = DateUtil.convertDate(date),
+                        count = items.size
+                    )
+                }
+                items(
+                    items = items,
+                    key = { it.time }
+                ) { arrest ->
+                    ArrestItem(
+                        arrest = arrest,
+                        onItemClick = {
+                            onItemClick(arrest)
+                        }
+                    )
+                }
+            }
+        }
     }
 }
 
