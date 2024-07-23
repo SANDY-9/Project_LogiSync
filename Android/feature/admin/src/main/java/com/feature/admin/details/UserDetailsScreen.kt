@@ -85,8 +85,8 @@ fun UserDetailsScreen(
                     lastHeartRateList = state.lastHeartRateList,
                     onNavigateToAllReport = { id ->
                         navController.run {
-                            currentBackStackEntry?.savedStateHandle?.set(Args.ID, user.id)
-                            navigate(Route.Arrest.route)
+                            currentBackStackEntry?.savedStateHandle?.set(Args.USER, user)
+                            navigate(Route.ArrestAdminDetails.route)
                         }
                     },
                     onArrestItemClick = { arrest ->

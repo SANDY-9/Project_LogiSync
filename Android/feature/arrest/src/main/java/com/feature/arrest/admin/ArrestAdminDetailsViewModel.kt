@@ -1,11 +1,13 @@
-package com.feature.arrest
+package com.feature.arrest.admin
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usecases.network.GetMyArrestListUseCase
 import com.core.domain.usecases.prefs.GetAccountUseCase
+import com.core.model.User
 import com.core.utils.DateUtil
+import com.feature.arrest.admin.model.ArrestAdminDetailsUiState
 import com.feature.arrest.model.ArrestUiState
 import com.feature.arrest.utils.filter
 import com.feature.arrest.utils.localDate
@@ -27,41 +29,36 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class ArrestViewModel @Inject constructor(
+class ArrestAdminDetailsViewModel @Inject constructor(
     private val getAccountUseCase: GetAccountUseCase,
     private val getMyArrestListUseCase: GetMyArrestListUseCase,
 ): ViewModel() {
 
-    private val _stateFlow: MutableStateFlow<ArrestUiState> = MutableStateFlow(ArrestUiState())
-    internal val stateFlow: StateFlow<ArrestUiState> = _stateFlow.asStateFlow()
+    private val _stateFlow: MutableStateFlow<ArrestAdminDetailsUiState> = MutableStateFlow(ArrestAdminDetailsUiState())
+    internal val stateFlow: StateFlow<ArrestAdminDetailsUiState> = _stateFlow.asStateFlow()
     private val state get() = stateFlow.value
 
-    init {
-        getAccountUseCase()
+    internal fun getArrestList(user: User) {
+        _stateFlow.value = state.copy(user = user)
+        getMyArrestListUseCase(user.id)
             .onStart {
                 _stateFlow.value = state.copy(loading = true)
-            }.flatMapLatest { account ->
-                account?.let {
-                    getMyArrestListUseCase(it.id)
-                } ?: flowOf(null)
-            }.onEach { data ->
-                data?.let {
-                    delay(300L)
-                    _stateFlow.update {
-                        it.copy(
-                            arrestList = data,
-                            searchedList = data,
-                            filteredList = data,
-                            loading = false,
-                        )
-                    }
+            }
+            .onEach { data ->
+                delay(300L)
+                _stateFlow.update {
+                    it.copy(
+                        loading = false,
+                        arrestList = data,
+                        searchedList = data,
+                        filteredList = data,
+                    )
                 }
             }.catch {
-                Log.e("[MY_ARREST]", "$it")
+                Log.e("[USER_ARREST]", "$it")
                 _stateFlow.value = state.copy(loading = false)
             }.launchIn(viewModelScope)
     }
-
 
     internal fun refreshArrestList() {
         viewModelScope.launch {
