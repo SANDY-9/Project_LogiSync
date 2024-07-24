@@ -35,6 +35,7 @@ import com.feature.home.R
 
 @Composable
 internal fun HeartRateInfo(
+    checkWearableLogin: Boolean,
     heartRate: HeartRate?,
     onRequestCollect: () -> Unit,
     modifier: Modifier = Modifier
@@ -48,12 +49,14 @@ internal fun HeartRateInfo(
         LogiCard{
             if (heartRate != null) {
                 NotEmptyHeartRateView(
+                    checkWearableLogin = checkWearableLogin,
                     heartRate = heartRate,
                     onRequestCollect = onRequestCollect,
                 )
             }
             else {
                 EmptyMeasuredHeartRateView(
+                    checkWearableLogin = checkWearableLogin,
                     modifier = modifier.fillMaxWidth(),
                     onRequestCollect = onRequestCollect,
                 )
@@ -64,6 +67,7 @@ internal fun HeartRateInfo(
 
 @Composable
 private fun EmptyMeasuredHeartRateView(
+    checkWearableLogin: Boolean,
     onRequestCollect: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -76,9 +80,11 @@ private fun EmptyMeasuredHeartRateView(
             style = MaterialTheme.typography.bodyMedium,
         )
         Spacer(modifier = modifier.width(12.dp))
-        HeartRateCollectButton(
-            onClick = onRequestCollect,
-        )
+        if(checkWearableLogin) {
+            HeartRateCollectButton(
+                onClick = onRequestCollect,
+            )
+        }
     }
 }
 
@@ -92,11 +98,4 @@ private fun HeartRateCollectButton(
         title = stringResource(id = R.string.home_heart_rate_collect_title),
         onClick = onClick,
     )
-}
-
-
-@Preview(name = "HeartRateInfo")
-@Composable
-private fun PreviewHeartRateInfo() {
-    HeartRateInfo(HeartRate(), {})
 }

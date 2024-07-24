@@ -4,27 +4,19 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import com.core.model.HeartRate
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
 @Composable
 internal fun HomeWearableListener(
-    context: Context
+    context: Context,
+    onLoginResponse: (Boolean) -> Unit,
 ) {
     val messageListener = MessageClient.OnMessageReceivedListener {
         val data = it.data.toString(Charsets.UTF_8)
-        Log.e("확인", "onMessageReceived: $data", )
-        when (it.path) {
-            MessagePath.GET_LOGIN_RESPONSE.path -> {
-                Log.e("확인", "onMessageReceived: $data")
-            }
-
-            MessagePath.GET_HEART_RATE.path -> {
-                Log.e("확인", "onMessageReceived: 무사히 도착 $data", )
-            }
-
-            MessagePath.GET_ARREST.path -> {
-            }
+        if(it.path == MessagePath.GET_LOGIN_RESPONSE.path) {
+            onLoginResponse(data == "OK")
         }
     }
     DisposableEffect(key1 = Unit) {

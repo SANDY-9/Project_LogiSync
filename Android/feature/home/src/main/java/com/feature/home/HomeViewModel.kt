@@ -88,7 +88,11 @@ class HomeViewModel @Inject constructor(
         }.launchIn(scope!!)
     }
 
-    fun requestCollectHeartBeat() {
+    internal fun checkWearableLogin(result: Boolean) {
+        _stateFlow.value = state.copy(checkWearable = result)
+    }
+
+    internal fun requestCollectHeartBeat() {
         state.account?.let {
             _stateFlow.value = state.copy(heartRateLoading = true)
             flow {

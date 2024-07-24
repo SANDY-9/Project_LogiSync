@@ -3,7 +3,6 @@ package com.feature.home.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,6 +23,7 @@ import com.feature.home.R
 
 @Composable
 internal fun NotEmptyHeartRateView(
+    checkWearableLogin: Boolean,
     heartRate: HeartRate,
     onRequestCollect: () -> Unit,
     modifier: Modifier = Modifier,
@@ -40,10 +40,12 @@ internal fun NotEmptyHeartRateView(
             HeartRateAnalysis(avgRange = heartRate.avgRange)
             LinearHeartRateGraph(bpm = heartRate.bpm,)
         }
-        HeartRateCollectButton(
-            modifier = modifier.align(Alignment.TopEnd),
-            onClick = onRequestCollect,
-        )
+        if(checkWearableLogin) {
+            HeartRateCollectButton(
+                modifier = modifier.align(Alignment.TopEnd),
+                onClick = onRequestCollect,
+            )
+        }
     }
 }
 

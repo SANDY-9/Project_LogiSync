@@ -35,7 +35,13 @@ class OtherActivity : AppCompatActivity() {
                 OtherScreen(
                     onRegisterFingerPrint = {
                         biometricPrompt.authenticate(promptInfo)
-                    }
+                    },
+                    onNavigateUp = {
+                        finish()
+                    },
+                    onInitConnect = {
+
+                    },
                 )
             }
         }

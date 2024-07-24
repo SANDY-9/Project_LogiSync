@@ -51,7 +51,10 @@ fun HomeScreen(
 
     val context = LocalContext.current
     GetPermission(context = context)
-    HomeWearableListener(context)
+    HomeWearableListener(
+        context,
+        onLoginResponse = viewModel::checkWearableLogin
+    )
     BackOnPressed(context)
 
     StartMonitoringWearableConnect(viewModel)
@@ -125,6 +128,7 @@ private fun HomeContent(
         item {
             BoxLayout {
                 PairingInfo(
+                    checkWearableLogin = state.checkWearable,
                     deviceName = state.pairedDeviceName,
                     isPairedWatch = state.isPairedWatch,
                 )
@@ -135,6 +139,7 @@ private fun HomeContent(
         item {
             BoxLayout {
                 HeartRateInfo(
+                    checkWearableLogin = state.checkWearable,
                     heartRate = state.heartRate,
                     onRequestCollect = onRequestCollect,
                 )
