@@ -18,7 +18,7 @@ internal fun Map<LocalDate, List<Arrest>>.filter(type: ArrestUiState.FilterType)
             }
         }
     }
-    return result
+    return result.toSortedMap(compareByDescending { it })
 }
 
 internal fun Long?.localDate() : LocalDate? {
@@ -52,5 +52,15 @@ internal fun Map<LocalDate, List<Arrest>>.filter(
             result[date] = filteredList
         }
     }
-    return result
+    return result.toSortedMap(compareByDescending { it })
+}
+
+internal fun Map<LocalDate, List<Arrest>>.filter(id: String): Map<LocalDate, List<Arrest>> {
+    val result = mutableListOf<Arrest>()
+    forEach { (date, list) ->
+        list.forEach {
+            if(it.id == id) result.add(it)
+        }
+    }
+    return result.groupBy { it.time.toLocalDate() }.toSortedMap(compareByDescending { it })
 }

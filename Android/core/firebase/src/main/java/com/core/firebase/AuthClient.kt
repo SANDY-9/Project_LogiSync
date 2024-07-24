@@ -1,22 +1,18 @@
 package com.core.firebase
 
-import com.core.firebase.common.Constants.DUTY
+import android.util.Log
+import com.core.firebase.common.Constants.TEAM
 import com.core.firebase.common.Constants.TEL
 import com.core.firebase.common.Constants.USERS
 import com.core.firebase.mappers.toAccount
 import com.core.firebase.model.AccountDTO
-import com.core.firebase.utils.EmptyValueError
-import com.core.firebase.utils.ErrorMassage.EMPTY_ERROR_MESSAGE
 import com.core.firebase.utils.ErrorMassage.LOGIN_ERROR_MESSAGE
 import com.core.firebase.utils.ErrorMassage.NETWORK_ERROR_MESSAGE
 import com.core.firebase.utils.LoginError
 import com.core.firebase.utils.NetworkError
 import com.core.model.Account
 import com.core.model.User
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.getValue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,45 +39,40 @@ class AuthClient @Inject constructor(
             name = name,
             tel = tel,
         )
-        user.child(id).setValue(account)
-        user.addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    // 최초 가입의 경우
-                    val accountDTO = snapshot.getValue<AccountDTO>()
-                    accountDTO?.let {
-                        var account = it.toAccount(id)
-                        if (snapshot.children.count() == 1) {
-                            user.child(id).child(DUTY).setValue(User.Duty.ADMIN.name)
-                            account = account.copy(duty = User.Duty.ADMIN)
-                        }
+        user.orderByChild(TEAM).equalTo(account.team).get().addOnSuccessListener { snapshot ->
+            val signupAccount = account.copy(
+                duty = if(snapshot.exists()) User.Duty.NORMAL.name else User.Duty.ADMIN.name
+            )
+            Log.e("확인", "signup: ${snapshot.exists()}", )
+            Log.e("확인", "signup: $signupAccount", )
+            user.child(id).setValue(signupAccount)
 
-                        // FCM토큰 등록
-                        CoroutineScope(Dispatchers.IO).launch {
-                            messagingClient.registerToken(
-                                id = id,
-                                onSuccess = { },
-                                onError = { },
-                            )
-                        }
-
-                        // 심박수 임계치 등록
-                        CoroutineScope(Dispatchers.IO).launch {
-                            heartRateClient.updateHeartRateCriticalPoint(id)
-                        }
-                        onSuccess(account)
-                    }
-                    ?: onError(Exception())
-                }
-                override fun onCancelled(error: DatabaseError) {
-                    onError(error.toException())
-                }
+            // FCM토큰 등록
+            CoroutineScope(Dispatchers.IO).launch {
+                messagingClient.registerToken(
+                    id = id,
+                    onSuccess = { },
+                    onError = { },
+                )
             }
-        )
-    }
 
-    fun updateDuty() {
+            // FCM 구독
+            if(signupAccount.duty == User.Duty.ADMIN.name) {
+                messagingClient.subscribeToArrestTopic()
+            }
+            else {
+                messagingClient.unsubscribeToArrestTopic()
+            }
 
+            // 심박수 임계치 등록
+            CoroutineScope(Dispatchers.IO).launch {
+                heartRateClient.updateHeartRateCriticalPoint(id)
+            }
+
+            onSuccess(signupAccount.toAccount(id))
+        }.addOnFailureListener {
+            onError(it)
+        }
     }
 
     fun checkTel(
@@ -116,7 +107,6 @@ class AuthClient @Inject constructor(
         onLogin: (Account) -> Unit,
         onError: (Throwable) -> Unit,
     ) {
-        if (id.isEmpty() || pwd.isEmpty()) throw EmptyValueError(EMPTY_ERROR_MESSAGE)
         ref.child(USERS).child(id).get().addOnSuccessListener { snapshot ->
             if (snapshot.exists()) {
                 val account = snapshot.getValue<AccountDTO>()
@@ -129,9 +119,51 @@ class AuthClient @Inject constructor(
                             onError = { e -> onError(e) },
                         )
                     }
+
+                    // FCM 구독
+                    if(account.duty == User.Duty.ADMIN.name) {
+                        messagingClient.subscribeToArrestTopic()
+                    }
+                    else {
+                        messagingClient.unsubscribeToArrestTopic()
+                    }
                     onLogin(account.toAccount(id))
                 }
                 else onError(LoginError(LOGIN_ERROR_MESSAGE))
+            }
+            else onError(LoginError(LOGIN_ERROR_MESSAGE))
+        }.addOnFailureListener {
+            onError(NetworkError(NETWORK_ERROR_MESSAGE))
+        }
+    }
+
+    fun bioLogin(
+        id: String,
+        onLogin: (Account) -> Unit,
+        onError: (Throwable) -> Unit,
+    ) {
+        ref.child(USERS).child(id).get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                val account = snapshot.getValue<AccountDTO>()
+                account?.let {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        // FCM 토큰 등록
+                        messagingClient.registerToken(
+                            id = id,
+                            onSuccess = { onLogin(account.toAccount(id)) },
+                            onError = { e -> onError(e) },
+                        )
+                    }
+
+                    // FCM 구독
+                    if(account.duty == User.Duty.ADMIN.name) {
+                        messagingClient.subscribeToArrestTopic()
+                    }
+                    else {
+                        messagingClient.unsubscribeToArrestTopic()
+                    }
+                    onLogin(account.toAccount(id))
+                } ?: onError(LoginError(LOGIN_ERROR_MESSAGE))
             }
             else onError(LoginError(LOGIN_ERROR_MESSAGE))
         }.addOnFailureListener {

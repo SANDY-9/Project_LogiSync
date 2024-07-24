@@ -54,8 +54,8 @@ private fun ReportTitle(
         Text(
             modifier = modifier.noRippleClickable(onClick = onNavigateToAllReport),
             text = stringResource(id = R.string.details_arrest_all),
-            style = MaterialTheme.typography.labelMedium,
-            color = Color.Gray,
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.DarkGray,
         )
     }
 }
@@ -68,7 +68,7 @@ private fun EmptyReport(
         Text(
             modifier = modifier.align(Alignment.CenterHorizontally),
             text = stringResource(id = R.string.details_arrest_empty),
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray,
         )
     }

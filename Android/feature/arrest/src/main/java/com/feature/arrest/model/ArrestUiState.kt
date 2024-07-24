@@ -5,8 +5,12 @@ import java.time.LocalDate
 
 internal data class ArrestUiState(
 
+    val loading: Boolean = false,
+    val error: Throwable? = null,
+
     // data
     val arrestList: Map<LocalDate, List<Arrest>> = emptyMap(),
+    val searchedList: Map<LocalDate, List<Arrest>> = emptyMap(),
     val filteredList: Map<LocalDate, List<Arrest>> = emptyMap(),
     val allFilterSelected: Boolean = true,
     val dangerFilterSelected: Boolean = false,

@@ -4,7 +4,10 @@ import com.core.firebase.common.Constants.CRITICAL_POINT
 import com.core.firebase.common.Constants.USERS
 import com.core.firebase.model.CriticalPointDTO
 import com.core.firebase.model.UserDTO
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.getValue
 import javax.inject.Inject
 
@@ -35,23 +38,27 @@ class UserClient @Inject constructor(
         onSuccess: (List<UserDTO?>) -> Unit,
         onError: (Throwable) -> Unit,
     ) {
-        ref.child(USERS).get().addOnSuccessListener { snapshot ->
-            if (snapshot.exists()) {
-                val userList = snapshot.children.map {
-                    val user = it.getValue<UserDTO>()
-                    val criticalPoint = it.child(CRITICAL_POINT).getValue<CriticalPointDTO>()
-                    user?.copy(
-                        id = it.key,
-                        criticalPoint = criticalPoint,
-                    )
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val userList = snapshot.children.map {
+                        val user = it.getValue<UserDTO>()
+                        val criticalPoint = it.child(CRITICAL_POINT).getValue<CriticalPointDTO>()
+                        user?.copy(
+                            id = it.key,
+                            criticalPoint = criticalPoint,
+                        )
+                    }
+                    onSuccess(userList)
                 }
-                onSuccess(userList)
+                else {
+                    onSuccess(emptyList())
+                }
             }
-            else {
-                onSuccess(emptyList())
+            override fun onCancelled(error: DatabaseError) {
+                onError(error.toException())
             }
-        }.addOnFailureListener {
-            onError(it)
         }
+        ref.child(USERS).addValueEventListener(listener)
     }
 }

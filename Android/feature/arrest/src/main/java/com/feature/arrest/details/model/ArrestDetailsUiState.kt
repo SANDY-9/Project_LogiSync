@@ -10,4 +10,7 @@ data class ArrestDetailsUiState(
 
     // map
     val arrestLocation: LatLng? = null,
+    val mapReady: Boolean = false,
+
+    val error: Throwable? = null
 )

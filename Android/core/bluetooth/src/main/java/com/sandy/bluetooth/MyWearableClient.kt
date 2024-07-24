@@ -36,15 +36,15 @@ class MyWearableClient @Inject constructor(
     }
 
     fun requestTranscription(data: String, transcriptionPath: TranscriptionPath) {
+        getConnectWearable()
         transcriptionNodeId?.also { nodeId ->
-            Log.e("확인", "requestTranscription: $nodeId")
             messageClient.sendMessage(
                 nodeId,
                 transcriptionPath.path,
                 data.toByteArray()
             ).apply {
                 addOnSuccessListener {
-                    Log.e("확인", "requestTranscription: 앱->워치 메시지 전송 성공 $data")
+                    Log.i("[WEARABLE_MOBILE]", "requestTranscription: 앱->워치 메시지 전송 성공 $data")
                 }
                 addOnFailureListener {
                     throw WearableFailException()
@@ -55,6 +55,5 @@ class MyWearableClient @Inject constructor(
 
     companion object {
         private const val WEARABLE_CAPABILITY_NAME = "logi_sync_wear_app"
-        private const val TEST_MESSAGE_PATH = "/heart_rate_transcription"
     }
 }

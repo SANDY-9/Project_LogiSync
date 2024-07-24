@@ -1,6 +1,5 @@
 package com.feature.arrest.details
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,8 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Icon
@@ -29,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.core.desinsystem.common.NetworkError
 import com.core.model.Arrest
 import com.core.navigation.Args
 import com.feature.arrest.R
@@ -54,10 +53,15 @@ fun ArrestDetailsScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = Color.White)
+            .statusBarsPadding(),
     ) {
-        ArrestDetailsAppBar(onNavigateUp = { navController.navigateUp() })
-        ArrestContent(state)
+        ArrestDetailsAppBar(onNavigateUp = navController::navigateUp )
+        if(state.error != null) NetworkError(modifier = modifier.fillMaxSize())
+        ArrestContent(
+            state = state,
+            isMapReady = state.mapReady,
+            onMapLoaded = viewModel::readyMap,
+        )
     }
 }
 
@@ -80,7 +84,7 @@ private fun ArrestDetailsAppBar(
             }
             Text(
                 text = stringResource(id = R.string.arrest_details_title),
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.titleLarge,
             )
             Spacer(modifier = modifier.weight(1f))
         }
@@ -90,16 +94,22 @@ private fun ArrestDetailsAppBar(
 @Composable
 private fun ArrestContent(
     state: ArrestDetailsUiState,
+    isMapReady: Boolean,
+    onMapLoaded: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        ArrestUserProfile(user = state.user ?: return)
+        ArrestUserProfile(user = state.user)
         Spacer(modifier = modifier.height(24.dp))
         ArrestContentDetails(arrest = state.arrest ?: return)
         Spacer(modifier = modifier.height(24.dp))
-        ArrestLocationDetails(arrestLocation = state.arrestLocation ?: return)
+        ArrestLocationDetails(
+            arrestLocation = state.arrestLocation ?: return,
+            isMapReady = isMapReady,
+            onMapLoaded = onMapLoaded,
+        )
         Spacer(modifier = modifier.height(30.dp))
     }
 }

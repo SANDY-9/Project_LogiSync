@@ -64,5 +64,20 @@ class GetHeartRateRepositoryImpl @Inject constructor(
             },
         )
         awaitClose()
-    }
+    }.flowOn(Dispatchers.IO)
+
+    override fun updateChangeCriticalPoint(id: String, min: Int, max: Int): Flow<Boolean> = callbackFlow {
+        heartRateClient.updateHeartRateCriticalPoint(
+            id = id,
+            min = min,
+            max = max,
+            onSuccess = { result ->
+                trySend(result)
+            },
+            onError = {
+                close(it)
+            },
+        )
+        awaitClose()
+    }.flowOn(Dispatchers.IO)
 }

@@ -1,11 +1,9 @@
 package com.feature.home
 
-import android.app.Activity
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,13 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +30,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.BoxLayout
+import com.core.desinsystem.common.NetworkError
+import com.core.desinsystem.lottie.LottieProgressBarBlue
+import com.core.model.Account
+import com.core.model.Arrest
 import com.core.navigation.Args
 import com.core.navigation.Route
 import com.feature.home.components.HeartRateInfo
@@ -40,7 +43,6 @@ import com.feature.home.components.ReportInfo
 import com.feature.home.components.ReportItem
 import com.feature.home.model.HomeUiState
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -48,12 +50,16 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
 
-    // DisposableEffect
-    val context = LocalContext.current as? Activity?
-    HomeWearableListener(context)
-    BackHandler(enabled = true) {
-        context?.finish()
-    }
+    val context = LocalContext.current
+    GetPermission(context = context)
+    HomeWearableListener(
+        context,
+        onLoginResponse = viewModel::checkWearableLogin
+    )
+    BackOnPressed(context)
+
+    StartMonitoringWearableConnect(viewModel)
+    StopMonitoringWearableConnect(viewModel)
 
     // Ui
     val state: HomeUiState by viewModel.stateFlow.collectAsStateWithLifecycle()
@@ -66,60 +72,88 @@ fun HomeScreen(
         viewModel.restartWearableConnectMonitoring()
     }
 
+    LaunchedEffect(state.heartRateLoading) {
+        if(state.heartRateLoading) {
+            Toast.makeText(context, "워치에서 심박수를 측정해주세요.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    Column {
+        Box(modifier = modifier.height(215.dp)) {
+            Image(
+                painter = painterResource(
+                    id = com.core.desinsystem.R.drawable.bg_white_half
+                ),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                alpha = 0.5f
+            )
+            HomeAppBar(state.date, state.account)
+        }
+        if(state.error != null) NetworkError(modifier = modifier.fillMaxSize())
+        if(!state.loading) {
+            HomeContent(
+                state = state,
+                onRequestCollect = viewModel::requestCollectHeartBeat,
+                onAllReport = {
+                    navController.run {
+                        currentBackStackEntry?.savedStateHandle?.set(Args.ID, state.account?.id)
+                        navigate(Route.Arrest.route)
+                    }
+                },
+                onItemClick = { arrest ->
+                    navController.run {
+                        currentBackStackEntry?.savedStateHandle?.set(Args.ARREST, arrest)
+                        navigate(Route.ArrestDetails.route)
+                    }
+                }
+            )
+        }
+        else LottieProgressBarBlue(modifier = modifier.fillMaxSize())
+    }
+}
+
+
+@Composable
+private fun HomeContent(
+    state: HomeUiState,
+    onRequestCollect: () -> Unit,
+    onAllReport: () -> Unit,
+    onItemClick: (Arrest) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.White)
     ) {
-
-        stickyHeader {
-            HomeAppBar()
-        }
-
-        state.account?.let {
-            item {
-                BoxLayout {
-                    Profile(
-                        dateStr = state.date,
-                        account = it,
-                    )
-                    Spacer(modifier = modifier.height(16.dp))
-                }
-            }
-        }
 
         item {
             BoxLayout {
                 PairingInfo(
+                    checkWearableLogin = state.checkWearable,
                     deviceName = state.pairedDeviceName,
                     isPairedWatch = state.isPairedWatch,
                 )
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = modifier.height(8.dp))
             }
         }
 
         item {
             BoxLayout {
                 HeartRateInfo(
+                    checkWearableLogin = state.checkWearable,
                     heartRate = state.heartRate,
-                    onRequestCollect = viewModel::requestCollectHeartBeat,
+                    onRequestCollect = onRequestCollect,
                 )
-                Spacer(modifier = modifier.height(16.dp))
+                Spacer(modifier = modifier.height(8.dp))
             }
         }
 
         item {
-            BoxLayout {
-                ReportInfo(
-                    emptyReport = state.emptyReport,
-                    onAllReport = {
-                        navController.run {
-                            currentBackStackEntry?.savedStateHandle?.set(Args.ID, state.account?.id)
-                            navigate(Route.Arrest.route)
-                        }
-                    }
-                )
-            }
+            ReportInfo(
+                emptyReport = state.emptyReport,
+                onAllReport = onAllReport,
+            )
         }
 
         items(
@@ -131,12 +165,7 @@ fun HomeScreen(
             ) {
                 ReportItem(
                     arrestItem = arrest,
-                    onItemClick = {
-                        navController.run {
-                            currentBackStackEntry?.savedStateHandle?.set(Args.ARREST, arrest)
-                            navigate(Route.ArrestDetails.route)
-                        }
-                    }
+                    onItemClick = { onItemClick(arrest) }
                 )
             }
         }
@@ -150,23 +179,28 @@ fun HomeScreen(
 
 @Composable
 private fun HomeAppBar(
+    dateStr: String,
+    account: Account?,
     modifier: Modifier = Modifier,
 ) {
-    Box(
+    Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = Color.White)
+            .padding(horizontal = 20.dp)
+            .statusBarsPadding()
     ) {
         Image(
             modifier = modifier
-                .size(width = 230.dp, height = 80.dp)
-                .padding(16.dp)
-                .align(Alignment.CenterStart),
+                .size(width = 200.dp, height = 70.dp),
             painter = painterResource(id = com.core.desinsystem.R.drawable.temp_logo_wide),
             contentDescription = null,
         )
-
+        Profile(
+            dateStr = dateStr,
+            account = account ?: return,
+        )
     }
+
 }
 
 @Preview(name = "HomeScreen")

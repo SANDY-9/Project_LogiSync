@@ -18,34 +18,23 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import javax.inject.Inject
 
-private const val INTERVAL = 1200L
+private const val INTERVAL = 3000L
 
 class WearableRepositoryImpl @Inject constructor(
     private val wearableClient: MyWearableClient,
     private val bluetoothManager: MyBluetoothManager,
 ) : WearableRepository {
 
-    // 테스트용
     override fun getWearableConnectState(): Flow<Device?> = flow {
-        val node = wearableClient.getConnectWearable()
-        /*if (node == null) {
-            emit(null)
-        }
-        else {
-            val alias = bluetoothManager.getDeviceAlias()
-            emit(node.toDevice(alias))
-        }*/
-        var start = true
-        while (start) {
+        while (true) {
             val node = wearableClient.getConnectWearable()
-            Log.e("확인", "getWearableConnectState: $node", )
+            Log.i("[WEARABLE_CONNECT_MONITORING]", "getWearableConnectState: $node", )
             if(node == null) {
                 emit(null)
             }
             else {
                 val alias = bluetoothManager.getDeviceAlias()
                 emit(node.toDevice(alias))
-                start = false
             }
             delay(INTERVAL)
         }

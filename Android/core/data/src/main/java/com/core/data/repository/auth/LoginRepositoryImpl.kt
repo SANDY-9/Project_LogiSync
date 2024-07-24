@@ -26,4 +26,17 @@ class LoginRepositoryImpl @Inject constructor(
         )
         awaitClose()
     }.flowOn(Dispatchers.IO)
+
+    override fun bioLogin(id: String): Flow<Account?> = callbackFlow {
+        authClient.bioLogin(
+            id = id,
+            onLogin = { account ->
+                trySend(account)
+            },
+            onError = { error ->
+                close(error)
+            }
+        )
+        awaitClose()
+    }.flowOn(Dispatchers.IO)
 }

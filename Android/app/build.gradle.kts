@@ -64,6 +64,9 @@ dependencies {
 
     implementation(project(":core:navigation"))
     implementation(project(":core:designsystem"))
+    implementation(project(":core:data"))
+    implementation(project(":core:model"))
+    implementation(project(":core:domain"))
 
     implementation(project(":feature:login"))
     implementation(project(":feature:signup"))
@@ -72,6 +75,7 @@ dependencies {
     implementation(project(":feature:statistics"))
     implementation(project(":feature:admin"))
     implementation(project(":feature:arrest"))
+    implementation(project(":feature:other"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)
@@ -86,7 +90,11 @@ dependencies {
     // Compose
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.core.splashscreen)
 
+
+    // FingerPrint
+    implementation(libs.androidx.biometric.ktx)
 }
 
 secrets {

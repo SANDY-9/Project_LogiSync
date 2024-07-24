@@ -27,6 +27,7 @@ class MyWearableClient @Inject constructor(
     private var transcriptionNodeId: String? = null
     private fun updateTranscriptionCapability(capabilityInfo: CapabilityInfo) {
         transcriptionNodeId = pickBestNodeId(capabilityInfo.nodes)
+        Log.e("확인", "updateTranscriptionCapability: $transcriptionNodeId", )
     }
 
     private fun pickBestNodeId(nodes: Set<Node>): String? {
@@ -38,6 +39,7 @@ class MyWearableClient @Inject constructor(
     fun requestTranscription(data: String, transcriptionPath: TranscriptionPath) {
         setupConnectApp()
         transcriptionNodeId?.also { nodeId ->
+            Log.e("확인", "requestTranscription: $nodeId", )
             sendMessage(nodeId, transcriptionPath, data)
         }
     }

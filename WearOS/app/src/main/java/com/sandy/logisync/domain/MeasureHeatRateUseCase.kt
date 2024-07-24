@@ -23,7 +23,11 @@ class MeasureHeatRateUseCase @Inject constructor(
     private val locationRepository: LocationRepository,
 ) {
 
-    suspend operator fun invoke(id: String) : Flow<MeasuredHeartRate> {
+    suspend operator fun invoke(
+        id: String,
+        name: String,
+        tel: String,
+    ) : Flow<MeasuredHeartRate> {
         return healthMeasureRepository.getMeasuredHeartRate().onEach {
             it.heartRate?.let { heartRate ->
                 // 로컬에 최근 심박수 저장
@@ -33,7 +37,7 @@ class MeasureHeatRateUseCase @Inject constructor(
                 // 기기 전송
                 sendHeartRateToDevice(heartRate)
                 // 심박수 임계점 확인
-                checkCriticalPoint(id, heartRate)
+                checkCriticalPoint(id, name, tel, heartRate)
             }
         }
     }
@@ -59,38 +63,52 @@ class MeasureHeatRateUseCase @Inject constructor(
         }
     }
 
-    private suspend fun checkCriticalPoint(id: String, heartRate: HeartRate) {
+    private suspend fun checkCriticalPoint(
+        id: String,
+        name: String,
+        tel: String,
+        heartRate: HeartRate,
+    ) {
         coroutineScope {
             val criticalPoint = networkRepository.getHeartRateCriticalPoint(id).first()
             if(criticalPoint.min > heartRate.bpm) {
-                arrestHeartRate(id, Arrest.ArrestType.HEART_RATE_LOW, heartRate.bpm)
+                arrestHeartRate(id, name, tel, Arrest.ArrestType.HEART_RATE_LOW, heartRate.bpm)
             }
             if(criticalPoint.max < heartRate.bpm) {
-                arrestHeartRate(id, Arrest.ArrestType.HEART_RATE_HIGH, heartRate.bpm)
+                arrestHeartRate(id, name, tel, Arrest.ArrestType.HEART_RATE_HIGH, heartRate.bpm)
             }
         }
     }
 
     private suspend fun arrestHeartRate(
         id: String,
+        name: String,
+        tel: String,
         arrestType: Arrest.ArrestType,
         bpm: Int
     ) {
         val location = locationRepository.getLastLocation().first()
         // 신고 서버 저장
-        updateArrestToServer(id, arrestType, location, bpm)
+        updateArrestToServer(id, name, tel, arrestType, location, bpm)
         // 신고 푸시 알림
-        networkRepository.notifyArrest(id).first()
+        coroutineScope {
+            networkRepository.notifyArrest(id, name, tel, arrestType, location).first()
+        }
+        coroutineScope {
+            networkRepository.notifyMyArrest(id, name, tel, arrestType, location).first()
+        }
     }
 
     private suspend fun updateArrestToServer(
         id: String,
+        name: String,
+        tel: String,
         arrestType: Arrest.ArrestType,
         location: Location,
         bpm: Int
     ) {
         coroutineScope {
-            networkRepository.updateHeartBeatArrest(id, arrestType, location, bpm).first()
+            networkRepository.updateHeartBeatArrest(id, name, tel, arrestType, location, bpm).first()
         }
     }
 

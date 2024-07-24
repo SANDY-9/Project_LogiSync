@@ -4,23 +4,33 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usecases.network.GetMyArrestListUseCase
+import com.core.domain.usecases.prefs.GetAccountUseCase
 import com.core.utils.DateUtil
 import com.feature.arrest.model.ArrestUiState
 import com.feature.arrest.utils.filter
 import com.feature.arrest.utils.localDate
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class ArrestViewModel @Inject constructor(
+    private val getAccountUseCase: GetAccountUseCase,
     private val getMyArrestListUseCase: GetMyArrestListUseCase,
 ): ViewModel() {
 
@@ -28,18 +38,49 @@ class ArrestViewModel @Inject constructor(
     internal val stateFlow: StateFlow<ArrestUiState> = _stateFlow.asStateFlow()
     private val state get() = stateFlow.value
 
-    internal fun getMyArrestList(id: String) {
-        Log.e("확인", "getMyArrestList: $id", )
-        getMyArrestListUseCase(id).onEach { data ->
-            _stateFlow.update {
-                it.copy(
-                    arrestList = data,
-                    filteredList = data,
-                )
-            }
-        }.catch {
-            Log.e("[MY_ARREST]", "$it")
-        }.launchIn(viewModelScope)
+    init {
+        getAccountUseCase()
+            .onStart {
+                _stateFlow.value = state.copy(loading = true)
+            }.flatMapLatest { account ->
+                account?.let {
+                    getMyArrestListUseCase(it.id)
+                } ?: flowOf(null)
+            }.onEach { data ->
+                data?.let {
+                    delay(300L)
+                    _stateFlow.update {
+                        it.copy(
+                            arrestList = data,
+                            searchedList = data,
+                            filteredList = data,
+                            loading = false,
+                        )
+                    }
+                }
+            }.catch {
+                Log.e("[MY_ARREST]", "$it")
+                _stateFlow.value = state.copy(loading = false, error = it)
+            }.timeout(10.seconds).onCompletion {
+                _stateFlow.value = state.copy(loading = false)
+            }.launchIn(viewModelScope)
+    }
+
+
+    internal fun refreshArrestList() {
+        viewModelScope.launch {
+            _stateFlow.value = state.copy(loading = true)
+            delay(500)
+            _stateFlow.value = state.copy(
+                loading = false,
+                filterType = ArrestUiState.FilterType.FILTER_ALL,
+                allFilterSelected = true,
+                dangerFilterSelected = false,
+                heartRateFilterSelected = false,
+                searchedList = state.arrestList,
+                filteredList = state.arrestList,
+            )
+        }
     }
 
     internal fun filterArrestList(type: ArrestUiState.FilterType) {
@@ -57,7 +98,7 @@ class ArrestViewModel @Inject constructor(
             allFilterSelected = true,
             dangerFilterSelected = false,
             heartRateFilterSelected = false,
-            filteredList = state.arrestList,
+            filteredList = state.searchedList,
         )
     }
 
@@ -68,7 +109,7 @@ class ArrestViewModel @Inject constructor(
             allFilterSelected = false,
             dangerFilterSelected = true,
             heartRateFilterSelected = false,
-            filteredList = state.arrestList.filter(ArrestUiState.FilterType.FILTER_DANGER)
+            filteredList = state.searchedList.filter(ArrestUiState.FilterType.FILTER_DANGER)
         )
     }
 
@@ -79,7 +120,7 @@ class ArrestViewModel @Inject constructor(
             allFilterSelected = false,
             dangerFilterSelected = false,
             heartRateFilterSelected = true,
-            filteredList = state.arrestList.filter(ArrestUiState.FilterType.FILTER_HEART_RATE)
+            filteredList = state.searchedList.filter(ArrestUiState.FilterType.FILTER_HEART_RATE)
         )
     }
 
@@ -116,13 +157,24 @@ class ArrestViewModel @Inject constructor(
     }
 
     private fun filterByDate(startDate: LocalDate, endDate: LocalDate) {
-        _stateFlow.value = state.copy(
-            filteredList = state.arrestList.filter(
-                type = state.filterType,
+        viewModelScope.launch {
+            _stateFlow.value = state.copy(loading = true)
+            delay(500)
+            val searchedList = state.arrestList.filter(
+                type = ArrestUiState.FilterType.FILTER_ALL,
                 startDate = startDate,
                 endDate = endDate
             )
-        )
+            _stateFlow.value = state.copy(
+                loading = false,
+                searchedList = searchedList,
+                filterType = ArrestUiState.FilterType.FILTER_ALL,
+                allFilterSelected = true,
+                dangerFilterSelected = false,
+                heartRateFilterSelected = false,
+                filteredList = searchedList,
+            )
+        }
     }
 
 }

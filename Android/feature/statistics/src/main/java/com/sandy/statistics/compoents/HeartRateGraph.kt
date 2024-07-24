@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.sp
 import com.core.desinsystem.common.HeartRateBpmChartItem
 import com.core.desinsystem.common.noRippleClickable
 import com.core.desinsystem.theme.LogiBlue
-import com.core.desinsystem.theme.LogiLightGray
-import com.core.desinsystem.theme.TransparentWhiteDeem
+import com.core.desinsystem.theme.LogiSemiGray
+import com.core.desinsystem.theme.TransparentWhiteDeepDeem
 import com.sandy.statistics.model.HeartRateChartItem
 import com.sandy.statistics.model.StatisticsUiState
 
@@ -63,11 +63,11 @@ fun HeartRateGraph(
 private val selectModifier = Modifier
     .border(
         width = 1.dp,
-        color = LogiLightGray,
+        color = LogiSemiGray,
         shape = RoundedCornerShape(50.dp)
     )
     .background(
-        color = TransparentWhiteDeem,
+        color = TransparentWhiteDeepDeem,
         shape = RoundedCornerShape(50.dp)
     )
 
@@ -83,7 +83,7 @@ private fun ChartItem(
 ) {
     Column(
         modifier = modifier
-            .width(40.dp)
+            .width(35.dp)
             .noRippleClickable(onClick = onItemClick)
             .then(
                 if (clickItem) selectModifier else modifier

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -21,14 +22,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.core.desinsystem.common.HeartRateLabel
+import com.core.desinsystem.theme.DarkGreen
 import com.core.desinsystem.theme.LogiLightGray
+import com.core.desinsystem.theme.LogiOrange
 import java.time.LocalDateTime
 
 @Composable
 internal fun UserHeartRateReportItem(
     bpm: Int,
     time: String,
+    isCritical: Boolean,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -55,12 +60,12 @@ internal fun UserHeartRateReportItem(
                     modifier = modifier.weight(1f)
                 )
                 HeartRateLevel(
-                    bpm = bpm
+                    isCritical = isCritical,
+                    bpm = bpm,
                 )
             }
         }
     }
-
 }
 
 @Composable
@@ -80,7 +85,9 @@ private fun HeartRateDesc(
         }
         Text(
             text = time,
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.bodySmall.copy(
+                letterSpacing = (-0.2).sp,
+            ),
             color = Color.DarkGray,
         )
     }
@@ -89,26 +96,45 @@ private fun HeartRateDesc(
 @Composable
 private fun HeartRateLevel(
     bpm: Int,
+    isCritical: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            modifier = modifier.size(15.dp),
-            imageVector = Icons.Rounded.CheckCircle,
-            contentDescription = null
-        )
-        Spacer(modifier = modifier.width(8.dp))
-        Text(
-            text = "정상",
-            style = MaterialTheme.typography.bodyLarge
-        )
+        if(isCritical) {
+            Icon(
+                modifier = modifier.size(15.dp),
+                imageVector = Icons.Rounded.Warning,
+                tint = LogiOrange,
+                contentDescription = null
+            )
+            Spacer(modifier = modifier.width(8.dp))
+            Text(
+                text = "주의",
+                style = MaterialTheme.typography.bodyMedium,
+                color = LogiOrange,
+            )
+        }
+        else {
+            Icon(
+                modifier = modifier.size(15.dp),
+                imageVector = Icons.Rounded.CheckCircle,
+                tint = DarkGreen,
+                contentDescription = null
+            )
+            Spacer(modifier = modifier.width(8.dp))
+            Text(
+                text = "정상",
+                style = MaterialTheme.typography.bodyMedium,
+                color = DarkGreen,
+            )
+        }
     }
 }
 
 @Preview(name = "UserHeartRateReportItem")
 @Composable
 private fun PreviewUserHeartRateReportItem() {
-    UserHeartRateReportItem(70, LocalDateTime.now().toString())
+    UserHeartRateReportItem(70, LocalDateTime.now().toString(), true)
 }

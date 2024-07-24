@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.auth.oauth2.GoogleCredentials
 import com.sandy.logisync.BuildConfig
 import com.sandy.logisync.data.network.utils.CreateBodyUtil
+import com.sandy.logisync.model.Arrest.ArrestType
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -60,25 +61,65 @@ class MyMessagingClient @Inject constructor(
     }
 
     suspend fun sendArrestMessage(
+        id: String,
+        time: LocalDateTime,
+        lat: Double,
+        lng: Double,
+        name: String,
+        tel: String,
+        arrestType: ArrestType,
+    ) : Flow<Response> {
+        val arrestMessageBody = CreateBodyUtil.createArrestRequestBody(id, time, name, tel, lat, lng, arrestType)
+        val request = createArrestRequest(arrestMessageBody)
+        return okHttpClient.createCallFlow(request)
+    }
+
+    suspend fun sendMyArrestMessage(
         token: String,
         id: String,
-        time: LocalDateTime
+        time: LocalDateTime,
+        lat: Double,
+        lng: Double,
+        name: String,
+        tel: String,
+        arrestType: ArrestType,
     ) : Flow<Response> {
-        val arrestMessageBody = CreateBodyUtil.createArrestRequestBody(token, id, time)
+        val arrestMessageBody = CreateBodyUtil.createMyArrestRequestBody(token, id, time, name, tel, lat, lng, arrestType)
         val request = createArrestRequest(arrestMessageBody)
         return okHttpClient.createCallFlow(request)
     }
 
     suspend fun sendWarningMessage(
-        token: String,
         id: String,
-        bpm: String,
+        bpm: Int,
         time: LocalDateTime,
+        lat: Double,
+        lng: Double,
+        name: String,
+        tel: String,
+        arrestType: ArrestType,
     ) : Flow<Response> {
-        val warningMessageBody = CreateBodyUtil.createWarningRequestBody(token, id, bpm, time)
+        val warningMessageBody = CreateBodyUtil.createWarningRequestBody(id, name, tel, bpm, lat, lng, time, arrestType)
         val request = createArrestRequest(warningMessageBody)
         return okHttpClient.createCallFlow(request)
     }
+
+    suspend fun sendMyWarningMessage(
+        token: String,
+        id: String,
+        bpm: Int,
+        time: LocalDateTime,
+        lat: Double,
+        lng: Double,
+        name: String,
+        tel: String,
+        arrestType: ArrestType,
+    ) : Flow<Response> {
+        val warningMessageBody = CreateBodyUtil.createMyWarningRequestBody(token, id, name, tel, bpm, lat, lng, time, arrestType)
+        val request = createArrestRequest(warningMessageBody)
+        return okHttpClient.createCallFlow(request)
+    }
+
 
     companion object {
         private const val FIREBASE_MESSAGING_SCOPED = "https://www.googleapis.com/auth/firebase.messaging"

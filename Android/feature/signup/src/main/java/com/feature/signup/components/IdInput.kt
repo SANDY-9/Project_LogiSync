@@ -19,11 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.core.desinsystem.common.MyTextField
 import com.core.desinsystem.icons.Check
+import com.core.desinsystem.theme.DarkGreen
 import com.feature.signup.R
 
 @Composable
@@ -41,7 +41,7 @@ internal fun IdInput(
         unfocusedBorderColor = when(existId) {
             null -> MaterialTheme.colorScheme.outline
             true -> MaterialTheme.colorScheme.error
-            false -> Color.Green
+            false -> DarkGreen
         }
     )
     Row(
@@ -78,7 +78,7 @@ internal fun IdInput(
                     minWidth = 1.dp,
                     minHeight = 1.dp
                 ),
-            contentPadding = PaddingValues(horizontal = 24.dp),
+            contentPadding = PaddingValues(horizontal = 10.dp),
             shape = RoundedCornerShape(10.dp),
             enabled = isValidId && existId == null,
             onClick = onIdCheckClick,
@@ -121,12 +121,12 @@ private fun NotExistId(
         Icon(
             modifier = modifier.size(18.dp),
             imageVector = Icons.Check, contentDescription = null,
-            tint = Color.Green,
+            tint = DarkGreen,
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = stringResource(id = R.string.signup_join_id_check_ok),
-            color = Color.Green,
+            color = DarkGreen,
         )
     }
 }

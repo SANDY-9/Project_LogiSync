@@ -18,18 +18,54 @@ interface NetworkRepository {
 
     suspend fun updateNormalArrest(
         id: String,
+        name: String,
+        tel: String,
         arrestType: ArrestType,
         location: Location,
     ): Flow<Boolean>
 
     suspend fun updateHeartBeatArrest(
         id: String,
+        name: String,
+        tel: String,
         arrestType: ArrestType,
         location: Location,
         bpm: Int,
     ): Flow<Boolean>
 
-    suspend fun notifyArrest(id: String): Flow<String?>
+    suspend fun notifyArrest(
+        id: String,
+        name: String,
+        tel: String,
+        arrestType: ArrestType,
+        location: Location,
+        ): Flow<String?>
 
+    suspend fun notifyMyArrest(
+        id: String,
+        name: String,
+        tel: String,
+        arrestType: ArrestType,
+        location: Location,
+    ): Flow<String?>
+
+
+    suspend fun notifyWarning(
+        id: String,
+        name: String,
+        tel: String,
+        arrestType: ArrestType,
+        location: Location,
+        bpm: Int,
+    ): Flow<String?>
+
+    suspend fun notifyMyWarning(
+        id: String,
+        name: String,
+        tel: String,
+        arrestType: ArrestType,
+        location: Location,
+        bpm: Int,
+    ): Flow<String?>
 
 }

@@ -33,6 +33,7 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
     }
 
     private fun monitorHeartRate() {
+        Log.e("[MONITORING]", "monitorHeartRate")
         HeartRateMeasureWorker.enqueueWorker(context)
     }
 
@@ -46,7 +47,6 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
             context: Context,
         ) {
             val delay = getNextMonitoringDelay()
-            Log.e("확인", "registerWorker: $delay")
             val workRequest = OneTimeWorkRequestBuilder<HeartRateMonitoringWorker>()
                 .setInitialDelay(delay)
                 .build()
@@ -60,9 +60,8 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
         private fun getNextMonitoringDelay(): Duration {
             val nextMonitoringTime = getNextMonitoringTime()
             val currentTime = LocalDateTime.now()
-            //val nextMonitoringTime = currentTime.plusMinutes(1)
             val delay = Duration.between(currentTime, nextMonitoringTime)
-            Log.e("확인", "getNextMonitoringDelay: $nextMonitoringTime")
+            Log.i("[HEART_RATE_MONITORING]", "getNextMonitoringDelay: $nextMonitoringTime")
             return delay
         }
 
@@ -83,7 +82,9 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
                     currentTime.month,
                     if(currentTime.hour + 1 == 24) currentTime.dayOfMonth + 1 else currentTime.dayOfMonth,
                     if(currentTime.hour + 1 == 24) 0 else currentTime.hour + 1,
-                    0
+                    0,
+                    0,
+                    0,
                 )
             }
             else {
@@ -110,7 +111,9 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
                     currentTime.month,
                     currentTime.dayOfMonth,
                     8,
-                    0
+                    0,
+                    0,
+                    0,
                 )
             }
 
@@ -121,7 +124,8 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
                     currentTime.month,
                     currentTime.dayOfMonth + 1,
                     8,
-                    0
+                    0,
+                    0,
                 )
             }
 

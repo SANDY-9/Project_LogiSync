@@ -10,6 +10,7 @@ import com.sandy.logisync.data.network.model.ArrestDTO
 import com.sandy.logisync.data.network.model.CriticalPointDTO
 import com.sandy.logisync.data.network.utils.ChildName
 import com.sandy.logisync.data.network.utils.ChildName.TOKEN
+import com.sandy.logisync.data.network.utils.ChildName.USER
 import com.sandy.logisync.data.network.utils.IndexChildCreateUtil
 import java.io.IOException
 import java.time.LocalDateTime
@@ -51,6 +52,8 @@ class MyFirebaseClient @Inject constructor(
             .child(IndexChildCreateUtil.getDayIndexChild())
             .child(IndexChildCreateUtil.getTimeIndexChild(time))
             .setValue(bpm)
+        ref.child(USER).child(id).child(ChildName.LAST_BPM).setValue(bpm)
+        ref.child(USER).child(id).child(ChildName.LAST_BPM_DATETIME).setValue(IndexChildCreateUtil.getTimeIndexChild(time))
         val dataListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -73,11 +76,13 @@ class MyFirebaseClient @Inject constructor(
         lat: Double,
         lng: Double,
         time: LocalDateTime,
+        name: String,
+        tel: String,
         bpm: Int? = null,
         onSuccess: (Boolean) -> Unit,
         onError: (Throwable) -> Unit,
     ) {
-        val arrestDTO = ArrestDTO(id, arrestType, lat, lng, bpm)
+        val arrestDTO = ArrestDTO(id, name, tel, arrestType, lat, lng, bpm)
         val arrestChild = ref.child(ChildName.ARREST)
         arrestChild.child(IndexChildCreateUtil.getTimeSecondsIndexChild(time)).setValue(arrestDTO)
         val dataListener = object : ValueEventListener {

@@ -66,4 +66,7 @@ dependencies {
     // Compose
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))
+
+    // Wearable
+    implementation(libs.bundles.wearable)
 }

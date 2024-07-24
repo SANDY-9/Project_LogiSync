@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.core.desinsystem.common.ButtonLoadingBar
 import com.core.desinsystem.common.addFocusCleaner
 import com.feature.signup.R
 import com.feature.signup.model.InputType
@@ -25,6 +26,7 @@ import com.feature.signup.model.JoiningState
 // 가입
 @Composable
 internal fun Joining(
+    loading: Boolean,
     joining: JoiningState,
     onInputChange: (String, InputType) -> Unit,
     onInputClear: (InputType) -> Unit,
@@ -39,7 +41,7 @@ internal fun Joining(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(20.dp)
             .addFocusCleaner(focusManager)
     ) {
         Column(
@@ -96,15 +98,12 @@ internal fun Joining(
 
         val isSingUpEnabled = joining.isNotValidPwdCheck == false && joining.existedId == false
         Button(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = modifier.fillMaxWidth(),
             enabled = isSingUpEnabled,
             onClick = onSignupComplete,
         ) {
-            Text(
-                text = stringResource(id = R.string.signup_next_step3)
-            )
+            if (loading) ButtonLoadingBar()
+            else Text(text = stringResource(id = R.string.signup_next_step3))
         }
     }
 }

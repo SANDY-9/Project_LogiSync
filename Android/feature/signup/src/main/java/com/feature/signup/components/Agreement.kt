@@ -1,6 +1,7 @@
 package com.feature.signup.components
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
@@ -24,6 +27,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.core.desinsystem.common.ButtonLoadingBar
+import com.core.desinsystem.theme.LogiLightGray
 import com.feature.signup.R
 import com.feature.signup.model.AgreementState
 import com.feature.signup.model.AgreementType
@@ -31,6 +36,7 @@ import com.feature.signup.model.AgreementType
 // 회원가입 약관 동의
 @Composable
 internal fun Agreement(
+    loading: Boolean,
     agreement: AgreementState,
     onCheckChange: (Boolean, AgreementType) -> Unit,
     onContentExpand: (AgreementType) -> Unit,
@@ -42,7 +48,7 @@ internal fun Agreement(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(20.dp)
     ) {
         Column(
             modifier = modifier
@@ -55,7 +61,7 @@ internal fun Agreement(
                 style = MaterialTheme.typography.headlineSmall
             )
 
-            Spacer(modifier = modifier.height(16.dp))
+            Spacer(modifier = modifier.height(30.dp))
 
             AgreeCheckBox(
                 checkState = agreement.isAllChecked,
@@ -90,18 +96,16 @@ internal fun Agreement(
                 },
                 content = stringResource(id = R.string.signup_agree_content),
             )
+            Spacer(modifier = modifier.height(16.dp))
         }
 
         Button(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = modifier.fillMaxWidth(),
             enabled = isAgreeComplete,
             onClick = onComplete,
         ) {
-            Text(
-                text = stringResource(id = R.string.signup_next_step2)
-            )
+            if (loading) ButtonLoadingBar()
+            else Text(text = stringResource(id = R.string.signup_next_step2))
         }
     }
 }
@@ -122,6 +126,7 @@ private fun AgreeCheckBox(
             checked = checkState,
             onCheckedChange = onCheckChange,
         )
+        Spacer(modifier = modifier.width(2.dp))
         Text(
             modifier = modifier.weight(1f),
             text = title,
@@ -161,7 +166,16 @@ private fun AgreeExpandableCheckBox(
             }
         }
         if (expand) {
-            Text(text = content)
+            Text(
+                modifier = modifier
+                    .background(
+                        color = LogiLightGray,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(12.dp),
+                text = content,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }

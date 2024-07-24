@@ -2,6 +2,7 @@ package com.feature.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.core.domain.repository.DevicePrefsRepository
 import com.core.domain.usecases.auth.GetIsExistId
 import com.core.domain.usecases.auth.GetIsExistMember
 import com.core.domain.usecases.auth.RequestSignupUseCase
@@ -11,13 +12,16 @@ import com.feature.signup.model.SignupStep
 import com.feature.signup.model.SignupUiState
 import com.feature.signup.utils.InputValidationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,6 +29,7 @@ class SignupViewModel @Inject constructor(
     private val getIsExistMember: GetIsExistMember,
     private val getIsExistId: GetIsExistId,
     private val requestSignupUseCase: RequestSignupUseCase,
+    private val devicePrefsRepository: DevicePrefsRepository,
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<SignupUiState> = MutableStateFlow(SignupUiState())
@@ -105,14 +110,22 @@ class SignupViewModel @Inject constructor(
     }
 
     internal fun checkSignup() {
-        getIsExistMember(state.check.tel).onEach { exist ->
-            _stateFlow.value = _stateFlow.value.copy(
-                phase = if (exist) state.phase else SignupStep.AGREEMENT,
-                check = state.check.copy(existedId = exist),
-            )
-        }.catch {
-            notifyNetworkError()
-        }.launchIn(viewModelScope)
+        getIsExistMember(state.check.tel)
+            .onStart {
+                _stateFlow.value = state.copy(loading = true)
+            }
+            .onEach { exist ->
+                _stateFlow.value = _stateFlow.value.copy(
+                    loading = false,
+                    phase = if (exist) state.phase else SignupStep.AGREEMENT,
+                    check = state.check.copy(existedId = exist),
+                )
+            }.catch {
+                notifyNetworkError()
+                _stateFlow.value = state.copy(
+                    loading = false,
+                )
+            }.launchIn(viewModelScope)
     }
 
     internal fun agree(checked: Boolean, type: AgreementType) {
@@ -159,9 +172,14 @@ class SignupViewModel @Inject constructor(
     }
 
     internal fun completeAgreement() {
-        _stateFlow.value = state.copy(
-            phase = SignupStep.JOINING
-        )
+        viewModelScope.launch {
+            _stateFlow.value = state.copy(loading = true)
+            delay(700L)
+            _stateFlow.value = state.copy(
+                loading = false,
+                phase = SignupStep.JOINING,
+            )
+        }
     }
 
     internal fun checkId() {
@@ -199,23 +217,32 @@ class SignupViewModel @Inject constructor(
             pwd = state.joining.pwd,
             name = state.check.name,
             tel = state.check.tel,
-        ).onEach {
-            _stateFlow.value = state.copy(signupComplete = true)
+        ).onStart {
+            _stateFlow.value = state.copy(loading = true)
+        }.onEach {
+            _stateFlow.value = state.copy(
+                signupComplete = true,
+                loading = false,
+            )
         }.catch {
             notifyNetworkError()
+            _stateFlow.value = state.copy(
+                loading = false,
+            )
         }.launchIn(viewModelScope)
     }
 
     private fun notifyNetworkError() {
         _stateFlow.update {
-            it.copy(
-                error = true
-            )
+            it.copy(error = true)
         }
         _stateFlow.update {
-            it.copy(
-                error = false
-            )
+            it.copy(error = false)
         }
     }
+
+    internal suspend fun getIsInitialConnect(): Boolean {
+        return devicePrefsRepository.getIsInitialConnect()
+    }
+
 }

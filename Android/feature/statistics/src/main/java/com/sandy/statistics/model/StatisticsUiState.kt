@@ -6,6 +6,7 @@ import java.time.LocalDate
 data class StatisticsUiState(
 
     val id: String = "",
+    val error: Throwable? = null,
 
     // chart
     val chartType: ChartType = ChartType.DAILY,

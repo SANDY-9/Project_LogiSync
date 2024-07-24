@@ -1,5 +1,6 @@
 package com.feature.arrest.details.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,12 +13,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.core.desinsystem.lottie.LottieProgressBarBlue
+import com.core.desinsystem.theme.LogiSemiGray
 import com.feature.arrest.R
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -29,6 +33,8 @@ import com.google.maps.android.compose.rememberMarkerState
 @Composable
 fun ArrestLocationDetails(
     arrestLocation: LatLng,
+    isMapReady: Boolean,
+    onMapLoaded: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -38,16 +44,22 @@ fun ArrestLocationDetails(
     ){
         Text(
             text = stringResource(id = R.string.arrest_details_location_title),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleLarge,
         )
         Spacer(modifier = modifier.height(12.dp))
-        ArrestLocationMap(arrestLocation = arrestLocation)
+        ArrestLocationMap(
+            arrestLocation = arrestLocation,
+            isMapReady = isMapReady,
+            onMapLoaded = onMapLoaded,
+        )
     }
 }
 
 @Composable
 private fun ArrestLocationMap(
     arrestLocation: LatLng,
+    isMapReady: Boolean,
+    onMapLoaded: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val cameraPositionState = rememberCameraPositionState {
@@ -63,10 +75,16 @@ private fun ArrestLocationMap(
             .clip(
                 RoundedCornerShape(16.dp)
             )
+            .border(
+                width = 1.dp,
+                color = LogiSemiGray,
+                shape = RoundedCornerShape(16.dp)
+            )
     ) {
         GoogleMap(
             modifier = modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState
+            cameraPositionState = cameraPositionState,
+            onMapLoaded = onMapLoaded,
         ) {
             Marker(
                 state = markerState,
@@ -74,7 +92,12 @@ private fun ArrestLocationMap(
                 title = "${arrestLocation.latitude}, ${arrestLocation.longitude}",
                 snippet = stringResource(id = R.string.arrest_details_location_arrest),
             )
-            markerState.showInfoWindow()
+            LaunchedEffect(isMapReady) {
+                if(!isMapReady) markerState.showInfoWindow()
+            }
+        }
+        if(!isMapReady) {
+            LottieProgressBarBlue(modifier = modifier.fillMaxSize())
         }
     }
 }
@@ -82,5 +105,5 @@ private fun ArrestLocationMap(
 @Preview(name = "ArrestLocation")
 @Composable
 private fun PreviewArrestLocation() {
-    ArrestLocationDetails(LatLng(36.213, 132.31234))
+    ArrestLocationDetails(LatLng(36.213, 132.31234), true, {})
 }

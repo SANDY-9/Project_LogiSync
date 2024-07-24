@@ -9,7 +9,6 @@ import com.sandy.logisync.data.mapper.toJson
 import com.sandy.logisync.model.Account
 import com.sandy.logisync.model.HeartRate
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -24,13 +23,13 @@ class WearableDataStoreRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getAccount(): Account? {
+    override fun getAccount(): Flow<Account?> {
         return dataStore.getPrefs(
             key = PrefsKeys.ACCOUNT,
             defaultValue = ""
         ).map {
             if (it.isNotBlank()) it.toAccount() else null
-        }.first()
+        }
     }
 
     override suspend fun updateLastHeartRate(heartRate: HeartRate) {

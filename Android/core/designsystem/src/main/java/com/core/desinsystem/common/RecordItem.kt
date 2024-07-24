@@ -37,7 +37,7 @@ fun RecordItemHeartRate(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 20.dp)
     ) {
         Row(
             modifier = modifier
@@ -53,7 +53,8 @@ fun RecordItemHeartRate(
                 Text(
                     text = date,
                     style = MaterialTheme.typography.bodySmall.copy(
-                        fontSize = 11.sp
+                        fontSize = 11.sp,
+                        letterSpacing = (-0.4).sp
                     ),
                     color = Color.Gray,
                 )

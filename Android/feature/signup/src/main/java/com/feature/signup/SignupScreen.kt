@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Icon
@@ -23,7 +24,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.core.model.Account
 import com.core.navigation.Route
 import com.feature.signup.components.Agreement
 import com.feature.signup.components.Check
@@ -39,6 +39,7 @@ private const val NETWORK_ERROR_MESSAGE = "네트워크 연결 상태를 확인�
 @Composable
 fun SignupScreen(
     navController: NavController,
+    onNavigate: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SignupViewModel = hiltViewModel(),
 ) {
@@ -46,9 +47,8 @@ fun SignupScreen(
     val context = LocalContext.current
     LaunchedEffect(state.signupComplete) {
         if (state.signupComplete) {
-            navController.navigate(Route.Onboarding.route) {
-                popUpTo(Route.Signup.route) { inclusive = true }
-            }
+            val isInitialConnect = viewModel.getIsInitialConnect()
+            onNavigate(isInitialConnect)
         }
     }
 
@@ -59,7 +59,7 @@ fun SignupScreen(
     }
 
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize().statusBarsPadding()
     ) {
         SignupTopAppBar(
             onNavigate = { navController.navigateUp() }
@@ -70,6 +70,7 @@ fun SignupScreen(
                 .fillMaxSize()
                 .weight(1f),
             phase = state.phase,
+            loading = state.loading,
             checkState = state.check,
             onInputChange = viewModel::input,
             onInputClear = viewModel::clear,
@@ -111,6 +112,7 @@ private fun SignupTopAppBar(
 @Composable
 private fun SignupPhaseContent(
     phase: SignupStep,
+    loading: Boolean,
     checkState: CheckState,
     onInputChange: (String, InputType) -> Unit,
     onInputClear: (InputType) -> Unit,
@@ -128,6 +130,7 @@ private fun SignupPhaseContent(
     Box(modifier = modifier) {
         when (phase) {
             SignupStep.CHECK -> Check(
+                loading = loading,
                 check = checkState,
                 onInputChange = onInputChange,
                 onInputClear = onInputClear,
@@ -135,6 +138,7 @@ private fun SignupPhaseContent(
             )
 
             SignupStep.AGREEMENT -> Agreement(
+                loading = loading,
                 agreement = agreementState,
                 onCheckChange = onCheckChange,
                 onContentExpand = onContentExpand,
@@ -143,6 +147,7 @@ private fun SignupPhaseContent(
             )
 
             SignupStep.JOINING -> Joining(
+                loading = loading,
                 joining = joiningState,
                 onInputChange = onInputChange,
                 onInputClear = onInputClear,
@@ -152,9 +157,4 @@ private fun SignupPhaseContent(
             )
         }
     }
-}
-@Composable
-@Preview(name = "Signup")
-private fun SignupScreenPreview() {
-    SignupScreen(rememberNavController())
 }

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Notifications
@@ -28,12 +30,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.core.desinsystem.common.MySearchTextField
+import com.core.desinsystem.common.NetworkError
 import com.core.desinsystem.common.addFocusCleaner
+import com.core.desinsystem.lottie.LottieProgressBarBlue
+import com.core.desinsystem.theme.LogiBlue
 import com.core.navigation.Args
 import com.core.navigation.Route
 import com.feature.admin.components.UserFilter
 import com.feature.admin.components.UserList
-import com.feature.admin.components.UserSearchField
 
 @Composable
 fun AdminScreen(
@@ -47,43 +52,56 @@ fun AdminScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .systemBarsPadding()
             .addFocusCleaner(focusManager)
     ) {
-        AdminAppBar()
+        AdminAppBar(onNavigateArrest = { navController.navigate(Route.ArrestAdmin.route) })
+        if(state.error != null) NetworkError(modifier = modifier.fillMaxSize())
         Spacer(modifier = modifier.height(4.dp))
-        UserSearchField(
+        MySearchTextField(
             query = state.query,
             onQueryChange = viewModel::inputQuery,
             onQueryClear = viewModel::clearQuery,
             onSearch = viewModel::requestSearch,
             focusManager = focusManager,
+            hint = stringResource(id = R.string.admin_search_hint)
         )
         UserFilter(
             allFilterSelected = state.allFilterSelected,
             onSelectAllFilter = viewModel::getAllMemberList,
+            heartRateFilterSelected = state.heartFilterSelected,
+            onSelectHeartRateFilter = viewModel::getHeartRateMemberList,
             dangerFilterSelected = state.dangerFilterSelected,
             onSelectDangerFilter = viewModel::getDangerMemberList,
             onRefreshList = viewModel::refreshMemberList,
         )
-        if(state.filteredUserList.isEmpty()) {
-            EmptyUser()
+        if(state.loading) {
+            LottieProgressBarBlue(modifier = modifier
+                .fillMaxSize()
+                .weight(1f))
         }
         else {
-            UserList(
-                userList = state.filteredUserList,
-                onItemClick = { user ->
-                    navController.run {
-                        currentBackStackEntry?.savedStateHandle?.set(Args.USER, user)
-                        navigate(Route.UserDetails.route)
+            if(state.filteredUserList.isEmpty()) {
+                EmptyUser()
+            }
+            else {
+                UserList(
+                    userList = state.filteredUserList,
+                    onItemClick = { user ->
+                        navController.run {
+                            currentBackStackEntry?.savedStateHandle?.set(Args.USER, user)
+                            navigate(Route.UserDetails.route)
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun AdminAppBar(
+    onNavigateArrest: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -94,20 +112,21 @@ private fun AdminAppBar(
     ) {
 
         Text(
-            modifier = modifier.padding(start = 16.dp),
+            modifier = modifier.padding(start = 20.dp),
             text = stringResource(id = R.string.admin_menu_title),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleLarge,
         )
 
         Spacer(modifier = modifier.weight(1f))
 
         IconButton(
             modifier = modifier
-                .padding(end = 4.dp, top = 8.dp),
-            onClick = {}
+                .padding(end = 4.dp, top = 13.dp),
+            onClick = onNavigateArrest,
         ) {
             Icon(
                 imageVector = Icons.Rounded.Notifications,
+                tint = LogiBlue,
                 contentDescription = null
             )
         }
@@ -124,14 +143,15 @@ private fun EmptyUser(
         verticalArrangement = Arrangement.Center,
     ) {
         Icon(
+            modifier = modifier.size(20.dp),
             imageVector = Icons.Rounded.Info,
             contentDescription = null,
             tint = Color.Gray,
         )
-        Spacer(modifier = modifier.height(8.dp))
+        Spacer(modifier = modifier.height(4.dp))
         Text(
             text = stringResource(id = R.string.admin_search_result_empty),
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray
         )
     }

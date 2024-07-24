@@ -7,14 +7,13 @@ import com.google.android.gms.wearable.WearableListenerService
 import com.sandy.logisync.data.datastore.WearableDataStoreRepository
 import com.sandy.logisync.data.wearable.MessageResponse
 import com.sandy.logisync.data.wearable.WearableTranscriptionRepository
-import com.sandy.logisync.domain.MeasureHeatRateUseCase
 import com.sandy.logisync.presentation.ui.MainActivity
 import com.sandy.logisync.wearable.message.MessagePath
-import com.sandy.logisync.wearable.message.TranscriptionPath
 import com.sandy.logisync.workmanager.HeartRateMeasureWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import javax.inject.Inject
@@ -26,8 +25,6 @@ class MyWearableListenerService : WearableListenerService() {
     lateinit var wearableDataStoreRepository: WearableDataStoreRepository
     @Inject
     lateinit var wearableTranscriptionRepository: WearableTranscriptionRepository
-    @Inject
-    lateinit var measureHeatRateUseCase: MeasureHeatRateUseCase
 
     // 노드에서 전송된 메시지가 타겟 노드에서 이 콜백을 트리거
     override fun onMessageReceived(p0: MessageEvent) {
@@ -39,9 +36,8 @@ class MyWearableListenerService : WearableListenerService() {
     }
 
     private fun login(accountData: String) {
-        Log.i("[WEARABLE-MOBILE]", "login: $accountData", )
         CoroutineScope(Dispatchers.IO).launch {
-            val existAccount = wearableDataStoreRepository.getAccount()
+            val existAccount = wearableDataStoreRepository.getAccount().first()
             if (existAccount == null) {
                 wearableDataStoreRepository.registerAccount(accountData)
             }
@@ -60,7 +56,7 @@ class MyWearableListenerService : WearableListenerService() {
     private fun collectHeartRate(id: String) {
         Log.i("[WEARABLE-MOBILE]", "collectHeartRate: $id", )
         CoroutineScope(Dispatchers.IO).launch {
-            val account = wearableDataStoreRepository.getAccount()
+            val account = wearableDataStoreRepository.getAccount().first()
             account?.let {
                 if(it.id == id) {
                     launch(Dispatchers.Main) { turnOnApp() }
@@ -72,7 +68,8 @@ class MyWearableListenerService : WearableListenerService() {
 
     private fun turnOnApp() {
         val intent = Intent(this@MyWearableListenerService, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("HEART_RATE_COLLECT", true)
         }
         startActivity(intent)
     }

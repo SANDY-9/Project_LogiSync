@@ -39,7 +39,12 @@ class ArrestDetailsViewModel @Inject constructor(
             }
         }.catch {
             Log.e("[GET_USER]", "$it", )
+            _stateFlow.value = state.copy(error = it)
         }.launchIn(viewModelScope)
+    }
+
+    fun readyMap() {
+        _stateFlow.update { it.copy(mapReady = true) }
     }
 
 

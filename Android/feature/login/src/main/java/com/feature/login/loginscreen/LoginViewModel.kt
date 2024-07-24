@@ -1,8 +1,10 @@
 package com.feature.login.loginscreen
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.core.domain.repository.DevicePrefsRepository
+import com.core.domain.usecases.auth.GetEnableBioLoginUseCase
+import com.core.domain.usecases.auth.RequestBioLoginUseCase
 import com.core.domain.usecases.auth.RequestLoginUseCase
 import com.feature.login.loginscreen.model.LoginError
 import com.feature.login.loginscreen.model.LoginUiState
@@ -13,18 +15,29 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val requestLoginUseCase: RequestLoginUseCase,
+    private val devicePrefsRepository: DevicePrefsRepository,
+    private val requestBioLoginUseCase: RequestBioLoginUseCase,
+    private val getEnableBioLoginUseCase: GetEnableBioLoginUseCase,
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<LoginUiState> = MutableStateFlow(LoginUiState())
     internal val stateFlow: StateFlow<LoginUiState> get() = _stateFlow
 
     private val state get() = stateFlow.value
+
+    init {
+        viewModelScope.launch {
+            _stateFlow.value = state.copy(
+                bioLoginId = getEnableBioLoginUseCase()
+            )
+        }
+    }
 
     internal fun inputId(input: String) {
         _stateFlow.value = state.copy(
@@ -64,7 +77,6 @@ class LoginViewModel @Inject constructor(
             )
         }.catch { e ->
             when(e.message) {
-                LoginError.EMPTY_ID_OR_PWD.name -> updateLoginState(false, LoginError.EMPTY_ID_OR_PWD)
                 LoginError.WRONG_ID_OR_PWD.name -> updateLoginState(false, LoginError.WRONG_ID_OR_PWD)
                 else -> updateLoginState(false, LoginError.NETWORK_ERROR)
             }
@@ -78,6 +90,27 @@ class LoginViewModel @Inject constructor(
         )
     }
 
+    internal suspend fun getIsInitialConnect(): Boolean {
+        return devicePrefsRepository.getIsInitialConnect()
+    }
+
     fun requestBioLogin() {
+        state.bioLoginId?.let { id ->
+            requestBioLoginUseCase(id).onStart {
+                updateLoginState(isLoading = true, error = LoginError.NONE)
+            }.onEach { account ->
+                _stateFlow.value = state.copy(
+                    account = account,
+                    isLoading = false,
+                    error = LoginError.NONE,
+                )
+            }.catch { e ->
+                when(e.message) {
+                    LoginError.WRONG_ID_OR_PWD.name -> updateLoginState(false, LoginError.WRONG_ID_OR_PWD)
+                    else -> updateLoginState(false, LoginError.NETWORK_ERROR)
+                }
+            }.launchIn(viewModelScope)
+        }
+
     }
 }

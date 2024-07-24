@@ -1,9 +1,11 @@
 package com.feature.home.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.MaterialTheme
@@ -25,7 +27,14 @@ internal fun ReportInfo(
     onAllReport: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier.fillMaxWidth().padding(
+            top = 16.dp,
+            start = 20.dp,
+            end = 20.dp,
+            bottom = 4.dp
+        )
+    ) {
         ReportTitle(onAllReport = onAllReport)
         Spacer(modifier = modifier.size(12.dp))
         if(emptyReport) {
@@ -44,14 +53,14 @@ private fun ReportTitle(
     ) {
         Text(
             text = stringResource(id = R.string.home_report_title),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleLarge,
         )
         Spacer(modifier = modifier.weight(1f))
         Text(
             modifier = modifier.noRippleClickable(onClick = onAllReport),
             text = stringResource(id = R.string.home_report_all),
-            style = MaterialTheme.typography.labelMedium,
-            color = Color.Gray,
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.DarkGray,
         )
     }
 }
@@ -64,6 +73,7 @@ private fun EmptyReport(
         Text(
             modifier = modifier.align(Alignment.CenterHorizontally),
             text = stringResource(id = R.string.home_report_empty),
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }

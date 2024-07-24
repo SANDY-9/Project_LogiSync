@@ -22,8 +22,9 @@
     <string name="onboard_connect_watch_fail">현재 연결할 수 있는 갤럭시 워치가 없습니다.\n스마트폰과 갤럭시 워치를 페어링 해주세요.</string>
 
     <!-- app pairing -->
-    <string name="onboard_connect_app">갤럭시 워치에 LogiSyncWear 앱이 설치되어 있는지 확인합니다.</string>
-    <string name="onboard_connect_app_success">LogiSyncWear앱이 설치 되어 있습니다.\n서비스 연동을 시작합니다.</string>
-    <string name="onboard_connect_app_fail">LogiSyncWear앱이 설치 되어 있지 않습니다.\n서비스 연동을 위해 앱을 설치해주세요.</string>
+    <string name="onboard_connect_app">갤럭시 워치에 LogiSync 앱이 설치되어\n있는지 확인합니다.</string>
+    <string name="onboard_connect_app_success">LogiSync앱이 설치 되어 있습니다.\n서비스 연동을 시작합니다.</string>
+    <string name="onboard_connect_app_fail1">LogiSync앱이 설치 되어 있지 않습니다.</string>
+    <string name="onboard_connect_app_fail2">워치와 휴대 전화의 페어링 상태를 확인한 후,\n서비스 연동을 위해 워치에 앱을 설치해주세요.</string>
 
 </resources>

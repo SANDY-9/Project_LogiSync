@@ -9,12 +9,16 @@ import com.core.navigation.Route
 import com.feature.admin.AdminScreen
 import com.feature.admin.details.UserDetailsScreen
 import com.feature.arrest.ArrestScreen
+import com.feature.arrest.admin.ArrestAdminDetailsScreen
+import com.feature.arrest.admin.ArrestAdminScreen
 import com.feature.arrest.details.ArrestDetailsScreen
 import com.feature.home.HomeScreen
 import com.feature.login.loginscreen.LoginScreen
 import com.feature.onboard.OnboardingScreen
+import com.feature.other.OtherScreen
 import com.feature.signup.SignupScreen
 import com.sandy.statistics.StatisticsScreen
+import com.sandy.statistics.admin.StatisticsAdminScreen
 
 @Composable
 fun MainNavGraph(
@@ -23,6 +27,7 @@ fun MainNavGraph(
     modifier: Modifier = Modifier,
 ) {
     NavHost(
+        modifier = modifier,
         navController = navController,
         startDestination = startDestination,
     ) {
@@ -31,12 +36,18 @@ fun MainNavGraph(
         ) {
             LoginScreen(
                 navController = navController,
-                onLogin = { account ->
-                    navController.navigate(Route.Onboarding.route) {
-                        popUpTo(Route.Login.route) { inclusive = true }
+                onLogin = { isInitialConnect ->
+                    if(!isInitialConnect) {
+                        navController.navigate(Route.Onboarding.route) {
+                            popUpTo(Route.Login.route) { inclusive = true }
+                        }
+                    }
+                    else {
+                        navController.navigate(Route.Home.route) {
+                            popUpTo(Route.Login.route) { inclusive = true }
+                        }
                     }
                 },
-                modifier = modifier,
             )
         }
         composable(
@@ -44,6 +55,18 @@ fun MainNavGraph(
         ) {
             SignupScreen(
                 navController = navController,
+                onNavigate = { isInitialConnect ->
+                    if(!isInitialConnect) {
+                        navController.navigate(Route.Onboarding.route) {
+                            popUpTo(Route.Signup.route) { inclusive = true }
+                        }
+                    }
+                    else {
+                        navController.navigate(Route.Home.route) {
+                            popUpTo(Route.Signup.route) { inclusive = true }
+                        }
+                    }
+                }
             )
         }
         composable(
@@ -99,9 +122,33 @@ fun MainNavGraph(
         }
 
         composable(
+            route = Route.ArrestAdmin.route,
+        ) {
+            ArrestAdminScreen(
+                navController = navController
+            )
+        }
+
+        composable(
             route = Route.UserDetails.route,
         ) {
             UserDetailsScreen(
+                navController = navController
+            )
+        }
+
+        composable(
+            route = Route.StatisticsAdmin.route,
+        ) {
+            StatisticsAdminScreen(
+                navController = navController
+            )
+        }
+
+        composable(
+            route = Route.ArrestAdminDetails.route,
+        ) {
+            ArrestAdminDetailsScreen(
                 navController = navController
             )
         }

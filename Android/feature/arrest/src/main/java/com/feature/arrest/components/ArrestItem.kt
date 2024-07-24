@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.Icon
@@ -67,14 +68,15 @@ internal fun EmptyArrestItem(
         verticalArrangement = Arrangement.Center,
     ) {
         Icon(
+            modifier = modifier.size(20.dp),
             imageVector = Icons.Rounded.Info,
             contentDescription = null,
             tint = Color.Gray,
         )
-        Spacer(modifier = modifier.height(8.dp))
+        Spacer(modifier = modifier.height(4.dp))
         Text(
             text = stringResource(id = R.string.arrest_empty),
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray
         )
     }

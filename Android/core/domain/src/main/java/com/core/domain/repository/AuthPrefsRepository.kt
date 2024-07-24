@@ -8,4 +8,7 @@ interface AuthPrefsRepository {
     suspend fun updateAccount(account: Account)
     fun getAccount(): Flow<Account?>
     suspend fun logoutAccount()
+
+    suspend fun getFingerPrint(): String?
+    suspend fun registerFingerPrint(id: String)
 }

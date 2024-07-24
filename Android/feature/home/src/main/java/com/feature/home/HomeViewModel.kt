@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usecases.network.GetLastHeartRateUseCase
 import com.core.domain.usecases.network.GetLastMyArrestUseCase
-import com.core.domain.usecases.prefs.GetAccountUseCase
 import com.core.domain.usecases.prefs.GetLastPairedDeviceUseCase
 import com.core.domain.usecases.wearable.CollectHeartRateUseCase
 import com.core.domain.usecases.wearable.GetWearableConnectStateUseCase
+import com.core.domain.usecases.wearable.LoginWearableUseCase
 import com.feature.home.model.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -24,17 +24,20 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getWearableConnectStateUseCase: GetWearableConnectStateUseCase,
     private val getLastPairedDeviceUseCase: GetLastPairedDeviceUseCase,
-    getAccountUseCase: GetAccountUseCase,
     private val collectHeartRateUseCase: CollectHeartRateUseCase,
     private val getLastHeartRateUseCase: GetLastHeartRateUseCase,
     private val getLastMyArrestUseCase: GetLastMyArrestUseCase,
+    loginWearableUseCase: LoginWearableUseCase,
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<HomeUiState> = MutableStateFlow(HomeUiState())
@@ -45,47 +48,34 @@ class HomeViewModel @Inject constructor(
 
     init {
         @Suppress("OPT_IN_USAGE")
-        getAccountUseCase().flatMapLatest{ account ->
+        loginWearableUseCase().flatMapLatest { account ->
             account?.let {
                 _stateFlow.update { state -> state.copy(account = it) }
                 combine(
                     getLastHeartRateUseCase(it.id),
                     getLastMyArrestUseCase(it.id)
                 ) { heartRate, arrest ->
-                    Log.e("확인", "$heartRate: $arrest", )
                     state.copy(
-                        heartRate = heartRate,
-                        reportList = arrest,
-                        emptyReport = arrest.isEmpty(),
-                    )
-                }
-            }
-            ?: flowOf(null)
-        }
-            .onEach { state ->
-                state?.let {
-                    _stateFlow.value = it
-                }
-            }
-            .launchIn(viewModelScope)
-
-        combine(
-            getLastHeartRateUseCase("nal0256"),
-            getLastMyArrestUseCase("nal0256")
-        ) { heartRate, arrest ->
-            Log.e("확인", "$heartRate: $arrest", )
-            state.copy(
-                heartRate = heartRate,
-                reportList = arrest,
-                emptyReport = arrest.isEmpty(),
-            )
-        }
-            .onEach { state ->
-                state?.let {
-                    _stateFlow.value = it
-                }
-            }
-            .launchIn(viewModelScope)
+                         heartRate = heartRate,
+                         reportList = arrest,
+                         emptyReport = arrest.isEmpty(),
+                         loading = false,
+                        )
+                    }
+                } ?: flowOf(null)
+                    }.onStart {
+                     _stateFlow.value = state.copy(loading = true)
+                    }
+                    .onEach { state ->
+                        state?.let { _stateFlow.value = it }
+                    }.catch {
+                        _stateFlow.value = state.copy(
+                            loading = false,
+                            error = Error(it)
+                        )
+                    }
+                    .timeout(10.seconds)
+                    .launchIn(viewModelScope)
 
         monitorWearableConnectState()
     }
@@ -96,7 +86,7 @@ class HomeViewModel @Inject constructor(
             getLastPairedDeviceUseCase(),
         ) { pairedWatch, pairedDevice ->
             _stateFlow.value.copy(
-                isPairedWatch = pairedWatch != null,
+                isPairedWatch = pairedWatch,
                 pairedDeviceName = pairedDevice?.alias ?: ""
             )
         }.onEach {
@@ -104,13 +94,21 @@ class HomeViewModel @Inject constructor(
         }.launchIn(scope!!)
     }
 
-    fun requestCollectHeartBeat() {
+    private var savedCheck: Boolean? = null
+    internal fun checkWearableLogin(result: Boolean) {
+        if(savedCheck == null) savedCheck = result else return
+        _stateFlow.value = state.copy(checkWearable = result)
+    }
+
+    internal fun requestCollectHeartBeat() {
         state.account?.let {
+            _stateFlow.value = state.copy(heartRateLoading = true)
             flow {
                 emit(collectHeartRateUseCase(it.id))
             }.catch {
                 Log.e("확인", "requestCollectHeartBeat: $it")
             }.launchIn(viewModelScope)
+                .invokeOnCompletion { _stateFlow.value = state.copy(heartRateLoading = false) }
         }
     }
 

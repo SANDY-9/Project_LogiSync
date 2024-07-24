@@ -1,6 +1,5 @@
 package com.core.firebase
 
-import android.util.Log
 import com.core.firebase.common.Constants.CRITICAL_POINT
 import com.core.firebase.common.Constants.HEART_RATE
 import com.core.firebase.common.Constants.MAX_CRITICAL_POINT
@@ -70,7 +69,6 @@ class HeartRateClient @Inject constructor(
                 }
             }
             val result = if(list.size > 6) list.slice(0..4) else listOf()
-            Log.e("확인", "getLastHeartRateList: ${list.size}", )
             onSuccess(result)
         }.addOnFailureListener {
             onError(it)
@@ -139,5 +137,30 @@ class HeartRateClient @Inject constructor(
             MIN_CRITICAL_POINT to min,
         )
         ref.child(USERS).child(id).child(CRITICAL_POINT).setValue(map)
+    }
+
+    fun updateHeartRateCriticalPoint(
+        id: String,
+        min: Int = MIN_HEART_RATE,
+        max: Int = MAX_HEART_RATE,
+        onSuccess: (Boolean) -> Unit,
+        onError: (Throwable) -> Unit,
+    ) {
+        val map = mapOf(
+            MAX_CRITICAL_POINT to max,
+            MIN_CRITICAL_POINT to min,
+        )
+        val criticalPointChild = ref.child(USERS).child(id).child(CRITICAL_POINT)
+        criticalPointChild.setValue(map)
+        criticalPointChild.addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    onSuccess(snapshot.exists())
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    onError(error.toException())
+                }
+            }
+        )
     }
 }

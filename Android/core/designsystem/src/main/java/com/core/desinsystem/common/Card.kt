@@ -22,6 +22,29 @@ import com.core.desinsystem.theme.LogiLightGray
 @Composable
 fun LogiCard(
     modifier: Modifier = Modifier,
+    content: @Composable (ColumnScope.() -> Unit),
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = LogiLightGray,
+        ),
+        content = {
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp, horizontal = 24.dp)
+            ) {
+                content()
+            }
+        }
+    )
+}
+
+@Composable
+fun LogiCardClickable(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     content: @Composable (ColumnScope.() -> Unit),
 ) {
