@@ -12,7 +12,7 @@ class GetMyArrestListUseCase @Inject constructor(
 ) {
     operator fun invoke(id: String): Flow<Map<LocalDate, List<Arrest>>> {
         return getArrestRepository.getMyArrestList(id).map {
-            it.toSortedMap()
+            it.toSortedMap(compareByDescending { it })
         }
     }
 }
