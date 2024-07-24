@@ -19,6 +19,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.timeout
+import kotlin.time.Duration.Companion.seconds
 
 @HiltWorker
 class HeartRateMeasureWorker @AssistedInject constructor(
@@ -50,7 +52,7 @@ class HeartRateMeasureWorker @AssistedInject constructor(
                     id = it.id,
                     name = it.name,
                     tel = it.tel
-                )
+                ).timeout(40.seconds)
                     .catch {
                         Log.e("[HEART_RATE_ERROR]", "${it.message}")
                         releaseWakeLock()

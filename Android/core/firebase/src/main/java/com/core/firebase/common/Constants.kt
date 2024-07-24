@@ -11,7 +11,7 @@ internal object Constants {
     const val USERS = "users"
     const val HEART_RATE = "heart_rate"
     const val TOKEN = "token"
-    const val ARREST = "arrest"
+    const val ARREST = "arrest"  // FCM Topic
     const val ID = "id"
     const val TEAM = "team"
 
@@ -21,5 +21,6 @@ internal object Constants {
     const val MIN_CRITICAL_POINT = "min_heart_rate"
     const val MAX_HEART_RATE = 100
     const val MIN_HEART_RATE = 60
+
 
 }

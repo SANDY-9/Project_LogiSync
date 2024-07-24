@@ -91,7 +91,12 @@ class MeasureHeatRateUseCase @Inject constructor(
         // 신고 서버 저장
         updateArrestToServer(id, name, tel, arrestType, location, bpm)
         // 신고 푸시 알림
-        networkRepository.notifyArrest(id).first()
+        coroutineScope {
+            networkRepository.notifyArrest(id, name, tel, arrestType, location).first()
+        }
+        coroutineScope {
+            networkRepository.notifyMyArrest(id, name, tel, arrestType, location).first()
+        }
     }
 
     private suspend fun updateArrestToServer(

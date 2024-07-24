@@ -1,5 +1,7 @@
 package com.sandy.logisync.presentation.ui.screens
 
+import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -24,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
@@ -58,45 +62,49 @@ fun WatchScreen(
     onArrest: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (!initialPaired) {
-        NotInitialPairedScreen()
-    }
-    else {
-        val listState = rememberScalingLazyListState()
-        Scaffold(
-            timeText = {
-                TimeText(modifier = modifier.scrollAway(listState))
-            },
-            positionIndicator = {
-                PositionIndicator(
-                    scalingLazyListState = listState,
-                )
-            }
-        ) {
-            if (collectLoading) {
-                HeartRateCollecting()
-            }
-            else {
-                WatchScreenContent(
-                    listState = listState,
-                    account = account,
-                    heartRate = heartRate,
-                    onCollect = onCollect,
-                    onArrest = onArrest,
-                )
-            }
-        }
-    }
     var initialCompose by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
-        delay(1000)
+        delay(700)
         initialCompose = true
     }
     if(!initialCompose) {
-        Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
+        Box(modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)) {
             CircularProgressIndicator(
                 modifier = modifier.align(Alignment.Center)
             )
+        }
+    }
+    else {
+        if (!initialPaired) {
+            NotInitialPairedScreen()
+        }
+        else {
+            val listState = rememberScalingLazyListState()
+            Scaffold(
+                timeText = {
+                    TimeText(modifier = modifier.scrollAway(listState))
+                },
+                positionIndicator = {
+                    PositionIndicator(
+                        scalingLazyListState = listState,
+                    )
+                }
+            ) {
+                if (collectLoading) {
+                    HeartRateCollecting()
+                }
+                else {
+                    WatchScreenContent(
+                        listState = listState,
+                        account = account,
+                        heartRate = heartRate,
+                        onCollect = onCollect,
+                        onArrest = onArrest,
+                    )
+                }
+            }
         }
     }
 }
@@ -111,6 +119,13 @@ private fun WatchScreenContent(
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
+    var arrestTrigger by remember { mutableStateOf(false) }
+    LaunchedEffect(arrestTrigger) {
+        if(arrestTrigger) {
+            delay(500)
+            arrestTrigger = false
+        }
+    }
     ScalingLazyColumn(
         modifier = modifier.fillMaxSize(),
         state = listState,
@@ -152,7 +167,9 @@ private fun WatchScreenContent(
             }
         }
         item {
-            Column {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 Button(
                     modifier = modifier.fillMaxWidth(),
                     onClick = {
@@ -174,7 +191,10 @@ private fun WatchScreenContent(
                 Spacer(modifier = modifier.height(8.dp))
                 Button(
                     modifier = modifier.fillMaxWidth(),
-                    onClick = onArrest,
+                    onClick = {
+                        onArrest()
+                        arrestTrigger = true
+                    },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = BackgroundDeem,
                         contentColor = Color.White,
@@ -185,8 +205,16 @@ private fun WatchScreenContent(
                         style = MaterialTheme.typography.body1,
                     )
                 }
+                AnimatedVisibility(
+                    visible = arrestTrigger,
+                ) {
+                    Text(
+                        modifier = modifier.padding(top = 4.dp),
+                        text = "신고 완료했습니다.",
+                        style = MaterialTheme.typography.caption2,
+                    )
+                }
             }
         }
-
     }
 }

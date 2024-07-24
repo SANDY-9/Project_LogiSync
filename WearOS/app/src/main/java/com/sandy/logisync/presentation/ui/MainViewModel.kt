@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sandy.logisync.data.datastore.WearableDataStoreRepository
 import com.sandy.logisync.domain.RequestNormalArrestUseCase
+import com.sandy.logisync.domain.RequestNormalMyArrestUseCase
 import com.sandy.logisync.model.Account
 import com.sandy.logisync.workmanager.HeartRateMeasureWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val wearableDataStoreRepository: WearableDataStoreRepository,
     private val requestNormalArrestUseCase: RequestNormalArrestUseCase,
+    private val requestNormalMyArrestUseCase: RequestNormalMyArrestUseCase,
     application: Application,
 ) : AndroidViewModel(application) {
 
@@ -81,10 +83,19 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             val account = wearableDataStoreRepository.getAccount().first()
             account?.let {
-                requestNormalArrestUseCase(it.id, it.name, it.tel).catch {
-                    Log.e("[REQUEST_ARREST]", "$it : ${it.message}")
-                }.collectLatest {
-                    Log.i("[REQUEST_ARREST]", "$it")
+                launch {
+                    requestNormalArrestUseCase(it.id, it.name, it.tel).catch {
+                        Log.e("[REQUEST_ARREST]", "$it : ${it.message}")
+                    }.collectLatest {
+                        Log.i("[REQUEST_ARREST]", "$it")
+                    }
+                }
+                launch {
+                    requestNormalMyArrestUseCase(it.id, it.name, it.tel).catch {
+                        Log.e("[REQUEST_ARREST]", "$it : ${it.message}")
+                    }.collectLatest {
+                        Log.i("[REQUEST_ARREST]", "$it")
+                    }
                 }
             }
         }

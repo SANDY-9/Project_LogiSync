@@ -33,6 +33,7 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
     }
 
     private fun monitorHeartRate() {
+        Log.e("[MONITORING]", "monitorHeartRate")
         HeartRateMeasureWorker.enqueueWorker(context)
     }
 
@@ -60,7 +61,7 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
             val nextMonitoringTime = getNextMonitoringTime()
             val currentTime = LocalDateTime.now()
             val delay = Duration.between(currentTime, nextMonitoringTime)
-            Log.e("확인", "getNextMonitoringDelay: $nextMonitoringTime")
+            Log.e("[MONITORING]", "getNextMonitoringDelay: $nextMonitoringTime")
             return delay
         }
 

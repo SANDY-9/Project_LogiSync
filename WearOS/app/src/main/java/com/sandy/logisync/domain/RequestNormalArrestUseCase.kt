@@ -15,7 +15,6 @@ class RequestNormalArrestUseCase @Inject constructor (
     private val networkRepository: NetworkRepository,
     private val locationRepository: LocationRepository,
 ) {
-
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(
         id: String,
@@ -24,7 +23,7 @@ class RequestNormalArrestUseCase @Inject constructor (
     ): Flow<String?> {
         return locationRepository.getLastLocation().flatMapLatest { location ->
             updateArrestToServer(id, name, tel, location)
-            networkRepository.notifyArrest(id)
+            networkRepository.notifyArrest(id, name, tel, Arrest.ArrestType.NORMAL, location)
         }
     }
     private suspend fun updateArrestToServer(

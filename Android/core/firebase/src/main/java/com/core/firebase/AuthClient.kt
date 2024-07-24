@@ -1,5 +1,6 @@
 package com.core.firebase
 
+import android.util.Log
 import com.core.firebase.common.Constants.TEAM
 import com.core.firebase.common.Constants.TEL
 import com.core.firebase.common.Constants.USERS
@@ -42,7 +43,9 @@ class AuthClient @Inject constructor(
             val signupAccount = account.copy(
                 duty = if(snapshot.exists()) User.Duty.NORMAL.name else User.Duty.ADMIN.name
             )
-            user.child(id).setValue(account)
+            Log.e("확인", "signup: ${snapshot.exists()}", )
+            Log.e("확인", "signup: $signupAccount", )
+            user.child(id).setValue(signupAccount)
 
             // FCM토큰 등록
             CoroutineScope(Dispatchers.IO).launch {
@@ -52,6 +55,15 @@ class AuthClient @Inject constructor(
                     onError = { },
                 )
             }
+
+            // FCM 구독
+            if(signupAccount.duty == User.Duty.ADMIN.name) {
+                messagingClient.subscribeToArrestTopic()
+            }
+            else {
+                messagingClient.unsubscribeToArrestTopic()
+            }
+
             // 심박수 임계치 등록
             CoroutineScope(Dispatchers.IO).launch {
                 heartRateClient.updateHeartRateCriticalPoint(id)
@@ -61,10 +73,6 @@ class AuthClient @Inject constructor(
         }.addOnFailureListener {
             onError(it)
         }
-    }
-
-    fun updateDuty() {
-
     }
 
     fun checkTel(
@@ -110,6 +118,14 @@ class AuthClient @Inject constructor(
                             onSuccess = { onLogin(account.toAccount(id)) },
                             onError = { e -> onError(e) },
                         )
+                    }
+
+                    // FCM 구독
+                    if(account.duty == User.Duty.ADMIN.name) {
+                        messagingClient.subscribeToArrestTopic()
+                    }
+                    else {
+                        messagingClient.unsubscribeToArrestTopic()
                     }
                     onLogin(account.toAccount(id))
                 }

@@ -9,6 +9,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -128,16 +129,100 @@ class NetworkRepositoryImpl @Inject constructor(
         awaitClose()
     }.flowOn(Dispatchers.IO)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun notifyArrest(id: String): Flow<String?> {
+    override suspend fun notifyArrest(
+        id: String,
+        name: String,
+        tel: String,
+        arrestType: ArrestType,
+        location: Location,
+    ): Flow<String?> {
         val time = LocalDateTime.now()
         return withContext(Dispatchers.IO)  {
-            getToken(id).flatMapLatest { token ->
-                messagingClient.sendArrestMessage(token, id, time).map {
-                    it.body?.string()
-                }
+            messagingClient.sendArrestMessage(
+                id = id,
+                time = time,
+                lat = location.latitude,
+                lng = location.longitude,
+                name = name,
+                tel = tel,
+                arrestType = arrestType,
+            ).map {
+                it.body?.string()
             }.flowOn(Dispatchers.IO)
         }
     }
 
+    override suspend fun notifyMyArrest(
+        id: String,
+        name: String,
+        tel: String,
+        arrestType: ArrestType,
+        location: Location
+    ): Flow<String?> {
+        val time = LocalDateTime.now()
+        return getToken(id).flatMapLatest { token ->
+            messagingClient.sendMyArrestMessage(
+                token = token,
+                id = id,
+                time = time,
+                lat = location.latitude,
+                lng = location.longitude,
+                name = name,
+                tel = tel,
+                arrestType = arrestType,
+            ).map {
+                it.body?.string()
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun notifyWarning(
+        id: String,
+        name: String,
+        tel: String,
+        arrestType: ArrestType,
+        location: Location,
+        bpm: Int,
+    ): Flow<String?> {
+        val time = LocalDateTime.now()
+        return withContext(Dispatchers.IO)  {
+            messagingClient.sendWarningMessage(
+                id = id,
+                bpm = bpm,
+                time = time,
+                lat = location.latitude,
+                lng = location.longitude,
+                name = name,
+                tel = tel,
+                arrestType = arrestType,
+            ).map {
+                it.body?.string()
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+    override suspend fun notifyMyWarning(
+        id: String,
+        name: String,
+        tel: String,
+        arrestType: ArrestType,
+        location: Location,
+        bpm: Int
+    ): Flow<String?> {
+        val time = LocalDateTime.now()
+        return getToken(id).flatMapLatest { token ->
+            messagingClient.sendMyWarningMessage(
+                token = token,
+                id = id,
+                bpm = bpm,
+                time = time,
+                lat = location.latitude,
+                lng = location.longitude,
+                name = name,
+                tel = tel,
+                arrestType = arrestType,
+            ).map {
+                it.body?.string()
+            }
+        }.flowOn(Dispatchers.IO)
+    }
 }
