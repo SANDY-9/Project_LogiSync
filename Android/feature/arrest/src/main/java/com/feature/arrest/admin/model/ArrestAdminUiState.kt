@@ -7,6 +7,7 @@ import java.time.LocalDate
 internal data class ArrestAdminUiState(
 
     val loading: Boolean = false,
+    val error: Throwable? = null,
 
     // data
     val arrestList: Map<LocalDate, List<Arrest>> = emptyMap(),

@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.BoxLayout
+import com.core.desinsystem.common.NetworkError
 import com.core.desinsystem.lottie.LottieProgressBarBlue
 import com.core.model.Account
 import com.core.model.Arrest
@@ -89,6 +90,7 @@ fun HomeScreen(
             )
             HomeAppBar(state.date, state.account)
         }
+        if(state.error != null) NetworkError(modifier = modifier.fillMaxSize())
         if(!state.loading) {
             HomeContent(
                 state = state,

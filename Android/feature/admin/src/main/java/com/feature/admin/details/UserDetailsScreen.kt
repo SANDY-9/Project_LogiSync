@@ -36,6 +36,7 @@ import androidx.navigation.NavController
 import com.core.desinsystem.common.BoxLayout
 import com.core.desinsystem.common.CallButton
 import com.core.desinsystem.common.EmptyRecordView
+import com.core.desinsystem.common.NetworkError
 import com.core.desinsystem.common.addFocusCleaner
 import com.core.desinsystem.lottie.LottieProgressBarBlue
 import com.core.model.Arrest
@@ -77,6 +78,7 @@ fun UserDetailsScreen(
             name = state.user?.name,
             onNavigateUp = navController::navigateUp
         )
+        if(state.networkError != null) NetworkError(modifier = modifier.fillMaxSize())
         if(!state.loading) {
             state.user?.let { user ->
                 UserDetailsContent(

@@ -9,6 +9,7 @@ data class UserDetailsUiState(
 
     val loading: Boolean = false,
     val error: Boolean? = null,
+    val networkError: Throwable? = null,
 
     val user: User? = null,
     val account: Account? = null,

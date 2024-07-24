@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.MySearchTextField
+import com.core.desinsystem.common.NetworkError
 import com.core.desinsystem.common.addFocusCleaner
 import com.core.desinsystem.lottie.LottieProgressBarBlue
 import com.core.desinsystem.theme.LogiBlue
@@ -55,6 +56,7 @@ fun AdminScreen(
             .addFocusCleaner(focusManager)
     ) {
         AdminAppBar(onNavigateArrest = { navController.navigate(Route.ArrestAdmin.route) })
+        if(state.error != null) NetworkError(modifier = modifier.fillMaxSize())
         Spacer(modifier = modifier.height(4.dp))
         MySearchTextField(
             query = state.query,
@@ -74,7 +76,9 @@ fun AdminScreen(
             onRefreshList = viewModel::refreshMemberList,
         )
         if(state.loading) {
-            LottieProgressBarBlue(modifier = modifier.fillMaxSize().weight(1f))
+            LottieProgressBarBlue(modifier = modifier
+                .fillMaxSize()
+                .weight(1f))
         }
         else {
             if(state.filteredUserList.isEmpty()) {

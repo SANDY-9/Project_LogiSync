@@ -25,8 +25,10 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -67,8 +69,12 @@ class HomeViewModel @Inject constructor(
                     .onEach { state ->
                         state?.let { _stateFlow.value = it }
                     }.catch {
-                        _stateFlow.value = state.copy(loading = false)
+                        _stateFlow.value = state.copy(
+                            loading = false,
+                            error = Error(it)
+                        )
                     }
+                    .timeout(10.seconds)
                     .launchIn(viewModelScope)
 
         monitorWearableConnectState()

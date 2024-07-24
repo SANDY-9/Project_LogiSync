@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.core.desinsystem.common.NetworkError
 import com.core.model.Arrest
 import com.core.navigation.Args
 import com.feature.arrest.R
@@ -55,6 +56,7 @@ fun ArrestDetailsScreen(
             .statusBarsPadding(),
     ) {
         ArrestDetailsAppBar(onNavigateUp = navController::navigateUp )
+        if(state.error != null) NetworkError(modifier = modifier.fillMaxSize())
         ArrestContent(
             state = state,
             isMapReady = state.mapReady,

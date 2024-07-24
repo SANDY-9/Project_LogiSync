@@ -21,10 +21,12 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class UserDetailsViewModel @Inject constructor(
@@ -76,8 +78,8 @@ class UserDetailsViewModel @Inject constructor(
             delay(500)
             _stateFlow.update { state.copy(loading = false) }
         }.catch {
-            _stateFlow.value = state.copy(loading = false)
-        }.launchIn(viewModelScope)
+            _stateFlow.value = state.copy(loading = false, networkError = it)
+        }.timeout(10.seconds).launchIn(viewModelScope)
     }
 
     internal fun editMinPoint(input: String) {
@@ -147,7 +149,7 @@ class UserDetailsViewModel @Inject constructor(
             _stateFlow.value = state.copy(
                 error = null,
             )
-        }.launchIn(viewModelScope)
+        }.timeout(10.seconds).launchIn(viewModelScope)
     }
 
 }

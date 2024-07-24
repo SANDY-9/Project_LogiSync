@@ -18,10 +18,12 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class ArrestAdminViewModel @Inject constructor(
@@ -47,8 +49,8 @@ class ArrestAdminViewModel @Inject constructor(
         }.catch {
             Log.e("[ALL_ARREST]", "$it")
             delay(500)
-            _stateFlow.value = state.copy(loading = false)
-        }.launchIn(viewModelScope)
+            _stateFlow.value = state.copy(loading = false, error = it)
+        }.timeout(10.seconds).launchIn(viewModelScope)
     }
 
     internal fun refreshArrestList() {

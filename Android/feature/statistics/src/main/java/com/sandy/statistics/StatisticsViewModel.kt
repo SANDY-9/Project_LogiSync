@@ -25,10 +25,12 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class StatisticsViewModel @Inject constructor(
@@ -55,7 +57,9 @@ class StatisticsViewModel @Inject constructor(
                     requestDailyHeartRates(year, monthValue, dayOfMonth, id)
                 }
             }
-        }.launchIn(viewModelScope)
+        }.catch {
+            _stateFlow.value = state.copy(error = it)
+        }.timeout(10.seconds).launchIn(viewModelScope)
     }
 
     private fun requestDailyHeartRates(
@@ -72,7 +76,8 @@ class StatisticsViewModel @Inject constructor(
                 day = day
             ).catch {
                 Log.e("[HEART_RATE_RECORD_DAILY]", "requestDailyHeartRates: $it")
-            }.collectLatest { data ->
+                _stateFlow.value = state.copy(error = it)
+            }.timeout(10.seconds).collectLatest { data ->
                 _stateFlow.update {
                     val chartItem = data.toDailyChartItem()
                     val selectPosition = chartItem.lastNotNullIndex()
@@ -185,8 +190,10 @@ class StatisticsViewModel @Inject constructor(
         if(startDate == null || endDate == null) return
         viewModelScope.launch {
             getPeriodHearRateListUseCase(state.id, startDate, endDate)
+                .timeout(10.seconds)
                 .catch {
                     Log.e("[HEART_RATE_RECORD_PERIOD]", "requestHeartRateByPeriod: $it")
+                    _stateFlow.value = state.copy(error = it)
                 }.collectLatest { data ->
                     _stateFlow.update {
                         val chartItem = data.toPeriodChartItem(startDate, endDate)

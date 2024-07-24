@@ -19,4 +19,5 @@ data class HomeUiState(
     val loading: Boolean = false,
     val checkLoading: Boolean = true,
     val checkWearable: Boolean = true,
+    val error: Error? = null
 )

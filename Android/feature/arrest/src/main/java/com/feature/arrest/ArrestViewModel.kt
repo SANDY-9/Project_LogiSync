@@ -10,7 +10,6 @@ import com.feature.arrest.model.ArrestUiState
 import com.feature.arrest.utils.filter
 import com.feature.arrest.utils.localDate
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,12 +18,15 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class ArrestViewModel @Inject constructor(
@@ -58,6 +60,8 @@ class ArrestViewModel @Inject constructor(
                 }
             }.catch {
                 Log.e("[MY_ARREST]", "$it")
+                _stateFlow.value = state.copy(loading = false, error = it)
+            }.timeout(10.seconds).onCompletion {
                 _stateFlow.value = state.copy(loading = false)
             }.launchIn(viewModelScope)
     }

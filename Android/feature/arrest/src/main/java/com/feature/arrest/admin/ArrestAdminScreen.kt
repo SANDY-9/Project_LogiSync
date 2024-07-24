@@ -40,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.core.desinsystem.common.MyDateRangePickerBottomSheet
 import com.core.desinsystem.common.MySearchTextField
+import com.core.desinsystem.common.NetworkError
 import com.core.desinsystem.common.addFocusCleaner
 import com.core.desinsystem.lottie.LottieProgressBarBlue
 import com.core.desinsystem.theme.LogiBlue
@@ -51,7 +52,6 @@ import com.feature.arrest.R
 import com.feature.arrest.admin.component.AdminArrestItem
 import com.feature.arrest.admin.model.ArrestAdminUiState
 import com.feature.arrest.components.ArrestFilter
-import com.feature.arrest.components.ArrestItem
 import com.feature.arrest.components.ArrestStickyHeader
 import com.feature.arrest.components.EmptyArrestItem
 import com.feature.arrest.model.ArrestUiState
@@ -85,7 +85,7 @@ fun ArrestAdminScreen(
             onSearch = viewModel::requestSearch,
             focusManager = focusManager
         )
-
+        if (state.error != null) NetworkError(modifier = modifier.fillMaxSize())
         if (state.loading) {
             LottieProgressBarBlue(modifier = modifier.fillMaxSize())
         }

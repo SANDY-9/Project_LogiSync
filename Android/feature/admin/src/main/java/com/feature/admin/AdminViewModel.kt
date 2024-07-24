@@ -17,9 +17,11 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class AdminViewModel @Inject constructor(
@@ -49,8 +51,8 @@ class AdminViewModel @Inject constructor(
                 }
             }.catch {
                 Log.e("[USER_LIST]", "$it: ", )
-                _stateFlow.value = state.copy(loading = false)
-            }.launchIn(viewModelScope)
+                _stateFlow.value = state.copy(loading = false, error = it)
+            }.timeout(10.seconds).launchIn(viewModelScope)
     }
 
     fun inputQuery(query: String) {

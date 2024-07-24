@@ -47,6 +47,7 @@ import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.MyDateRangePickerBottomSheet
 import com.core.desinsystem.common.RecordItemHeartRate
 import com.core.desinsystem.common.EmptyRecordView
+import com.core.desinsystem.common.NetworkError
 import com.core.desinsystem.common.noRippleClickable
 import com.core.desinsystem.lottie.LottieBluetooth
 import com.core.desinsystem.lottie.LottieProgressBarBlue
@@ -84,7 +85,7 @@ fun StatisticsScreen(
                 )
             }
 
-            if(!loading) {
+            if(!loading && state.error == null) {
                 item {
                     StatisticsContent(
                         state = state,
@@ -103,6 +104,7 @@ fun StatisticsScreen(
                 }
             }
         }
+        if(state.error != null) NetworkError()
         if(loading) {
             LottieProgressBarBlue(modifier = modifier.fillMaxSize())
         }
