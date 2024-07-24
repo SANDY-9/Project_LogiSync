@@ -61,7 +61,7 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
             val nextMonitoringTime = getNextMonitoringTime()
             val currentTime = LocalDateTime.now()
             val delay = Duration.between(currentTime, nextMonitoringTime)
-            Log.e("[MONITORING]", "getNextMonitoringDelay: $nextMonitoringTime")
+            Log.i("[HEART_RATE_MONITORING]", "getNextMonitoringDelay: $nextMonitoringTime")
             return delay
         }
 
@@ -82,7 +82,9 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
                     currentTime.month,
                     if(currentTime.hour + 1 == 24) currentTime.dayOfMonth + 1 else currentTime.dayOfMonth,
                     if(currentTime.hour + 1 == 24) 0 else currentTime.hour + 1,
-                    0
+                    0,
+                    0,
+                    0,
                 )
             }
             else {
@@ -109,7 +111,9 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
                     currentTime.month,
                     currentTime.dayOfMonth,
                     8,
-                    0
+                    0,
+                    0,
+                    0,
                 )
             }
 
@@ -120,7 +124,8 @@ class HeartRateMonitoringWorker @AssistedInject constructor(
                     currentTime.month,
                     currentTime.dayOfMonth + 1,
                     8,
-                    0
+                    0,
+                    0,
                 )
             }
 
