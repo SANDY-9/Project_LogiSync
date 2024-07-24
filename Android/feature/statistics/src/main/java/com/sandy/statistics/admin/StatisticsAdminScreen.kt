@@ -27,6 +27,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +45,7 @@ import androidx.navigation.compose.rememberNavController
 import com.core.desinsystem.common.EmptyRecordView
 import com.core.desinsystem.common.MyDateRangePickerBottomSheet
 import com.core.desinsystem.common.RecordItemHeartRate
+import com.core.desinsystem.lottie.LottieProgressBarBlue
 import com.core.desinsystem.theme.LogiBlue
 import com.core.model.Arrest
 import com.core.model.User
@@ -51,6 +55,7 @@ import com.sandy.statistics.admin.model.StatisticsAdminUiState
 import com.sandy.statistics.compoents.HeartRateChart
 import com.sandy.statistics.compoents.HeartRateDescriptionCard
 import com.sandy.statistics.model.StatisticsUiState
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -59,6 +64,11 @@ fun StatisticsAdminScreen(
     modifier: Modifier = Modifier,
     viewModel: StatisticsAdminViewModel = hiltViewModel()
 ) {
+    var loading by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) {
+        delay(500)
+        loading = false
+    }
 
     LaunchedEffect(navController.previousBackStackEntry) {
         navController.previousBackStackEntry?.savedStateHandle?.get<User>(Args.USER)?.let {user ->
@@ -82,22 +92,28 @@ fun StatisticsAdminScreen(
                     onNavigateUp = navController::navigateUp
                 )
             }
-            item {
-                StatisticsContent(
-                    state = state,
-                    onPrevClick = viewModel::getPrevDateChart,
-                    onNextClick = viewModel::getNextDateChart,
-                    onItemClick = viewModel::selectItem,
-                )
-            }
 
-            stickyHeader {
-                HeartRateRecordAppBar()
-            }
+            if(!loading) {
+                item {
+                    StatisticsContent(
+                        state = state,
+                        onPrevClick = viewModel::getPrevDateChart,
+                        onNextClick = viewModel::getNextDateChart,
+                        onItemClick = viewModel::selectItem,
+                    )
+                }
 
-            items(items = state.selectRecordItem){ item ->
-                RecordItemHeartRate(item.bpm, item.time())
+                stickyHeader {
+                    HeartRateRecordAppBar()
+                }
+
+                items(items = state.selectRecordItem) { item ->
+                    RecordItemHeartRate(item.bpm, item.time())
+                }
             }
+        }
+        if(loading) {
+            LottieProgressBarBlue(modifier = modifier.fillMaxSize())
         }
 
         if(state.isSelectItemEmpty) {

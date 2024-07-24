@@ -88,7 +88,9 @@ class HomeViewModel @Inject constructor(
         }.launchIn(scope!!)
     }
 
+    private var savedCheck: Boolean? = null
     internal fun checkWearableLogin(result: Boolean) {
+        if(savedCheck == null) savedCheck = result else return
         _stateFlow.value = state.copy(checkWearable = result)
     }
 

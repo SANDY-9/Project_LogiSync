@@ -1,6 +1,5 @@
 package com.feature.admin.details
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usecases.network.GetLastHeartRateListUseCase
@@ -39,9 +38,10 @@ class UserDetailsViewModel @Inject constructor(
     internal val stateFlow: StateFlow<UserDetailsUiState> = _stateFlow.asStateFlow()
     private val state get() = stateFlow.value
 
+    private var savedUser: User? = null
 
     internal fun getUserDetails(user: User) {
-        Log.e("확인", "getUserDetails: $user", )
+        if(savedUser == null) savedUser = user else return
         _stateFlow.value = state.copy(
             user = user,
             editMin = (user.minCriticalPoint ?: "").toString(),

@@ -1,10 +1,8 @@
 package com.feature.home
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import com.core.model.HeartRate
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 
@@ -17,6 +15,11 @@ internal fun HomeWearableListener(
         val data = it.data.toString(Charsets.UTF_8)
         if(it.path == MessagePath.GET_LOGIN_RESPONSE.path) {
             onLoginResponse(data == "OK")
+        }
+        when (it.path) {
+            MessagePath.GET_LOGIN_RESPONSE.path -> {
+                onLoginResponse(data == "OK")
+            }
         }
     }
     DisposableEffect(key1 = Unit) {

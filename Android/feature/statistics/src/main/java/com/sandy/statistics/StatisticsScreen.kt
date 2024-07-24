@@ -27,7 +27,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,10 +48,13 @@ import com.core.desinsystem.common.MyDateRangePickerBottomSheet
 import com.core.desinsystem.common.RecordItemHeartRate
 import com.core.desinsystem.common.EmptyRecordView
 import com.core.desinsystem.common.noRippleClickable
+import com.core.desinsystem.lottie.LottieBluetooth
+import com.core.desinsystem.lottie.LottieProgressBarBlue
 import com.core.desinsystem.theme.LogiBlue
 import com.sandy.statistics.compoents.HeartRateChart
 import com.sandy.statistics.compoents.HeartRateDescriptionCard
 import com.sandy.statistics.model.StatisticsUiState
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -56,11 +63,18 @@ fun StatisticsScreen(
     modifier: Modifier = Modifier,
     viewModel: StatisticsViewModel = hiltViewModel(),
 ) {
+    var loading by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) {
+        delay(500)
+        loading = false
+    }
 
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
     Column(
-        modifier = modifier.fillMaxSize().statusBarsPadding()
+        modifier = modifier
+            .fillMaxSize()
+            .statusBarsPadding()
     ) {
         LazyColumn {
             stickyHeader {
@@ -69,22 +83,28 @@ fun StatisticsScreen(
                     onDatePickerClick = viewModel::setDatePickerVisible,
                 )
             }
-            item {
-                StatisticsContent(
-                    state = state,
-                    onPrevClick = viewModel::getPrevDateChart,
-                    onNextClick = viewModel::getNextDateChart,
-                    onItemClick = viewModel::selectItem,
-                )
-            }
 
-            stickyHeader {
-                HeartRateRecordAppBar()
-            }
+            if(!loading) {
+                item {
+                    StatisticsContent(
+                        state = state,
+                        onPrevClick = viewModel::getPrevDateChart,
+                        onNextClick = viewModel::getNextDateChart,
+                        onItemClick = viewModel::selectItem,
+                    )
+                }
 
-            items(items = state.selectRecordItem){ item ->
-                RecordItemHeartRate(item.bpm, item.time())
+                stickyHeader {
+                    HeartRateRecordAppBar()
+                }
+
+                items(items = state.selectRecordItem) { item ->
+                    RecordItemHeartRate(item.bpm, item.time())
+                }
             }
+        }
+        if(loading) {
+            LottieProgressBarBlue(modifier = modifier.fillMaxSize())
         }
 
         if(state.isSelectItemEmpty) {
