@@ -137,4 +137,38 @@ class AuthClient @Inject constructor(
         }
     }
 
+    fun bioLogin(
+        id: String,
+        onLogin: (Account) -> Unit,
+        onError: (Throwable) -> Unit,
+    ) {
+        ref.child(USERS).child(id).get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                val account = snapshot.getValue<AccountDTO>()
+                account?.let {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        // FCM 토큰 등록
+                        messagingClient.registerToken(
+                            id = id,
+                            onSuccess = { onLogin(account.toAccount(id)) },
+                            onError = { e -> onError(e) },
+                        )
+                    }
+
+                    // FCM 구독
+                    if(account.duty == User.Duty.ADMIN.name) {
+                        messagingClient.subscribeToArrestTopic()
+                    }
+                    else {
+                        messagingClient.unsubscribeToArrestTopic()
+                    }
+                    onLogin(account.toAccount(id))
+                } ?: onError(LoginError(LOGIN_ERROR_MESSAGE))
+            }
+            else onError(LoginError(LOGIN_ERROR_MESSAGE))
+        }.addOnFailureListener {
+            onError(NetworkError(NETWORK_ERROR_MESSAGE))
+        }
+    }
+
 }

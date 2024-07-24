@@ -1,5 +1,7 @@
 package com.sandy.logisync.ui
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
@@ -20,6 +22,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,6 +37,7 @@ import com.core.desinsystem.icons.HeartOn
 import com.core.desinsystem.icons.More
 import com.core.model.User
 import com.core.navigation.Route
+import com.feature.other.OtherActivity
 import com.sandy.logisync.R
 
 @Composable
@@ -44,6 +48,7 @@ fun MainScreen(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val duty by viewModel.duty.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -59,7 +64,7 @@ fun MainScreen(
                     .weight(1f),
                 navController = navController,
                 //startDestination = Route.Login.route,
-                startDestination = Route.Other.route,
+                startDestination = Route.Home.route,
             )
             if(currentRoute in BottomNavRouteEntry) {
                 BottomNavigationBar(
@@ -68,13 +73,23 @@ fun MainScreen(
                     currentRoute = currentRoute,
                     onItemClick = {
                         if (currentRoute != it.route) {
+                            if (it.route == Route.Other.route) {
+                                navigateToOtherScreen(context)
+                            }
+                            else {
                             navController.navigate(it.route)
+                                }
                         }
                     },
                 )
             }
         }
     }
+}
+
+private fun navigateToOtherScreen(context: Context) {
+    val intent = Intent(context, OtherActivity::class.java)
+    context.startActivity(intent)
 }
 
 private val BottomNavRouteEntry = listOf(

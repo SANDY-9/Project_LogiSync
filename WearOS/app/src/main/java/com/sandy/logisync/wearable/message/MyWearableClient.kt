@@ -37,7 +37,6 @@ class MyWearableClient @Inject constructor(
 
     // 메세지는 무조건 ByteArray형태
     fun requestTranscription(data: String, transcriptionPath: TranscriptionPath) {
-        Log.e("확인", "requestTranscription: 이거는?", )
         setupConnectApp()
         transcriptionNodeId?.also { nodeId ->
             Log.e("확인", "requestTranscription: $nodeId", )

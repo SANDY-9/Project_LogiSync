@@ -1,5 +1,6 @@
 package com.feature.other
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,27 +22,44 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
 import com.core.desinsystem.theme.LogiLightGray
 
 @Composable
 fun OtherScreen(
-    navController: NavController,
+    onRegisterFingerPrint: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
+    val context = LocalContext.current as Activity
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .statusBarsPadding(),
     ) {
-        ArrestDetailsAppBar(onNavigateUp = navController::navigateUp)
-        MenuItem(title = stringResource(id = R.string.other_title_finger_print))
-        MenuItem(title = stringResource(id = R.string.other_title_face_id))
-        MenuItem(title = stringResource(id = R.string.other_title_init))
-        MenuItem(title = stringResource(id = R.string.other_title_logout))
+        ArrestDetailsAppBar(onNavigateUp = {})
+        MenuItem(
+            title = stringResource(id = R.string.other_title_finger_print),
+            onClick = onRegisterFingerPrint,
+        )
+        MenuItem(
+            title = stringResource(id = R.string.other_title_face_id),
+            {}
+        )
+        MenuItem(
+            title = stringResource(id = R.string.other_title_init),
+            {}
+        )
+        MenuItem(
+            title = stringResource(id = R.string.other_title_logout),
+            {}
+        )
     }
 }
 
@@ -74,13 +92,14 @@ private fun ArrestDetailsAppBar(
 @Composable
 private fun MenuItem(
     title: String,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(color = Color.White)
-            .clickable { }
+            .clickable (onClick = onClick)
     ) {
         Text(
             modifier = modifier.padding(vertical = 12.dp, horizontal = 20.dp),
@@ -95,5 +114,5 @@ private fun MenuItem(
 @Composable
 private fun PreviewOtherScreen() {
     //OtherScreen(rememberNavController())
-    MenuItem("로그아웃")
+    MenuItem("로그아웃", {})
 }

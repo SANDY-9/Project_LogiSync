@@ -153,13 +153,5 @@ fun MainNavGraph(
             )
         }
 
-        composable(
-            route = Route.Other.route,
-        ) {
-            OtherScreen(
-                navController = navController
-            )
-        }
-
     }
 }

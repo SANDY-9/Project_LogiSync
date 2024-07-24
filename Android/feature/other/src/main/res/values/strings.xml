@@ -5,4 +5,9 @@
     <string name="other_title_face_id">페이스ID 등록</string>
     <string name="other_title_logout">로그아웃</string>
     <string name="other_title_init">기기연동초기화</string>
+    <string name="other_title_bio_title">생체 인증 로그인 등록</string>
+    <string name="other_title_bio_desc">현재 계정에 생체 인증 정보를 등록합니다.</string>
+    <string name="other_title_bio_cancel">취소</string>
+    <string name="other_title_finger_print_desc">지문을 등록해주세요.</string>
+    <string name="title_activity_other">OtherActivity</string>
 </resources>
