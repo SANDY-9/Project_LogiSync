@@ -58,7 +58,6 @@ class StatisticsViewModel @Inject constructor(
                 }
             }
         }.catch {
-            _stateFlow.value = state.copy(error = it)
         }.timeout(10.seconds).launchIn(viewModelScope)
     }
 
@@ -76,7 +75,6 @@ class StatisticsViewModel @Inject constructor(
                 day = day
             ).catch {
                 Log.e("[HEART_RATE_RECORD_DAILY]", "requestDailyHeartRates: $it")
-                _stateFlow.value = state.copy(error = it)
             }.timeout(10.seconds).collectLatest { data ->
                 _stateFlow.update {
                     val chartItem = data.toDailyChartItem()
@@ -193,7 +191,6 @@ class StatisticsViewModel @Inject constructor(
                 .timeout(10.seconds)
                 .catch {
                     Log.e("[HEART_RATE_RECORD_PERIOD]", "requestHeartRateByPeriod: $it")
-                    _stateFlow.value = state.copy(error = it)
                 }.collectLatest { data ->
                     _stateFlow.update {
                         val chartItem = data.toPeriodChartItem(startDate, endDate)

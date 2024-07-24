@@ -9,7 +9,6 @@ import java.time.LocalDate
 data class StatisticsAdminUiState(
 
     val user: User? = null,
-    val error: Throwable? = null,
 
     // chart
     val chartType: ChartType = ChartType.DAILY,

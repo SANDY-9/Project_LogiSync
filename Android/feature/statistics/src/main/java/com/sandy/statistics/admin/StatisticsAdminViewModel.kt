@@ -67,7 +67,6 @@ class StatisticsAdminViewModel @Inject constructor(
                     day = day
                 ).catch {
                     Log.e("[HEART_RATE_RECORD_DAILY]", "requestDailyHeartRates: $it")
-                    _stateFlow.value = state.copy(error = it)
                 }.timeout(10.seconds)
                     .collectLatest { data ->
                     _stateFlow.update {
@@ -185,7 +184,6 @@ class StatisticsAdminViewModel @Inject constructor(
             viewModelScope.launch {
                 getPeriodHearRateListUseCase(user.id, startDate, endDate).catch {
                     Log.e("[HEART_RATE_RECORD_PERIOD]", "requestHeartRateByPeriod: $it")
-                    _stateFlow.value = state.copy(error = it)
                 }.timeout(10.seconds).collectLatest { data ->
                     _stateFlow.update {
                         val chartItem = data.toPeriodChartItem(startDate, endDate)

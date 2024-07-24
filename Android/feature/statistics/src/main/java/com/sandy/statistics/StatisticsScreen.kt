@@ -85,7 +85,7 @@ fun StatisticsScreen(
                 )
             }
 
-            if(!loading && state.error == null) {
+            if(!loading) {
                 item {
                     StatisticsContent(
                         state = state,
@@ -104,7 +104,6 @@ fun StatisticsScreen(
                 }
             }
         }
-        if(state.error != null) NetworkError()
         if(loading) {
             LottieProgressBarBlue(modifier = modifier.fillMaxSize())
         }
