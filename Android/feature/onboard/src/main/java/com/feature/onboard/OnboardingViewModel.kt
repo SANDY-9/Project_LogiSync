@@ -6,7 +6,7 @@ import com.core.domain.enums.BluetoothState
 import com.core.domain.repository.DevicePrefsRepository
 import com.core.domain.usecases.bluetooth.GetBluetoothStateUseCase
 import com.core.domain.usecases.wearable.GetWearableConnectStateUseCase
-import com.core.domain.usecases.wearable.LoginWearableUseCase
+import com.core.domain.usecases.wearable.RegisterWearableUseCase
 import com.feature.onboard.model.OnboardPhase
 import com.feature.onboard.model.OnboardUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +26,7 @@ class OnboardingViewModel @Inject constructor(
     private val getBluetoothStateUseCase: GetBluetoothStateUseCase,
     private val getWearableConnectStateUseCase: GetWearableConnectStateUseCase,
     private val devicePrefsRepository: DevicePrefsRepository,
-    private val loginWearableUseCase: LoginWearableUseCase,
+    private val registerWearableUseCase: RegisterWearableUseCase,
 ) : ViewModel() {
 
     private val _stateFlow: MutableStateFlow<OnboardUiState> = MutableStateFlow(OnboardUiState())
@@ -84,7 +84,7 @@ class OnboardingViewModel @Inject constructor(
     }
 
     fun startService() {
-        loginWearableUseCase()
+        registerWearableUseCase()
             .onStart {
                 _stateFlow.value = state.copy(loading = true)
             }.onEach {

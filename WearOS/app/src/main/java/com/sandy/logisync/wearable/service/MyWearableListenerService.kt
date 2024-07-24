@@ -30,8 +30,15 @@ class MyWearableListenerService : WearableListenerService() {
     override fun onMessageReceived(p0: MessageEvent) {
         val data = p0.data.toString(Charsets.UTF_8)
         when (p0.path) {
+            MessagePath.GET_INIT.path -> registerAccount(data)
             MessagePath.GET_LOGIN.path -> login(data)
             MessagePath.GET_REQUEST_HEAT_RATE.path -> collectHeartRate(data)
+        }
+    }
+
+    private fun registerAccount(accountData: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            wearableDataStoreRepository.registerAccount(accountData)
         }
     }
 

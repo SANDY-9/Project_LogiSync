@@ -7,14 +7,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-class LoginWearableUseCase @Inject constructor(
+class RegisterWearableUseCase @Inject constructor(
     private val authPrefsRepository: AuthPrefsRepository,
     private val wearableRepository: WearableRepository
 ) {
     operator fun invoke(): Flow<Account?> {
         return authPrefsRepository.getAccount().onEach { account ->
             account?.let {
-                wearableRepository.sendLogin(it)
+                wearableRepository.sendInit(it)
             }
         }
     }

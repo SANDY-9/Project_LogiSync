@@ -46,6 +46,12 @@ class WearableRepositoryImpl @Inject constructor(
             transcriptionPath = TranscriptionPath.SEND_LOGIN
         )
     }
+    override suspend fun sendInit(account: Account) = withContext(Dispatchers.IO) {
+        wearableClient.requestTranscription(
+            data = account.toJson(),
+            transcriptionPath = TranscriptionPath.SEND_INIT
+        )
+    }
 
     private fun Account.toJson(): String {
         val jsonObject = JSONObject()

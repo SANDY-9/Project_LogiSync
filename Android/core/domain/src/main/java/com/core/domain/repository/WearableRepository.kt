@@ -7,5 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface WearableRepository {
     fun getWearableConnectState(): Flow<Device?>
     suspend fun sendLogin(account: Account)
+    suspend fun sendInit(account: Account)
     suspend fun requestCollectHeartRate(id: String)
 }
