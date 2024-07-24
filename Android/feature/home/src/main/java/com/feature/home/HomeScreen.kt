@@ -49,11 +49,12 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
 
-    StartMonitoringWearableConnect(viewModel)
-    // DisposableEffect
     val context = LocalContext.current
+    GetPermission(context = context)
     HomeWearableListener(context)
     BackOnPressed(context)
+
+    StartMonitoringWearableConnect(viewModel)
     StopMonitoringWearableConnect(viewModel)
 
     // Ui

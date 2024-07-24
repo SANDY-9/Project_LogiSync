@@ -73,4 +73,7 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))
 
+    // FingerPrint
+    implementation(libs.androidx.biometric.ktx)
+
 }

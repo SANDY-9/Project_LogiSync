@@ -50,7 +50,7 @@ class AuthDataStoreManager @Inject constructor(
             key = PrefsKeys.FINGER_PRINT,
             defaultValue = ""
         ).first()
-        return if(fingerPrintId.isBlank()) null else fingerPrintId
+        return fingerPrintId.ifBlank { null }
     }
 
     private object PrefsKeys {

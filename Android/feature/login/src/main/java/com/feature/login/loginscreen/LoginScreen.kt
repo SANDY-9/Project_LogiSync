@@ -3,6 +3,7 @@ package com.feature.login.loginscreen
 import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -57,9 +58,9 @@ fun LoginScreen(
     val focusManager = LocalFocusManager.current
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
-    val context = LocalContext.current
+    val context = LocalContext.current as AppCompatActivity
     BackHandler(enabled = true) {
-        (context as? Activity)?.finish()
+        context.finish()
     }
 
     LaunchedEffect(state.account) {
@@ -143,7 +144,17 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .weight(1f)
                     .noRippleClickable(
-                        onClick = viewModel::requestBioLogin
+                        onClick = {
+                            if(state.bioLoginId == null) {
+                                Toast.makeText(context, "바이오 정보에 저장된 계정이 없습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                            else {
+                                requestBioLogin(
+                                    activity = context,
+                                    onSuccess = viewModel::requestBioLogin
+                                )
+                            }
+                        }
                     ),
                 text = stringResource(id = R.string.login_title_bio),
                 style = MaterialTheme.typography.labelLarge,

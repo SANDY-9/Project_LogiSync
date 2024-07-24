@@ -92,6 +92,9 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.splashscreen)
 
+
+    // FingerPrint
+    implementation(libs.androidx.biometric.ktx)
 }
 
 secrets {

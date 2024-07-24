@@ -74,8 +74,7 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
 
     // FingerPrint
-    implementation("androidx.biometric:biometric-ktx:1.2.0-alpha04")
-    implementation("androidx.biometric:biometric-ktx:1.2.0-alpha04")
+    implementation(libs.androidx.biometric.ktx)
 
 }
 

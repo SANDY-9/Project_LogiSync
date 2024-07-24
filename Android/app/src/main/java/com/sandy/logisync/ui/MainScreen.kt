@@ -63,8 +63,8 @@ fun MainScreen(
                     .fillMaxSize()
                     .weight(1f),
                 navController = navController,
-                //startDestination = Route.Login.route,
-                startDestination = Route.Home.route,
+                startDestination = Route.Login.route,
+                //startDestination = Route.Home.route,
             )
             if(currentRoute in BottomNavRouteEntry) {
                 BottomNavigationBar(

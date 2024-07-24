@@ -9,6 +9,7 @@ internal data class LoginUiState(
     val account: Account? = null,
     val error: LoginError = LoginError.NONE,
     val isLoading: Boolean = false,
+    val bioLoginId: String? = null,
 )
 
 internal enum class LoginError(val message: String = "") {
