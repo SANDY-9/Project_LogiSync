@@ -77,8 +77,8 @@ fun MainScreen(
                                 navigateToOtherScreen(context)
                             }
                             else {
-                            navController.navigate(it.route)
-                                }
+                                navController.navigate(it.route)
+                            }
                         }
                     },
                 )

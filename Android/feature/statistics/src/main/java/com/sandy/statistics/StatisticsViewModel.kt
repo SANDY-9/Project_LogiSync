@@ -16,6 +16,7 @@ import com.sandy.statistics.utils.selectRecordItem
 import com.sandy.statistics.utils.toDailyChartItem
 import com.sandy.statistics.utils.toPeriodChartItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -182,27 +184,33 @@ class StatisticsViewModel @Inject constructor(
     private fun requestHeartRateByPeriod(startDate: LocalDate?, endDate: LocalDate?) {
         if(startDate == null || endDate == null) return
         viewModelScope.launch {
-            getPeriodHearRateListUseCase(state.id, startDate, endDate).catch {
-                Log.e("[HEART_RATE_RECORD_PERIOD]", "requestHeartRateByPeriod: $it")
-            }.collectLatest { data ->
-                _stateFlow.update {
-                    val chartItem = data.toPeriodChartItem(startDate, endDate)
-                    val selectPosition = chartItem.lastNotNullIndex()
-                    val selectDate = if(selectPosition != null) chartItem[selectPosition].date else null
-                    val selectRecordItem = data.selectRecordItem(selectDate)
-                    it.copy(
-                        chartType = StatisticsUiState.ChartType.PERIOD,
-                        minBPM = selectPosition.minBPM(chartItem),
-                        maxBPM = selectPosition.maxBPM(chartItem),
-                        recordItem = data,
-                        selectRecordItem = selectRecordItem,
-                        chartItem = chartItem,
-                        selectPosition = selectPosition,
-                        isSelectItemEmpty = selectRecordItem.isEmpty(),
-                        selectDateTitle = "${DateUtil.convertDate(startDate)} - ${DateUtil.convertDate(endDate)}"
-                    )
+            getPeriodHearRateListUseCase(state.id, startDate, endDate)
+                .catch {
+                    Log.e("[HEART_RATE_RECORD_PERIOD]", "requestHeartRateByPeriod: $it")
+                }.collectLatest { data ->
+                    _stateFlow.update {
+                        val chartItem = data.toPeriodChartItem(startDate, endDate)
+                        val selectPosition = chartItem.lastNotNullIndex()
+                        val selectDate =
+                            if (selectPosition != null) chartItem[selectPosition].date else null
+                        val selectRecordItem = data.selectRecordItem(selectDate)
+                        it.copy(
+                            chartType = StatisticsUiState.ChartType.PERIOD,
+                            minBPM = selectPosition.minBPM(chartItem),
+                            maxBPM = selectPosition.maxBPM(chartItem),
+                            recordItem = data,
+                            selectRecordItem = selectRecordItem,
+                            chartItem = chartItem,
+                            selectPosition = selectPosition,
+                            isSelectItemEmpty = selectRecordItem.isEmpty(),
+                            selectDateTitle = "${DateUtil.convertDate(startDate)} - ${
+                                DateUtil.convertDate(
+                                    endDate
+                                )
+                            }",
+                        )
+                    }
                 }
-            }
         }
     }
 

@@ -17,5 +17,6 @@ data class HomeUiState(
     val reportList: List<Arrest> = emptyList(),
     val emptyReport: Boolean = true,
     val loading: Boolean = false,
-    val checkWearable: Boolean = false,
+    val checkLoading: Boolean = true,
+    val checkWearable: Boolean = true,
 )
