@@ -1,6 +1,7 @@
 package com.feature.onboard
 
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,6 +40,9 @@ fun OnboardingScreen(
 ) {
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
     val context = LocalContext.current as? Activity?
+    BackHandler {
+        context?.finish()
+    }
     LaunchedEffect(state.phase) {
         if(state.phase == OnboardPhase.SERVICE_START) {
             onNavigate()
@@ -112,7 +116,9 @@ private fun OnboardingContent(
 
     if (state.phase == OnboardPhase.ENABLE_SERVICE_START) {
         Button(
-            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
             onClick = onServiceStart,
         ) {
             if (state.loading) ButtonLoadingBar()
@@ -121,7 +127,9 @@ private fun OnboardingContent(
     }
     else {
         Button(
-            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
             enabled = state.enabledNextButton,
             onClick = onNext,
         ) {
