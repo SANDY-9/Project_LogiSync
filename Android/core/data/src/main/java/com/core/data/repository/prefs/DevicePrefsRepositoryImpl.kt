@@ -47,4 +47,9 @@ class DevicePrefsRepositoryImpl @Inject constructor(
             deviceDataStoreManager.updateInitialConnect()
         }
     }
+    override suspend fun initiateConnect() {
+        withContext(Dispatchers.IO) {
+            deviceDataStoreManager.initiateConnect()
+        }
+    }
 }

@@ -14,5 +14,6 @@ interface DevicePrefsRepository {
     fun getIsInitialConnectState(): Flow<Boolean>
     suspend fun getIsInitialConnect(): Boolean
     suspend fun updateInitialConnect()
+    suspend fun initiateConnect()
 
 }

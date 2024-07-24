@@ -1,16 +1,17 @@
 package com.feature.other
 
 import android.graphics.Color
-import androidx.biometric.BiometricPrompt
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.core.desinsystem.theme.LogiSyncTheme
 import com.core.domain.usecases.auth.RegisterFingerPrintUseCase
+import com.core.domain.usecases.wearable.RequestInitPairedDeviceUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
@@ -25,6 +26,8 @@ class OtherActivity : AppCompatActivity() {
 
     @Inject
     lateinit var registerFingerPrintUseCase: RegisterFingerPrintUseCase
+    @Inject
+    lateinit var requestInitPairedDeviceUseCase: RequestInitPairedDeviceUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +43,10 @@ class OtherActivity : AppCompatActivity() {
                         finish()
                     },
                     onInitConnect = {
-
+                        lifecycleScope.launch {
+                            requestInitPairedDeviceUseCase()
+                        }
+                        Toast.makeText(this, "저장되어 있는 연동 기기 정보를 초기화 했습니다.", Toast.LENGTH_SHORT).show()
                     },
                 )
             }

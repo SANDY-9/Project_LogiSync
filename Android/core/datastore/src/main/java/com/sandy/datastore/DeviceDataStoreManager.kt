@@ -45,6 +45,13 @@ class DeviceDataStoreManager @Inject constructor(
         )
     }
 
+    suspend fun initiateConnect() {
+        dataStore.editPrefs(
+            key = PrefsKeys.DEVICE_INITIALIZE_CONNECT,
+            value = false
+        )
+    }
+
     fun getIsInitialConnect(): Flow<Boolean> {
         return dataStore.getPrefs(
             key = PrefsKeys.DEVICE_INITIALIZE_CONNECT,
