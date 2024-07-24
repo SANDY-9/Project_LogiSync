@@ -1,6 +1,8 @@
 package com.feature.login.loginscreen
 
+import android.app.Activity
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,6 +57,11 @@ fun LoginScreen(
     val focusManager = LocalFocusManager.current
     val state by viewModel.stateFlow.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+    BackHandler(enabled = true) {
+        (context as? Activity)?.finish()
+    }
+
     LaunchedEffect(state.account) {
         val account = state.account
         account?.let {
@@ -63,7 +70,6 @@ fun LoginScreen(
         }
     }
 
-    val context = LocalContext.current
     LaunchedEffect(state.error) {
         val error = state.error
         if(error != LoginError.NONE) {
