@@ -87,7 +87,7 @@ internal fun Check(
                 onInputClear = {
                     onInputClear(InputType.NAME)
                 },
-                focusManager = focusManager
+                focusManager = focusManager,
             )
 
             Spacer(modifier = modifier.height(12.dp))

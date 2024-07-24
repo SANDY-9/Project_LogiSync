@@ -68,7 +68,7 @@ class HeartRateClient @Inject constructor(
                     list.add(heartRateDTO)
                 }
             }
-            val result = if(list.size > 6) list.slice(0..4) else listOf()
+            val result = if(list.size > 6) list.slice(0..4) else list
             onSuccess(result)
         }.addOnFailureListener {
             onError(it)
