@@ -75,6 +75,7 @@ dependencies {
     implementation(project(":feature:statistics"))
     implementation(project(":feature:admin"))
     implementation(project(":feature:arrest"))
+    implementation(project(":feature:other"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)

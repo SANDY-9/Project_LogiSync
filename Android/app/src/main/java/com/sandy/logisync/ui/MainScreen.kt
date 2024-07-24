@@ -58,9 +58,8 @@ fun MainScreen(
                     .fillMaxSize()
                     .weight(1f),
                 navController = navController,
-                startDestination = Route.Login.route,
-                //startDestination = Route.Onboarding.route,
-                //startDestination = Route.Home.route,
+                //startDestination = Route.Login.route,
+                startDestination = Route.Other.route,
             )
             if(currentRoute in BottomNavRouteEntry) {
                 BottomNavigationBar(
@@ -83,7 +82,6 @@ private val BottomNavRouteEntry = listOf(
     Route.Statistics.route,
     Route.Arrest.route,
     Route.Admin.route,
-    Route.Other.route
 )
 
 @Composable

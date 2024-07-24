@@ -15,6 +15,7 @@ import com.feature.arrest.details.ArrestDetailsScreen
 import com.feature.home.HomeScreen
 import com.feature.login.loginscreen.LoginScreen
 import com.feature.onboard.OnboardingScreen
+import com.feature.other.OtherScreen
 import com.feature.signup.SignupScreen
 import com.sandy.statistics.StatisticsScreen
 import com.sandy.statistics.admin.StatisticsAdminScreen
@@ -148,6 +149,14 @@ fun MainNavGraph(
             route = Route.ArrestAdminDetails.route,
         ) {
             ArrestAdminDetailsScreen(
+                navController = navController
+            )
+        }
+
+        composable(
+            route = Route.Other.route,
+        ) {
+            OtherScreen(
                 navController = navController
             )
         }
