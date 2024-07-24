@@ -1,15 +1,18 @@
 package com.feature.other
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -22,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import com.core.desinsystem.theme.LogiLightGray
 
 @Composable
 fun OtherScreen(
@@ -35,6 +38,10 @@ fun OtherScreen(
             .statusBarsPadding(),
     ) {
         ArrestDetailsAppBar(onNavigateUp = navController::navigateUp)
+        MenuItem(title = stringResource(id = R.string.other_title_finger_print))
+        MenuItem(title = stringResource(id = R.string.other_title_face_id))
+        MenuItem(title = stringResource(id = R.string.other_title_init))
+        MenuItem(title = stringResource(id = R.string.other_title_logout))
     }
 }
 
@@ -63,8 +70,30 @@ private fun ArrestDetailsAppBar(
         }
     }
 }
+
+@Composable
+private fun MenuItem(
+    title: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(color = Color.White)
+            .clickable { }
+    ) {
+        Text(
+            modifier = modifier.padding(vertical = 12.dp, horizontal = 20.dp),
+            text = title,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+        HorizontalDivider(color = LogiLightGray)
+    }
+}
+
 @Preview(name = "OtherScreen")
 @Composable
 private fun PreviewOtherScreen() {
-    OtherScreen(rememberNavController())
+    //OtherScreen(rememberNavController())
+    MenuItem("로그아웃")
 }
