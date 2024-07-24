@@ -150,7 +150,7 @@ object CreateBodyUtil {
                 put("topic", "arrest")
                 put("notification", JSONObject().apply {
                     put("title", createTitle(id, name, arrestType))
-                    put("body", "신고 내용을 확인해주세요.")
+                    put("body", "앱을 통해 신고 내용을 확인해주세요.")
                 })
                 put("data", JSONObject().apply {
                     put("id", id)
@@ -182,7 +182,7 @@ object CreateBodyUtil {
                 put("token", token)
                 put("notification", JSONObject().apply {
                     put("title", createMyTitle(arrestType))
-                    put("body", "신고 내용을 확인해주세요.")
+                    put("body", "앱을 통해 신고 내용을 확인해주세요.")
                 })
                 put("data", JSONObject().apply {
                     put("id", id)
