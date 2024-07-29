@@ -76,7 +76,8 @@ fun UserDetailsScreen(
         UserDetailsAppBar(
             id = state.user?.id,
             name = state.user?.name,
-            onNavigateUp = navController::navigateUp
+            tel = state.user?.tel,
+            onNavigateUp = navController::navigateUp,
         )
         if(state.networkError != null) NetworkError(modifier = modifier.fillMaxSize())
         if(!state.loading) {
@@ -138,6 +139,7 @@ private fun UserDetailsAppBar(
     onNavigateUp: () -> Unit,
     id: String?,
     name: String?,
+    tel: String?,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -166,7 +168,7 @@ private fun UserDetailsAppBar(
         Spacer(modifier = modifier.weight(1f))
 
         CallButton(
-            tel = "010-9198",
+            tel = "$tel",
             context = context,
         )
         Spacer(modifier = modifier.width(20.dp))
