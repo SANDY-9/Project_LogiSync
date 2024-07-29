@@ -28,7 +28,7 @@ import com.core.model.Account
 @Composable
 internal fun Profile(
     dateStr: String,
-    account: Account,
+    account: Account?,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -66,18 +66,18 @@ internal fun Profile(
                     verticalAlignment = Alignment.Bottom
                 ) {
                     Text(
-                        text = "${account.name}님",
+                        text = "${account?.name}님",
                         style = MaterialTheme.typography.titleLarge,
                     )
                     Spacer(modifier = modifier.width(8.dp))
                     Text(
-                        text = "(${account.id})",
+                        text = "(${account?.id})",
                         style = MaterialTheme.typography.titleSmall,
                     )
                 }
                 Spacer(modifier = modifier.height(2.dp))
                 Text(
-                    text = "${account.team.name}   |   ${account.duty.str()}",
+                    text = "${account?.team?.name}   |   ${account?.duty?.str()}",
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }

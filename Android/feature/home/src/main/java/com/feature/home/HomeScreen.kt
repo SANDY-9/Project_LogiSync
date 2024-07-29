@@ -197,7 +197,7 @@ private fun HomeAppBar(
         )
         Profile(
             dateStr = dateStr,
-            account = account ?: return,
+            account = account,
         )
     }
 
