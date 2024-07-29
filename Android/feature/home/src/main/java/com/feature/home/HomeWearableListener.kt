@@ -16,15 +16,9 @@ internal fun HomeWearableListener(
         if(it.path == MessagePath.GET_LOGIN_RESPONSE.path) {
             onLoginResponse(data == "OK")
         }
-        when (it.path) {
-            MessagePath.GET_LOGIN_RESPONSE.path -> {
-                onLoginResponse(data == "OK")
-            }
-        }
     }
     DisposableEffect(key1 = Unit) {
         Wearable.getMessageClient(context).addListener(messageListener)
-
         onDispose {
             Wearable.getMessageClient(context).removeListener(messageListener)
         }

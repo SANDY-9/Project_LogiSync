@@ -6,7 +6,6 @@ import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Node
-import com.sandy.bluetooth.utils.WearableFailException
 import javax.inject.Inject
 
 class MyWearableClient @Inject constructor(
@@ -46,11 +45,8 @@ class MyWearableClient @Inject constructor(
                 addOnSuccessListener {
                     Log.i("[WEARABLE_MOBILE]", "requestTranscription: 앱->워치 메시지 전송 성공 $data")
                 }
-                addOnFailureListener {
-                    throw WearableFailException()
-                }
             }
-        } ?: throw WearableFailException()
+        }
     }
 
     companion object {
