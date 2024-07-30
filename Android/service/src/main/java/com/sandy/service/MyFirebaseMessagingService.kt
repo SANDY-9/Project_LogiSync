@@ -2,9 +2,9 @@ package com.sandy.service
 
 
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -60,32 +60,33 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
 
     @SuppressLint("MissingPermission")
     private fun createNotification(message: RemoteMessage) {
-        val notificationManager = NotificationManagerCompat.from(applicationContext)
-
-        var builder : NotificationCompat.Builder
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            if(notificationManager.getNotificationChannel(CHANNEL_ID) == null){
-                val channel = NotificationChannel(
-                    CHANNEL_ID,
-                    CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_HIGH,
-                )
-                notificationManager.createNotificationChannel(channel)
-            }
-            builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-        }else{
-            builder = NotificationCompat.Builder(applicationContext)
-        }
-
         val title = message.notification?.title
         val body = message.notification?.body
+        val notification = NotificationCompat
+            .Builder(applicationContext, CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setSmallIcon(com.core.desinsystem.R.drawable.temp_logo)
+            .build()
+        notifyNotification(notification)
+    }
 
-        builder.setContentTitle(title).setContentText(body).setSmallIcon(com.core.desinsystem.R.drawable.temp_logo)
-
-        val notification = builder.build()
+    @SuppressLint("MissingPermission")
+    private fun notifyNotification(notification: Notification) {
+        val notificationManager = NotificationManagerCompat.from(this)
+        notificationManager.createChannel()
         notificationManager.notify(1, notification)
+    }
 
+    private fun NotificationManagerCompat.createChannel() {
+        if(getNotificationChannel(CHANNEL_ID) == null){
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_HIGH,
+            )
+            createNotificationChannel(channel)
+        }
     }
 
     private val formatter = DateTimeFormatter.ISO_DATE_TIME
