@@ -46,7 +46,7 @@ class OtherActivity : AppCompatActivity() {
                         lifecycleScope.launch {
                             requestInitPairedDeviceUseCase()
                         }
-                        Toast.makeText(this, "저장되어 있는 연동 기기 정보를 초기화 했습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "저장 되어 있는 연동 기기 정보를 초기화 했습니다.", Toast.LENGTH_SHORT).show()
                     },
                 )
             }
@@ -55,21 +55,13 @@ class OtherActivity : AppCompatActivity() {
         executor = ContextCompat.getMainExecutor(this)
         biometricPrompt = BiometricPrompt(this, executor,
             object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError(errorCode: Int,
-                    errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                    Toast.makeText(applicationContext, "에러가 발생했습니다.", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onAuthenticationSucceeded(
-                    result: BiometricPrompt.AuthenticationResult) {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
                     lifecycleScope.launch {
                         registerFingerPrintUseCase()
                     }
                     Toast.makeText(applicationContext, "성공적으로 지문을 등록했습니다.", Toast.LENGTH_SHORT).show()
                 }
-
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
                     Toast.makeText(applicationContext, "지문인식에 실패 했습니다", Toast.LENGTH_SHORT).show()
