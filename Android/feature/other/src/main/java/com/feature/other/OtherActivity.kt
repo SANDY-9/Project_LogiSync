@@ -36,18 +36,9 @@ class OtherActivity : AppCompatActivity() {
         setContent {
             LogiSyncTheme {
                 OtherScreen(
-                    onRegisterFingerPrint = {
-                        biometricPrompt.authenticate(promptInfo)
-                    },
-                    onNavigateUp = {
-                        finish()
-                    },
-                    onInitConnect = {
-                        lifecycleScope.launch {
-                            requestInitPairedDeviceUseCase()
-                        }
-                        Toast.makeText(this, "저장 되어 있는 연동 기기 정보를 초기화 했습니다.", Toast.LENGTH_SHORT).show()
-                    },
+                    onRegisterFingerPrint = this::registerFingerPrint,
+                    onNavigateUp = this::finish,
+                    onInitConnect = this::initializeConnectDevice,
                 )
             }
         }
@@ -74,5 +65,16 @@ class OtherActivity : AppCompatActivity() {
             .setDescription("지문을 등록해주세요.")
             .setNegativeButtonText("취소")
             .build()
+    }
+
+    private fun registerFingerPrint() {
+        biometricPrompt.authenticate(promptInfo)
+    }
+
+    private fun initializeConnectDevice() {
+        lifecycleScope.launch {
+            requestInitPairedDeviceUseCase()
+        }
+        Toast.makeText(this, "저장 되어 있는 연동 기기 정보를 초기화 했습니다.", Toast.LENGTH_SHORT).show()
     }
 }
