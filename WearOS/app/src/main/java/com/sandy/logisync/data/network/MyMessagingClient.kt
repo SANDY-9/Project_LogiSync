@@ -26,9 +26,11 @@ class MyMessagingClient @Inject constructor(
 
     private fun getAccessToken(): String? {
         val asset = context.resources.assets.open(BuildConfig.MASSAGING_ADMIN)
-        val googleCredential = GoogleCredentials.fromStream(asset)
+        val googleCredential = GoogleCredentials
+            .fromStream(asset)
             .createScoped(listOf(FIREBASE_MESSAGING_SCOPED))
-        return googleCredential.refreshAccessToken().tokenValue
+        val accessToken = googleCredential.refreshAccessToken().tokenValue
+        return accessToken
     }
 
     private fun getAuthorizationHeader(): String {

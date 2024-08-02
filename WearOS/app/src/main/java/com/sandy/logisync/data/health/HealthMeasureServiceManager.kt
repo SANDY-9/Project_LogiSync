@@ -32,7 +32,7 @@ class HeartRateServiceManager @Inject constructor(
                 dataType: DeltaDataType<*, *>,
                 availability: Availability
             ) {
-                Log.e("확인", "onAvailabilityChanged: $availability")
+                Log.e("[HeartRate]", "onAvailabilityChanged: $availability")
                 val measureAvailability =
                     if (availability == DataTypeAvailability.UNAVAILABLE_DEVICE_OFF_BODY) availability
                     else DataTypeAvailability.ACQUIRING
@@ -41,7 +41,7 @@ class HeartRateServiceManager @Inject constructor(
 
             override fun onDataReceived(data: DataPointContainer) {
                 val heartRateBpm = data.getData(DataType.HEART_RATE_BPM)[0].value
-                Log.e("확인", "onDataReceived: $heartRateBpm")
+                Log.e("[HeartRate]", "onDataReceived: $heartRateBpm")
                 if (heartRateBpm > 0) {
                     val heartRateDTO = HeartRateDTO(
                         date = LocalDateTime.now(),
