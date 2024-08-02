@@ -28,30 +28,28 @@ class MyWearableListenerService : WearableListenerService() {
 
     // 노드에서 전송된 메시지가 타겟 노드에서 이 콜백을 트리거
     override fun onMessageReceived(p0: MessageEvent) {
-        val data = p0.data.toString(Charsets.UTF_8)
-        when (p0.path) {
-            MessagePath.GET_INIT.path -> registerAccount(data)
-            MessagePath.GET_LOGIN.path -> login(data)
-            MessagePath.GET_REQUEST_HEAT_RATE.path -> collectHeartRate(data)
+        CoroutineScope(Dispatchers.IO).launch {
+            val data = p0.data.toString(Charsets.UTF_8)
+            when (p0.path) {
+                MessagePath.GET_INIT.path -> registerAccount(data)
+                MessagePath.GET_LOGIN.path -> login(data)
+                MessagePath.GET_REQUEST_HEAT_RATE.path -> collectHeartRate(data)
+            }
         }
     }
 
-    private fun registerAccount(accountData: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+    private suspend fun registerAccount(accountData: String) {
+        wearableDataStoreRepository.registerAccount(accountData)
+    }
+
+    private suspend fun login(accountData: String) {
+        val existAccount = wearableDataStoreRepository.getAccount().first()
+        if (existAccount == null) {
             wearableDataStoreRepository.registerAccount(accountData)
         }
-    }
-
-    private fun login(accountData: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val existAccount = wearableDataStoreRepository.getAccount().first()
-            if (existAccount == null) {
-                wearableDataStoreRepository.registerAccount(accountData)
-            }
-            wearableTranscriptionRepository.resultLogin(
-                if (existAccount == null || accountData.getId() == existAccount.id) MessageResponse.SUCCESS else MessageResponse.FAIL
-            )
-        }
+        val isLoginSuccess = existAccount == null || accountData.getId() == existAccount.id
+        val loginResult = if (isLoginSuccess) MessageResponse.SUCCESS else MessageResponse.FAIL
+        wearableTranscriptionRepository.resultLogin(loginResult)
     }
 
     private fun String.getId(): String {
@@ -60,25 +58,26 @@ class MyWearableListenerService : WearableListenerService() {
     }
 
     // 앱을 킨다. 그리고 심박수를 측정한다
-    private fun collectHeartRate(id: String) {
+    private suspend fun collectHeartRate(id: String) {
         Log.i("[WEARABLE-MOBILE]", "collectHeartRate: $id", )
-        CoroutineScope(Dispatchers.IO).launch {
-            val account = wearableDataStoreRepository.getAccount().first()
-            account?.let {
-                if(it.id == id) {
-                    launch(Dispatchers.Main) { turnOnApp() }
-                    HeartRateMeasureWorker.enqueueWorker(this@MyWearableListenerService)
-                }
+        val account = wearableDataStoreRepository.getAccount().first()
+        account?.let {
+            val idValid = it.id == id
+            if(idValid) {
+                turnOnApp()
+                HeartRateMeasureWorker.enqueueWorker(this)
             }
         }
     }
 
     private fun turnOnApp() {
-        val intent = Intent(this@MyWearableListenerService, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra("HEART_RATE_COLLECT", true)
+        CoroutineScope(Dispatchers.Main).launch {
+            val intent = Intent(this@MyWearableListenerService, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                putExtra("HEART_RATE_COLLECT", true)
+            }
+            startActivity(intent)
         }
-        startActivity(intent)
     }
 
 }
