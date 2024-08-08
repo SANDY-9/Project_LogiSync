@@ -72,6 +72,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:domain"))
 
+    implementation(project(":feature:splash"))
     implementation(project(":feature:login"))
     implementation(project(":feature:signup"))
     implementation(project(":feature:onboard"))

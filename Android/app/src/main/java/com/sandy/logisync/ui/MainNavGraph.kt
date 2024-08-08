@@ -15,8 +15,8 @@ import com.feature.arrest.details.ArrestDetailsScreen
 import com.feature.home.HomeScreen
 import com.feature.login.loginscreen.LoginScreen
 import com.feature.onboard.OnboardingScreen
-import com.feature.other.OtherScreen
 import com.feature.signup.SignupScreen
+import com.feature.splash.SplashScreen
 import com.sandy.statistics.StatisticsScreen
 import com.sandy.statistics.admin.StatisticsAdminScreen
 
@@ -31,6 +31,20 @@ fun MainNavGraph(
         navController = navController,
         startDestination = startDestination,
     ) {
+
+        composable(
+            route = Route.Splash.route,
+        ) {
+            SplashScreen(
+                onLogin = { login ->
+                    val destination = if(login) Route.Home.route else Route.Login.route
+                    navController.navigate(destination) {
+                        popUpTo(Route.Splash.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
         composable(
             route = Route.Login.route,
         ) {
