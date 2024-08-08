@@ -33,5 +33,5 @@ enum class Screen {
     ARREST_ADMIN,
     ARREST_ADMIN_DETAILS,
     USER_DETAILS,
-    OTHER
+    OTHER,
 }

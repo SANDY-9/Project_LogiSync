@@ -34,7 +34,7 @@ class AuthPrefsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun logoutAccount() {
-        TODO("Not yet implemented")
+       authDataStoreManager.logoutAccount()
     }
     override suspend fun getFingerPrint(): String? {
         return authDataStoreManager.getFingerPrintId()

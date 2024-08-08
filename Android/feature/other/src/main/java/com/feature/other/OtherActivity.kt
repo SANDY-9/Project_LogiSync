@@ -1,5 +1,7 @@
 package com.feature.other
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
@@ -11,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.core.desinsystem.theme.LogiSyncTheme
 import com.core.domain.usecases.auth.RegisterFingerPrintUseCase
+import com.core.domain.usecases.prefs.LogoutAccountUseCase
 import com.core.domain.usecases.wearable.RequestInitPairedDeviceUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -28,6 +31,8 @@ class OtherActivity : AppCompatActivity() {
     lateinit var registerFingerPrintUseCase: RegisterFingerPrintUseCase
     @Inject
     lateinit var requestInitPairedDeviceUseCase: RequestInitPairedDeviceUseCase
+    @Inject
+    lateinit var logoutAccountUseCase: LogoutAccountUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +44,7 @@ class OtherActivity : AppCompatActivity() {
                     onRegisterFingerPrint = this::registerFingerPrint,
                     onNavigateUp = this::finish,
                     onInitConnect = this::initializeConnectDevice,
+                    onLogout = this::logoutAccount,
                 )
             }
         }
@@ -76,5 +82,15 @@ class OtherActivity : AppCompatActivity() {
             requestInitPairedDeviceUseCase()
         }
         Toast.makeText(this, "저장 되어 있는 연동 기기 정보를 초기화 했습니다.", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun logoutAccount() {
+        lifecycleScope.launch {
+            logoutAccountUseCase()
+            Toast.makeText(this@OtherActivity, "로그아웃 하였습니다.", Toast.LENGTH_SHORT).show()
+            val resultIntent = Intent()
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
+        }
     }
 }

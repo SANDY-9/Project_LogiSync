@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.core.desinsystem.theme.LogiLightGray
 
 @Composable
@@ -31,6 +32,7 @@ fun OtherScreen(
     onRegisterFingerPrint: () -> Unit,
     onNavigateUp: () -> Unit,
     onInitConnect: () -> Unit,
+    onLogout: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -46,6 +48,10 @@ fun OtherScreen(
         MenuItem(
             title = stringResource(id = R.string.other_title_init),
             onClick = onInitConnect
+        )
+        MenuItem(
+            title = stringResource(id = R.string.other_title_logout),
+            onClick = onLogout
         )
     }
 }

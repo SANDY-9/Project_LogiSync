@@ -2,6 +2,7 @@ package com.sandy.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.sandy.datastore.extensions.editPrefs
 import com.sandy.datastore.extensions.getPrefs
@@ -51,6 +52,12 @@ class AuthDataStoreManager @Inject constructor(
             defaultValue = ""
         ).first()
         return fingerPrintId.ifBlank { null }
+    }
+
+    suspend fun logoutAccount() {
+        dataStore.edit {
+            it.remove(PrefsKeys.ACCOUNT)
+        }
     }
 
     private object PrefsKeys {

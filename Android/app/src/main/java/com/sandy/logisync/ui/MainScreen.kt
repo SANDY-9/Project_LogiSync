@@ -1,7 +1,12 @@
 package com.sandy.logisync.ui
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
@@ -14,7 +19,6 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -54,7 +58,7 @@ fun MainScreen(
             .fillMaxSize()
             .imePadding()
             .navigationBarsPadding(),
-        color = MaterialTheme.colorScheme.background
+        color = Color.White,
     ) {
         Column {
             val currentRoute = navBackStackEntry?.destination?.route
@@ -63,10 +67,11 @@ fun MainScreen(
                     .fillMaxSize()
                     .weight(1f),
                 navController = navController,
-                startDestination = Route.Login.route,
-                //startDestination = Route.Home.route,
+                startDestination = Route.Splash.route,
             )
             if(currentRoute in BottomNavRouteEntry) {
+
+                val logoutLauncher = createLogoutLauncher(navController)
                 BottomNavigationBar(
                     // 관리자인지 아닌지 판별
                     items = if(duty == User.Duty.ADMIN) TOP_LEVEL_DESTINATIONS_ADMIN else TOP_LEVEL_DESTINATIONS_NORMAL,
@@ -74,7 +79,7 @@ fun MainScreen(
                     onItemClick = {
                         if (currentRoute != it.route) {
                             if (it.route == Route.Other.route) {
-                                navigateToOtherScreen(context)
+                                navigateToOtherScreen(logoutLauncher, context)
                             }
                             else {
                                 navController.navigate(it.route)
@@ -87,9 +92,20 @@ fun MainScreen(
     }
 }
 
-private fun navigateToOtherScreen(context: Context) {
+@Composable
+private fun createLogoutLauncher(navController: NavHostController) = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) { result ->
+    //// 넘어온 값이 RESULT_OK이면 getStringExtra로 값 가져오기
+    if (result.resultCode == Activity.RESULT_OK) {
+        navController.navigate(Route.Login.route)
+    }
+}
+
+private fun navigateToOtherScreen(
+    logoutLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    context: Context,
+) {
     val intent = Intent(context, OtherActivity::class.java)
-    context.startActivity(intent)
+    logoutLauncher.launch(intent)
 }
 
 private val BottomNavRouteEntry = listOf(
