@@ -14,6 +14,7 @@ internal object Constants {
     const val ARREST = "arrest"  // FCM Topic
     const val ID = "id"
     const val TEAM = "team"
+    const val STAFF = "staff"
 
     // CRITICAL_POINT
     const val CRITICAL_POINT = "critical_point"

@@ -17,6 +17,7 @@ import com.feature.login.loginscreen.LoginScreen
 import com.feature.onboard.OnboardingScreen
 import com.feature.signup.SignupScreen
 import com.feature.splash.SplashScreen
+import com.feature.stafflist.StaffListScreen
 import com.sandy.statistics.StatisticsScreen
 import com.sandy.statistics.admin.StatisticsAdminScreen
 
@@ -165,6 +166,12 @@ fun MainNavGraph(
             ArrestAdminDetailsScreen(
                 navController = navController
             )
+        }
+
+        composable(
+            route = Route.StaffList.route,
+        ) {
+            StaffListScreen()
         }
 
     }

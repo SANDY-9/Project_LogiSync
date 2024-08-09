@@ -17,6 +17,7 @@ sealed class Route(
     data object ArrestAdminDetails : Route(route = Screen.ARREST_ADMIN_DETAILS.name)
     data object UserDetails : Route(route = Screen.USER_DETAILS.name)
     data object Other : Route(route = Screen.OTHER.name)
+    data object StaffList : Route(route = Screen.STAFF_LIST.name)
 }
 
 enum class Screen {
@@ -34,4 +35,5 @@ enum class Screen {
     ARREST_ADMIN_DETAILS,
     USER_DETAILS,
     OTHER,
+    STAFF_LIST,
 }
