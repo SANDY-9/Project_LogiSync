@@ -3,7 +3,6 @@ package com.feature.splash
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,9 +38,6 @@ fun SplashScreen(
         AnimatedVisibility(
             visible = splashShow,
             enter = fadeIn(
-                animationSpec = tween(500)
-            ),
-            exit = fadeOut(
                 animationSpec = tween(500)
             )
         ) {

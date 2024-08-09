@@ -17,7 +17,7 @@ class SplashViewModel @Inject constructor(
 ): ViewModel() {
 
     internal val splashShow = flow {
-        delay(1000)
+        delay(200)
         emit(false)
     }.stateIn(
         scope = viewModelScope,
