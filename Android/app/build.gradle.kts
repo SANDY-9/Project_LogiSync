@@ -81,7 +81,6 @@ dependencies {
     implementation(project(":feature:admin"))
     implementation(project(":feature:arrest"))
     implementation(project(":feature:other"))
-    implementation(project(":feature:stafflist"))
 
     implementation(libs.bundles.androidx)
     implementation(libs.coroutines.android)

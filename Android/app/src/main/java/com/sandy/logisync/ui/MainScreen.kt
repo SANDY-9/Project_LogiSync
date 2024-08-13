@@ -91,14 +91,15 @@ fun MainScreen(
         }
     }
 }
-
 @Composable
-private fun createLogoutLauncher(navController: NavHostController) = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) { result ->
-    //// 넘어온 값이 RESULT_OK이면 getStringExtra로 값 가져오기
-    if (result.resultCode == Activity.RESULT_OK) {
-        navController.navigate(Route.Login.route)
+private fun createLogoutLauncher(navController: NavHostController) =
+    rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            navController.navigate(Route.Login.route)
+        }
     }
-}
 
 private fun navigateToOtherScreen(
     logoutLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
