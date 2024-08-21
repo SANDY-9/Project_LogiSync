@@ -24,6 +24,7 @@ fun HeartRateCollecting(
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         DotLottieAnimation(
+            modifier = modifier.align(Alignment.Center),
             source = DotLottieSource.Asset("heart_rate.json"),
             autoplay = true,
             loop = true,

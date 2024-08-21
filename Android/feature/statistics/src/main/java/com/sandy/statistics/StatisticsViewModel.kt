@@ -16,7 +16,6 @@ import com.sandy.statistics.utils.selectRecordItem
 import com.sandy.statistics.utils.toDailyChartItem
 import com.sandy.statistics.utils.toPeriodChartItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +23,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -82,6 +80,7 @@ class StatisticsViewModel @Inject constructor(
                     val selectRecordItem = if(selectPosition == null && data.isNotEmpty()) data else data.selectRecordItem(selectPosition)
                     it.copy(
                         chartType = StatisticsUiState.ChartType.DAILY,
+                        pickedDate = LocalDate.of(year, month, day),
                         minBPM = selectPosition.minBPM(chartItem),
                         maxBPM = selectPosition.maxBPM(chartItem),
                         recordItem = data,

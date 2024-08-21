@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.ScalingLazyListState
@@ -140,7 +141,9 @@ private fun WatchScreenContent(
                 Spacer(modifier = modifier.height(36.dp))
                 Text(
                     text = stringResource(id = R.string.app_name),
-                    style = MaterialTheme.typography.caption2,
+                    style = MaterialTheme.typography.caption2.copy(
+                        fontWeight = FontWeight.W500,
+                    ),
                 )
                 Spacer(modifier = modifier.height(2.dp))
                 Row {
