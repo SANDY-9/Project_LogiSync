@@ -17,6 +17,7 @@ import com.feature.login.loginscreen.LoginScreen
 import com.feature.onboard.OnboardingScreen
 import com.feature.signup.SignupScreen
 import com.feature.splash.SplashScreen
+import com.feature.staff.StaffListScreen
 import com.sandy.statistics.StatisticsScreen
 import com.sandy.statistics.admin.StatisticsAdminScreen
 
@@ -166,6 +167,15 @@ fun MainNavGraph(
                 navController = navController
             )
         }
+
+        composable(
+            route = Route.StaffList.route,
+        ) {
+            StaffListScreen(
+                navController = navController,
+            )
+        }
+
 
     }
 }

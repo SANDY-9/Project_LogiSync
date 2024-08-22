@@ -5,6 +5,7 @@ import com.core.data.repository.auth.SignupRepositoryImpl
 import com.core.data.repository.bluetooth.BluetoothRepositoryImpl
 import com.core.data.repository.network.GetArrestRepositoryImpl
 import com.core.data.repository.network.GetHeartRateRepositoryImpl
+import com.core.data.repository.network.GetStaffRepositoryImpl
 import com.core.data.repository.network.GetUserRepositoryImpl
 import com.core.data.repository.prefs.AuthPrefsRepositoryImpl
 import com.core.data.repository.prefs.DevicePrefsRepositoryImpl
@@ -14,6 +15,7 @@ import com.core.domain.repository.BluetoothRepository
 import com.core.domain.repository.DevicePrefsRepository
 import com.core.domain.repository.GetArrestRepository
 import com.core.domain.repository.GetHeartRateRepository
+import com.core.domain.repository.GetStaffRepository
 import com.core.domain.repository.GetUserRepository
 import com.core.domain.repository.LoginRepository
 import com.core.domain.repository.SignupRepository
@@ -71,5 +73,10 @@ internal abstract class DataModule {
     abstract fun bindsGetUserRepository(
         impl: GetUserRepositoryImpl
     ): GetUserRepository
+
+    @Binds
+    abstract fun bindsGetStaffRepository(
+        impl: GetStaffRepositoryImpl
+    ): GetStaffRepository
 
 }
